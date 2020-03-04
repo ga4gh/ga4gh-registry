@@ -28,19 +28,21 @@ public class StandardSerializer extends StdSerializer<Standard> {
         Standard standard, JsonGenerator jgen, SerializerProvider provider)
         throws IOException, JsonProcessingException {
         jgen.writeStartObject();
+        jgen.writeStringField("id", standard.getId().toString());
         jgen.writeStringField("name", standard.getName());
-        jgen.writeStringField("short_desc", standard.getShortDescription());
-        jgen.writeStringField("long_desc", standard.getLongDescription());
-        jgen.writeStringField("documentation_url", standard.getDocumentationUrl());
+        jgen.writeStringField("artifact", standard.getArtifact());
+        jgen.writeStringField("oneliner", standard.getOneliner());
+        jgen.writeStringField("description", standard.getDescription());
+        jgen.writeStringField("documentationUrl", standard.getDocumentationUrl());
         
         if (standard.getStandardCategory() != null) {
             jgen.writeStringField("category", standard.getStandardCategory().getCategory());
         }
-        if (standard.getStandardStatus() != null) {
-            jgen.writeStringField("status", standard.getStandardStatus().getStatus());
+        if (standard.getReleaseStatus() != null) {
+            jgen.writeStringField("status", standard.getReleaseStatus().getStatus());
         }
         if (standard.getStandardVersions() != null) {
-            jgen.writeFieldName("standard_versions");
+            jgen.writeFieldName("versions");
             jgen.writeStartArray();
             for (StandardVersion sv: standard.getStandardVersions()) {
                 jgen.writeObject(sv);

@@ -25,7 +25,7 @@ public class ImplementationSerializer extends StdSerializer<Implementation> {
         SerializerProvider provider)
         throws IOException, JsonProcessingException {
             jgen.writeStartObject();
-            jgen.writeStringField("id", Integer.toString(implementation.getId()));
+            jgen.writeStringField("id", implementation.getId().toString());
             jgen.writeStringField("name", implementation.getName());
             jgen.writeObjectField("type", implementation.getServiceType());
             jgen.writeStringField("description", implementation.getDescription());

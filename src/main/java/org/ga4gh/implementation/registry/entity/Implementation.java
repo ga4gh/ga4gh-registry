@@ -1,5 +1,7 @@
 package org.ga4gh.implementation.registry.entity;
 
+import java.util.UUID;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -11,6 +13,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.ga4gh.implementation.registry.util.serializer.ImplementationSerializer;
+import org.hibernate.annotations.GenericGenerator;
 import org.ga4gh.implementation.registry.model.ServiceType;
 
 @Entity
@@ -19,9 +22,11 @@ import org.ga4gh.implementation.registry.model.ServiceType;
 public class Implementation {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(name = "UUID",
+                      strategy = "org.hibernate.id.UUIDGenerator")
     @Column(name = "id")
-    private int id;
+    private UUID id;
 
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE,
                           CascadeType.DETACH, CascadeType.REFRESH})
@@ -84,11 +89,11 @@ public class Implementation {
         this.url = url;
     }
 
-    public int getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
@@ -192,7 +197,7 @@ public class Implementation {
         ServiceType serviceType = new ServiceType();
         if (getStandardVersion() != null) {
             if (getStandardVersion().getStandard() != null) {
-                String artifact = getStandardVersion().getStandard().getName();
+                String artifact = getStandardVersion().getStandard().getArtifact();
                 String version = getStandardVersion().getVersionNumber();
                 serviceType.setGroup("org.ga4gh");
                 serviceType.setArtifact(artifact);

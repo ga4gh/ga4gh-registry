@@ -1,12 +1,12 @@
 package org.ga4gh.implementation.registry.entity;
 
 import java.util.List;
+import java.util.UUID;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -21,9 +21,9 @@ import org.ga4gh.implementation.registry.util.serializer.StandardVersionSerializ
 public class StandardVersion {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(generator = "UUID")
     @Column(name = "id")
-    private int id;
+    private UUID id;
 
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE,
                           CascadeType.DETACH, CascadeType.REFRESH})
@@ -35,6 +35,11 @@ public class StandardVersion {
 
     @Column(name = "documentation_url")
     private String documentationUrl;
+
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE,
+        CascadeType.DETACH, CascadeType.REFRESH})
+    @JoinColumn(name = "release_status_id")
+    private ReleaseStatus releaseStatus;
 
     @OneToMany(mappedBy="standardVersion",
                cascade=CascadeType.ALL)
@@ -53,11 +58,11 @@ public class StandardVersion {
 
     /* getters and setters */
 
-    public int getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
@@ -83,6 +88,14 @@ public class StandardVersion {
 
     public void setDocumentationUrl(String documentationUrl) {
         this.documentationUrl = documentationUrl;
+    }
+
+    public ReleaseStatus getReleaseStatus() {
+        return releaseStatus;
+    }
+
+    public void setReleaseStatus(ReleaseStatus releaseStatus) {
+        this.releaseStatus = releaseStatus;
     }
 
     public List<Implementation> getImplementations() {

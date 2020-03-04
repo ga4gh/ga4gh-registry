@@ -25,8 +25,9 @@ public class OrganizationSerializer extends StdSerializer<Organization> {
         SerializerProvider provider)
         throws IOException, JsonProcessingException {
             jgen.writeStartObject();
+            jgen.writeStringField("id", organization.getId().toString());
             jgen.writeStringField("name", organization.getName());
-            jgen.writeStringField("short_name", organization.getShortName());
+            jgen.writeStringField("shortName", organization.getShortName());
             jgen.writeStringField("url", organization.getUrl());
             jgen.writeEndObject();
         }

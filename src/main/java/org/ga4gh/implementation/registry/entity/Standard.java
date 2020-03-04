@@ -3,19 +3,20 @@ package org.ga4gh.implementation.registry.entity;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import java.util.List;
+import java.util.UUID;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import org.ga4gh.implementation.registry.util.serializer.StandardSerializer;
+import org.hibernate.annotations.GenericGenerator;
 
 @Entity
 @Table(name="standard")
@@ -23,9 +24,11 @@ import org.ga4gh.implementation.registry.util.serializer.StandardSerializer;
 public class Standard {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(name = "UUID",
+                      strategy = "org.hibernate.id.UUIDGenerator")
     @Column(name = "id")
-    private int id;
+    private UUID id;
 
     @Column(name = "name")
     private String name;
@@ -35,23 +38,26 @@ public class Standard {
     @JoinColumn(name = "standard_category_id")
     private StandardCategory standardCategory;
 
-    @Column(name = "short_description")
-    private String shortDescription;
+    @Column(name = "oneliner")
+    private String oneliner;
 
-    @Column(name = "long_description")
-    private String longDescription;
+    @Column(name = "description")
+    private String description;
 
     @Column(name = "documentation_url")
     private String documentationUrl;
 
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE,
                           CascadeType.DETACH, CascadeType.REFRESH})
-    @JoinColumn(name = "standard_status_id")
-    private StandardStatus standardStatus;
+    @JoinColumn(name = "release_status_id")
+    private ReleaseStatus releaseStatus;
+
+    @Column(name = "artifact")
+    private String artifact;
 
     @OneToMany(mappedBy = "standard",
                fetch = FetchType.LAZY,
-               cascade = CascadeType.ALL)
+               cascade = {})//CascadeType.ALL)
     private List<StandardVersion> standardVersions;
 
     /* constructors */
@@ -60,21 +66,21 @@ public class Standard {
 
     }
 
-    public Standard(String name, String shortDescription, 
-        String longDescription, String documentationUrl) {
+    public Standard(String name, String oneliner, String description, 
+        String documentationUrl) {
             this.name = name;
-            this.shortDescription = shortDescription;
-            this.longDescription = longDescription;
+            this.oneliner = oneliner;
+            this.description = description;
             this.documentationUrl = documentationUrl;
         }
 
     /* getters and setters */
 
-    public int getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
@@ -94,20 +100,20 @@ public class Standard {
         this.standardCategory = standardCategory;
     }
 
-    public String getShortDescription() {
-        return shortDescription;
+    public String getOneliner() {
+        return oneliner;
     }
 
-    public void setShortDescription(String shortDescription) {
-        this.shortDescription = shortDescription;
+    public void setOneliner(String oneliner) {
+        this.oneliner = oneliner;
     }
 
-    public String getLongDescription() {
-        return longDescription;
+    public String getDescription() {
+        return description;
     }
 
-    public void setLongDescription(String longDescription) {
-        this.longDescription = longDescription;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public String getDocumentationUrl() {
@@ -118,12 +124,20 @@ public class Standard {
         this.documentationUrl = documentationUrl;
     }
 
-    public StandardStatus getStandardStatus() {
-        return standardStatus;
+    public ReleaseStatus getReleaseStatus() {
+        return releaseStatus;
     }
 
-    public void setStandardStatus(StandardStatus standardStatus) {
-        this.standardStatus = standardStatus;
+    public void setReleaseStatus(ReleaseStatus releaseStatus) {
+        this.releaseStatus = releaseStatus;
+    }
+
+    public String getArtifact() {
+        return artifact;
+    }
+
+    public void setArtifact(String artifact) {
+        this.artifact = artifact;
     }
 
     public List<StandardVersion> getStandardVersions() {
@@ -136,8 +150,9 @@ public class Standard {
 
     public String toString() {
         return "Standard [id=" + id + ", name=" + name + 
-               ", shortDescription=" + shortDescription +
-               ", longDescription=" + longDescription +
-               ", documentationUrl=" + documentationUrl + "]";
+               ", oneliner=" + oneliner +
+               ", description=" + description +
+               ", documentationUrl=" + documentationUrl +
+               ", artifact=" + artifact + "]";
     }
 }

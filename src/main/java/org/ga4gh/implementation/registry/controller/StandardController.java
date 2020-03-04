@@ -20,13 +20,17 @@ public class StandardController {
         String output = null;
         try {
             String queryString = 
-            "select s from Standard s "
+            "select distinct s from Standard s "
             + "JOIN FETCH s.standardCategory "
-            + "JOIN FETCH s.standardStatus "
+            + "JOIN FETCH s.releaseStatus "
             + "JOIN FETCH s.standardVersions";
             HibernateQuerier<Standard> querier =
                 new HibernateQuerier<>(Standard.class, queryString);
             List<Standard> implementations = querier.query();
+            System.out.println("***");
+            System.out.println(implementations.size());
+            System.out.println(implementations.get(0).getArtifact());
+            System.out.println("***");
             ObjectMapper mapper = new ObjectMapper();
             output = mapper.writeValueAsString(implementations);
         } catch (IOException e) {

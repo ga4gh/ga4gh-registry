@@ -1,52 +1,62 @@
 package org.ga4gh.implementation.registry.entity;
 
 import java.util.List;
+import java.util.UUID;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.GenericGenerator;
+
 @Entity
-@Table(name = "standard_status")
-public class StandardStatus {
+@Table(name = "release_status")
+public class ReleaseStatus {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(name = "UUID",
+                      strategy = "org.hibernate.id.UUIDGenerator")
     @Column(name = "id")
-    private int id;
+    private UUID id;
 
     @Column(name = "status")
     private String status;
 
-    @OneToMany(mappedBy = "standardStatus",
+    @OneToMany(mappedBy = "releaseStatus",
                fetch = FetchType.LAZY,
                cascade = {CascadeType.PERSIST, CascadeType.MERGE,
                           CascadeType.DETACH, CascadeType.REFRESH})
     private List<Standard> standards;
 
+    @OneToMany(mappedBy = "releaseStatus",
+               fetch = FetchType.LAZY,
+               cascade = {CascadeType.PERSIST, CascadeType.MERGE,
+                          CascadeType.DETACH, CascadeType.REFRESH})
+    private List<StandardVersion> standardVersions;
+
     /* constructors */
 
-    public StandardStatus() {
+    public ReleaseStatus() {
 
     }
 
-    public StandardStatus(String status) {
+    public ReleaseStatus(String status) {
         this.status = status;
     }
 
     /* getters and setters */
 
-    public int getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
@@ -66,9 +76,17 @@ public class StandardStatus {
         this.standards = standards;
     }
 
+    public List<StandardVersion> getStandardVersions() {
+        return standardVersions;
+    }
+
+    public void setStandardVersions(List<StandardVersion> standardVersions) {
+        this.standardVersions = standardVersions;
+    }
+
     /* toString method */
 
     public String toString() {
-        return "StandardStatus [id=" + id + ", status=" + status + "]";
+        return "ReleaseStatus [id=" + id + ", status=" + status + "]";
     }
 }

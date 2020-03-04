@@ -1,8 +1,9 @@
 package org.ga4gh.implementation.registry.entity;
 
 import java.util.List;
+import java.util.UUID;
+
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -11,6 +12,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.ga4gh.implementation.registry.util.serializer.OrganizationSerializer;
+import org.hibernate.annotations.GenericGenerator;
 
 @Entity
 @Table(name = "organization")
@@ -18,9 +20,11 @@ import org.ga4gh.implementation.registry.util.serializer.OrganizationSerializer;
 public class Organization {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(name = "UUID",
+                      strategy = "org.hibernate.id.UUIDGenerator")
     @Column(name = "id")
-    private int id;
+    private UUID id;
 
     @Column(name = "name")
     private String name;
@@ -50,11 +54,11 @@ public class Organization {
 
     /* getters and setters */
 
-    public int getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 

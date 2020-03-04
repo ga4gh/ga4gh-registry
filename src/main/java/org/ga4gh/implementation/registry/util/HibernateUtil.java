@@ -7,7 +7,7 @@ import org.ga4gh.implementation.registry.entity.ImplementationCategory;
 import org.ga4gh.implementation.registry.entity.Organization;
 import org.ga4gh.implementation.registry.entity.Standard;
 import org.ga4gh.implementation.registry.entity.StandardCategory;
-import org.ga4gh.implementation.registry.entity.StandardStatus;
+import org.ga4gh.implementation.registry.entity.ReleaseStatus;
 import org.ga4gh.implementation.registry.entity.StandardVersion;
 
 public class HibernateUtil {
@@ -24,7 +24,7 @@ public class HibernateUtil {
                 .addAnnotatedClass(Organization.class)
                 .addAnnotatedClass(Standard.class)
                 .addAnnotatedClass(StandardCategory.class)
-                .addAnnotatedClass(StandardStatus.class)
+                .addAnnotatedClass(ReleaseStatus.class)
                 .addAnnotatedClass(StandardVersion.class)
                 .buildSessionFactory();
             return sessionFactory;

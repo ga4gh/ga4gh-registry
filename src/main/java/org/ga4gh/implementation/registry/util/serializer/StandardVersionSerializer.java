@@ -29,8 +29,9 @@ public class StandardVersionSerializer extends StdSerializer<StandardVersion> {
         SerializerProvider provider)
         throws IOException, JsonProcessingException {
             jgen.writeStartObject();
-            jgen.writeStringField("version_number", standardVersion.getVersionNumber());
-            jgen.writeStringField("documentation_url", standardVersion.getDocumentationUrl());
+            jgen.writeStringField("id", standardVersion.getId().toString());
+            jgen.writeStringField("versionNumber", standardVersion.getVersionNumber());
+            jgen.writeStringField("documentationUrl", standardVersion.getDocumentationUrl());
             jgen.writeEndObject();
     }
 }

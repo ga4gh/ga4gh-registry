@@ -1,6 +1,7 @@
 package org.ga4gh.implementation.registry.entity;
 
 import java.util.List;
+import java.util.UUID;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -11,14 +12,18 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.GenericGenerator;
+
 @Entity
 @Table(name = "implementation_category")
 public class ImplementationCategory {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(name = "UUID",
+                      strategy = "org.hibernate.id.UUIDGenerator")
     @Column(name = "id")
-    private int id;
+    private UUID id;
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "category")
@@ -39,11 +44,11 @@ public class ImplementationCategory {
         this.category = category;
     }
 
-    public int getId() {
+    public UUID getId() {
         return this.id;
     }
 
-    public void setId(int id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 

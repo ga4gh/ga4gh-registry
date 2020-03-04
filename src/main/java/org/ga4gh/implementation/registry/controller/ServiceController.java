@@ -47,7 +47,7 @@ public class ServiceController {
                 + "JOIN FETCH i.standardVersion "
                 + "JOIN FETCH i.implementationCategory "
                 + "JOIN FETCH i.organization "
-                + "WHERE i.id=" + serviceId;
+                + "WHERE i.id='" + serviceId + "'";
             HibernateQuerier<Implementation> querier =
                 new HibernateQuerier<>(Implementation.class, queryString);
             List<Implementation> implementations = querier.query();
