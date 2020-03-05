@@ -50,4 +50,16 @@ public class ServiceType {
                + "artifact=" + artifact + ", "
                + "version=" + version + "]";
     }
+
+    public boolean equals(Object o) {
+        boolean equals = false;
+        if (toString().equals(o.toString())) {
+            equals = true;
+        }
+        return equals;
+    }
+
+    public int hashCode() {
+        return toString().hashCode();
+    }
 }

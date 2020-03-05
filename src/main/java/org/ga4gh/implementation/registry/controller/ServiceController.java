@@ -1,9 +1,14 @@
 package org.ga4gh.implementation.registry.controller;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.ga4gh.implementation.registry.entity.Implementation;
+import org.ga4gh.implementation.registry.model.ServiceType;
 import org.ga4gh.implementation.registry.util.HibernateQuerier;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -63,6 +68,26 @@ public class ServiceController {
                 produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public String getServiceTypes() {
         String output = null;
+        
+        try {
+            String queryString = 
+                "select i from Implementation i "
+                + "JOIN FETCH i.standardVersion "
+                + "JOIN FETCH i.implementationCategory "
+                + "JOIN FETCH i.organization "
+                + "WHERE i.implementationCategory.category='APIService'";
+            HibernateQuerier<Implementation> querier =
+                new HibernateQuerier<>(Implementation.class, queryString);
+            List<Implementation> implementations = querier.query();
+            Set<ServiceType> serviceTypes = new HashSet<>();
+            for (Implementation implementation: implementations) {
+                serviceTypes.add(implementation.getServiceType());
+            }
+            ObjectMapper mapper = new ObjectMapper();
+            output = mapper.writeValueAsString(serviceTypes);
+        } catch (IOException e) {
+            System.out.println("Could not serialize object as JSON " + e);
+        }
         return output;
     }
 }
