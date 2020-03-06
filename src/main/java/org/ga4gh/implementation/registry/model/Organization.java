@@ -1,8 +1,7 @@
-package org.ga4gh.implementation.registry.entity;
+package org.ga4gh.implementation.registry.model;
 
 import java.util.List;
 import java.util.UUID;
-
 import javax.persistence.GeneratedValue;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -10,12 +9,17 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Null;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.ga4gh.implementation.registry.util.serializer.OrganizationSerializer;
 import org.hibernate.annotations.GenericGenerator;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 @Entity
 @Table(name = "organization")
+@Schema(name = "Organization",
+        description = "Organization implementing GA4GH standard(s)")
 @JsonSerialize(using = OrganizationSerializer.class)
 public class Organization {
 
@@ -24,20 +28,29 @@ public class Organization {
     @GenericGenerator(name = "UUID",
                       strategy = "org.hibernate.id.UUIDGenerator")
     @Column(name = "id")
+    @Schema(example = "3fa85f64-5717-4562-b3fc-2c963f66afa9")
+    @NotNull
     private UUID id;
 
     @Column(name = "name")
+    @Schema(example = "Global Alliance for Genomics and Health")
+    @NotNull
     private String name;
 
     @Column(name = "short_name")
+    @Schema(example = "GA4GH")
+    @Null
     private String shortName;
 
     @Column(name = "url")
+    @Schema(example = "https://ga4gh.org")
+    @NotNull
     private String url;
 
     @OneToMany(mappedBy = "organization",
                cascade = {CascadeType.PERSIST, CascadeType.MERGE,
                           CascadeType.DETACH, CascadeType.REFRESH})
+    @Schema(required = false)
     private List<Implementation> implementations;
 
     /* constructors */

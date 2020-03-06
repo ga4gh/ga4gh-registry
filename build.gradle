@@ -63,6 +63,7 @@ dependencies {
     compile 'javax.xml.bind:jaxb-api:2.2.8'
     compile 'com.fasterxml.jackson.core:jackson-core:2.10.2'
     compile 'com.fasterxml.jackson.core:jackson-databind:2.10.2'
+    compile 'org.springdoc:springdoc-openapi-ui:1.2.33'
 
     testCompile 'org.springframework.boot:spring-boot-starter-test'
     testCompile("org.dbunit:dbunit:2.5.1")

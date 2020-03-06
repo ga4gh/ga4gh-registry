@@ -1,12 +1,10 @@
-package org.ga4gh.implementation.registry.entity;
+package org.ga4gh.implementation.registry.model;
 
 import java.util.UUID;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -14,7 +12,6 @@ import javax.persistence.Table;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.ga4gh.implementation.registry.util.serializer.ImplementationSerializer;
 import org.hibernate.annotations.GenericGenerator;
-import org.ga4gh.implementation.registry.model.ServiceType;
 
 @Entity
 @Table(name = "implementation")

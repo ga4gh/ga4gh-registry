@@ -6,7 +6,7 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
-import org.ga4gh.implementation.registry.entity.Implementation;
+import org.ga4gh.implementation.registry.model.Implementation;
 
 public class ImplementationSerializer extends StdSerializer<Implementation> {
     

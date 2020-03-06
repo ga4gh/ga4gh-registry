@@ -1,4 +1,4 @@
-package org.ga4gh.implementation.registry.entity;
+package org.ga4gh.implementation.registry.model;
 
 import java.util.List;
 import java.util.UUID;

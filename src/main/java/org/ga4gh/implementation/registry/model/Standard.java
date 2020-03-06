@@ -1,4 +1,4 @@
-package org.ga4gh.implementation.registry.entity;
+package org.ga4gh.implementation.registry.model;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 

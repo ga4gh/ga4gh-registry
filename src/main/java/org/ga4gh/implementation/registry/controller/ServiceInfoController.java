@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import org.ga4gh.implementation.registry.entity.Implementation;
+import org.ga4gh.implementation.registry.model.Implementation;
 import org.ga4gh.implementation.registry.util.HibernateQuerier;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;

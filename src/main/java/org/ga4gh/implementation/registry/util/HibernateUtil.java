@@ -2,13 +2,13 @@ package org.ga4gh.implementation.registry.util;
 
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
-import org.ga4gh.implementation.registry.entity.Implementation;
-import org.ga4gh.implementation.registry.entity.ImplementationCategory;
-import org.ga4gh.implementation.registry.entity.Organization;
-import org.ga4gh.implementation.registry.entity.Standard;
-import org.ga4gh.implementation.registry.entity.StandardCategory;
-import org.ga4gh.implementation.registry.entity.ReleaseStatus;
-import org.ga4gh.implementation.registry.entity.StandardVersion;
+import org.ga4gh.implementation.registry.model.Implementation;
+import org.ga4gh.implementation.registry.model.ImplementationCategory;
+import org.ga4gh.implementation.registry.model.Organization;
+import org.ga4gh.implementation.registry.model.Standard;
+import org.ga4gh.implementation.registry.model.StandardCategory;
+import org.ga4gh.implementation.registry.model.ReleaseStatus;
+import org.ga4gh.implementation.registry.model.StandardVersion;
 
 public class HibernateUtil {
 

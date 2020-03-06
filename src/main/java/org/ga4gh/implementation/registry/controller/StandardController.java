@@ -3,7 +3,7 @@ package org.ga4gh.implementation.registry.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.util.List;
-import org.ga4gh.implementation.registry.entity.Standard;
+import org.ga4gh.implementation.registry.model.Standard;
 import org.ga4gh.implementation.registry.util.HibernateQuerier;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
