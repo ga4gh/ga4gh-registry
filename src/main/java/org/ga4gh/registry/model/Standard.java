@@ -1,4 +1,4 @@
-package org.ga4gh.implementation.registry.model;
+package org.ga4gh.registry.model;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
@@ -15,7 +15,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import org.ga4gh.implementation.registry.util.serializer.StandardSerializer;
+import org.ga4gh.registry.util.serializer.StandardSerializer;
 import org.hibernate.annotations.GenericGenerator;
 
 @Entity

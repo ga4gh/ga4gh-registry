@@ -1,7 +1,7 @@
-package org.ga4gh.implementation.registry.model;
+package org.ga4gh.registry.model;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import org.ga4gh.implementation.registry.util.serializer.ServiceTypeSerializer;
+import org.ga4gh.registry.util.serializer.ServiceTypeSerializer;
 
 @JsonSerialize(using = ServiceTypeSerializer.class)
 public class ServiceType {

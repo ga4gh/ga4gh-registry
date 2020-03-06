@@ -75,7 +75,7 @@ dependencies {
 
 application {
     // Define the main class for the application.
-    mainClassName = 'org.ga4gh.implementation.registry.App'
+    mainClassName = 'org.ga4gh.registry.App'
 }
 
 test {
@@ -84,6 +84,6 @@ test {
 }
 
 bootJar {
-    mainClassName = 'org.ga4gh.implementation.registry.App'
+    mainClassName = 'org.ga4gh.registry.App'
 }
 

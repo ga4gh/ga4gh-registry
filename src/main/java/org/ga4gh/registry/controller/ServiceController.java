@@ -1,13 +1,13 @@
-package org.ga4gh.implementation.registry.controller;
+package org.ga4gh.registry.controller;
 
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.ga4gh.implementation.registry.model.Implementation;
-import org.ga4gh.implementation.registry.model.ServiceType;
-import org.ga4gh.implementation.registry.util.HibernateQuerier;
+import org.ga4gh.registry.model.Implementation;
+import org.ga4gh.registry.model.ServiceType;
+import org.ga4gh.registry.util.HibernateQuerier;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;

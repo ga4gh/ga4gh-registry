@@ -1,4 +1,4 @@
-package org.ga4gh.implementation.registry.model;
+package org.ga4gh.registry.model;
 
 import java.util.List;
 import java.util.UUID;
@@ -12,7 +12,7 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Null;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import org.ga4gh.implementation.registry.util.serializer.OrganizationSerializer;
+import org.ga4gh.registry.util.serializer.OrganizationSerializer;
 import org.hibernate.annotations.GenericGenerator;
 import io.swagger.v3.oas.annotations.media.Schema;
 

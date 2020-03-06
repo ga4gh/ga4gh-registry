@@ -1,4 +1,4 @@
-package org.ga4gh.implementation.registry.model;
+package org.ga4gh.registry.model;
 
 import java.util.UUID;
 import javax.persistence.CascadeType;
@@ -10,7 +10,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import org.ga4gh.implementation.registry.util.serializer.ImplementationSerializer;
+import org.ga4gh.registry.util.serializer.ImplementationSerializer;
 import org.hibernate.annotations.GenericGenerator;
 
 @Entity

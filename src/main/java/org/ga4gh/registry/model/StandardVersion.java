@@ -1,8 +1,7 @@
-package org.ga4gh.implementation.registry.model;
+package org.ga4gh.registry.model;
 
 import java.util.List;
 import java.util.UUID;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -13,7 +12,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import org.ga4gh.implementation.registry.util.serializer.StandardVersionSerializer;
+import org.ga4gh.registry.util.serializer.StandardVersionSerializer;
 
 @Entity
 @Table(name = "standard_version")

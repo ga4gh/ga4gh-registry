@@ -1,4 +1,4 @@
-package org.ga4gh.implementation.registry.constant;
+package org.ga4gh.registry.constant;
 
 public class HttpStatusDescription {
 

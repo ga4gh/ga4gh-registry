@@ -1,8 +1,6 @@
-package org.ga4gh.implementation.registry.util;
+package org.ga4gh.registry.util;
 
-import java.io.IOException;
 import java.util.List;
-
 import org.hibernate.query.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;

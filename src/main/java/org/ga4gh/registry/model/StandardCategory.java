@@ -1,4 +1,4 @@
-package org.ga4gh.implementation.registry.model;
+package org.ga4gh.registry.model;
 
 import java.util.List;
 import java.util.UUID;
@@ -6,8 +6,8 @@ import java.util.UUID;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -15,8 +15,8 @@ import javax.persistence.Table;
 import org.hibernate.annotations.GenericGenerator;
 
 @Entity
-@Table(name = "implementation_category")
-public class ImplementationCategory {
+@Table(name = "standard_category")
+public class StandardCategory {
 
     @Id
     @GeneratedValue(generator = "UUID")
@@ -25,27 +25,29 @@ public class ImplementationCategory {
     @Column(name = "id")
     private UUID id;
 
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "category")
     private String category;
 
-    @OneToMany(mappedBy="implementationCategory",
-               cascade={CascadeType.PERSIST, CascadeType.MERGE,
-                        CascadeType.DETACH, CascadeType.REFRESH})
-    private List<Implementation> implementations;
+    @OneToMany(mappedBy = "standardCategory",
+               fetch = FetchType.LAZY,
+               cascade = {CascadeType.PERSIST, CascadeType.MERGE,
+                          CascadeType.DETACH, CascadeType.REFRESH})
+    private List<Standard> standards;
 
-    // private Implementation implementation;
+    /* constructors */
 
-    public ImplementationCategory() {
+    public StandardCategory() {
 
     }
 
-    public ImplementationCategory(String category) {
+    public StandardCategory(String category) {
         this.category = category;
     }
 
+    /* getters and setters */
+
     public UUID getId() {
-        return this.id;
+        return id;
     }
 
     public void setId(UUID id) {
@@ -60,16 +62,17 @@ public class ImplementationCategory {
         this.category = category;
     }
 
-    public List<Implementation> getImplementations() {
-        return implementations;
+    public List<Standard> getStandards() {
+        return standards;
     }
 
-    public void setImplementations(List<Implementation> implementations) {
-        this.implementations = implementations;
+    public void setStandards(List<Standard> standards) {
+        this.standards = standards;
     }
+
+    /* toString method */
 
     public String toString() {
-        return "ImplementationCategory [id=" + id 
-            + ", category=" + category + "]"; 
+        return "StandardCategory [id=" + id + ", category=" + category + "]";
     }
 }
