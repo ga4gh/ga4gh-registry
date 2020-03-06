@@ -29,7 +29,6 @@ public class HibernateQuerier<T> {
         } finally {
             session.close();
         }
-
         return results;
     }
 

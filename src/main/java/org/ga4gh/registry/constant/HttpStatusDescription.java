@@ -4,5 +4,6 @@ public class HttpStatusDescription {
 
     public static final String OK = "Successful Operation";
     public static final String SERVER_ERROR = "Server Error";
+    public static final String INTERNAL_SERVER_ERROR = "Internal Server Error";
 
 }

@@ -62,7 +62,9 @@ dependencies {
     compile 'org.postgresql:postgresql:42.2.10'
     compile 'javax.xml.bind:jaxb-api:2.2.8'
     compile 'com.fasterxml.jackson.core:jackson-core:2.10.2'
+    compile 'com.fasterxml.jackson.core:jackson-annotations:2.10.2'
     compile 'com.fasterxml.jackson.core:jackson-databind:2.10.2'
+    compile 'com.fasterxml.jackson.datatype:jackson-datatype-hibernate4:2.4.4'
     compile 'org.springdoc:springdoc-openapi-ui:1.2.33'
 
     testCompile 'org.springframework.boot:spring-boot-starter-test'
@@ -86,4 +88,3 @@ test {
 bootJar {
     mainClassName = 'org.ga4gh.registry.App'
 }
-

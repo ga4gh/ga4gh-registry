@@ -1,18 +1,24 @@
 package org.ga4gh.registry.model;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import javax.persistence.GeneratedValue;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Null;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import org.ga4gh.registry.util.serializer.OrganizationSerializer;
+
+import org.ga4gh.registry.constant.Ids;
 import org.hibernate.annotations.GenericGenerator;
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -20,7 +26,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @Table(name = "organization")
 @Schema(name = "Organization",
         description = "Organization implementing GA4GH standard(s)")
-@JsonSerialize(using = OrganizationSerializer.class)
 public class Organization {
 
     @Id
@@ -28,7 +33,7 @@ public class Organization {
     @GenericGenerator(name = "UUID",
                       strategy = "org.hibernate.id.UUIDGenerator")
     @Column(name = "id")
-    @Schema(example = "3fa85f64-5717-4562-b3fc-2c963f66afa9")
+    @Schema(example = Ids.SELF_UUID)
     @NotNull
     private UUID id;
 
@@ -48,16 +53,15 @@ public class Organization {
     private String url;
 
     @OneToMany(mappedBy = "organization",
+               fetch = FetchType.LAZY,
                cascade = {CascadeType.PERSIST, CascadeType.MERGE,
                           CascadeType.DETACH, CascadeType.REFRESH})
-    @Schema(required = false)
+    @JsonManagedReference
     private List<Implementation> implementations;
 
     /* constructors */
 
-    public Organization() {
-        
-    }
+    public Organization() {}
 
     public Organization(String name, String shortName, String url) {
         this.name = name;

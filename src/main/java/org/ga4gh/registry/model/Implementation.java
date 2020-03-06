@@ -4,18 +4,18 @@ import java.util.UUID;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import org.ga4gh.registry.util.serializer.ImplementationSerializer;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import org.hibernate.annotations.GenericGenerator;
 
 @Entity
 @Table(name = "implementation")
-@JsonSerialize(using = ImplementationSerializer.class)
 public class Implementation {
 
     @Id
@@ -41,9 +41,11 @@ public class Implementation {
     @Column(name = "description")
     private String description;
 
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE,
+    @ManyToOne(fetch = FetchType.LAZY,
+               cascade = {CascadeType.PERSIST, CascadeType.MERGE,
                           CascadeType.DETACH, CascadeType.REFRESH})
     @JoinColumn(name = "organization_id")
+    @JsonBackReference
     private Organization organization;
 
     @Column(name = "contact_url")
