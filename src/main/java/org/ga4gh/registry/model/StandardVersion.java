@@ -1,5 +1,7 @@
 package org.ga4gh.registry.model;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import java.util.List;
 import java.util.UUID;
 import javax.persistence.CascadeType;
@@ -11,14 +13,15 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import org.ga4gh.registry.util.serializer.StandardVersionSerializer;
 
 @Entity
 @Table(name = "standard_version")
-@JsonSerialize(using = StandardVersionSerializer.class)
+@JsonIdentityInfo(
+    generator = ObjectIdGenerators.PropertyGenerator.class,
+    property = "id"
+)
 public class StandardVersion {
-
+    
     @Id
     @GeneratedValue(generator = "UUID")
     @Column(name = "id")

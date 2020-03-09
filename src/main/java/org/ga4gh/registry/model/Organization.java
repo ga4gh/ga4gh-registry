@@ -1,6 +1,5 @@
 package org.ga4gh.registry.model;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import javax.persistence.GeneratedValue;
@@ -13,11 +12,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Null;
-
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import org.ga4gh.registry.constant.Ids;
 import org.hibernate.annotations.GenericGenerator;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -26,6 +22,10 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @Table(name = "organization")
 @Schema(name = "Organization",
         description = "Organization implementing GA4GH standard(s)")
+@JsonIdentityInfo(
+    generator = ObjectIdGenerators.PropertyGenerator.class,
+    property = "id"
+)
 public class Organization {
 
     @Id
@@ -56,8 +56,8 @@ public class Organization {
                fetch = FetchType.LAZY,
                cascade = {CascadeType.PERSIST, CascadeType.MERGE,
                           CascadeType.DETACH, CascadeType.REFRESH})
-    @JsonManagedReference
     private List<Implementation> implementations;
+    // @JsonManagedReference
 
     /* constructors */
 

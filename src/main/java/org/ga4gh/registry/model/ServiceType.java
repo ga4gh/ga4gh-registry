@@ -1,9 +1,5 @@
 package org.ga4gh.registry.model;
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import org.ga4gh.registry.util.serializer.ServiceTypeSerializer;
-
-// @JsonSerialize(using = ServiceTypeSerializer.class)
 public class ServiceType {
 
     private String group;
@@ -11,6 +7,28 @@ public class ServiceType {
     private String version;
 
     public ServiceType() {}
+
+    public ServiceType(String type) throws InstantiationError {
+        System.out.println("***");
+        System.out.println("the type string is: " + type);
+        String[] components = type.split(":");
+        System.out.println(components.length);
+        System.out.println("***");
+
+        if (components.length != 3)  {
+            throw new InstantiationError(
+                "Could not instantiate ServiceType from 'type' string");
+        }
+
+        setGroup(components[0]);
+        setArtifact(components[1]);
+        setVersion(components[2]);
+
+        if (!getGroup().equals("org.ga4gh")) {
+            throw new InstantiationError(
+                "Invalid type 'group' parameter");
+        }
+    }
 
     public ServiceType(String group, String artifact, String version) {
         setGroup(group);
