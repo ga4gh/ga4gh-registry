@@ -4,7 +4,6 @@ import java.io.IOException;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
-import org.ga4gh.registry.model.Organization;
 import org.ga4gh.registry.model.Standard;
 
 public class StandardShallowSerializer extends JsonSerializer<Standard> {

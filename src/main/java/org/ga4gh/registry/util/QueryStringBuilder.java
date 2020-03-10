@@ -1,7 +1,5 @@
 package org.ga4gh.registry.util;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.StringJoiner;
 
 public class QueryStringBuilder<T> {

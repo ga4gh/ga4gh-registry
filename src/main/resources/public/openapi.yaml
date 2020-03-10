@@ -1,0 +1,123 @@
+openapi: 3.0.0
+info:
+    title: GA4GH Standards and Implementations Registry
+    description: Browse GA4GH standards and associated implementations
+    version: 1.0.0
+    contact:
+        name: GA4GH Dev Team
+        url: https://ga4gh.org
+        email: jeremy.adams@ga4gh.org
+    license:
+        name: Apache 2.0
+        url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+    - url: https://registry.ga4gh.org
+      description: Production API
+paths:
+    /standards:
+        get:
+            tags:
+                - standards
+            summary: List standards
+            description: Get list of all GA4GH standards    
+            responses:
+                200:
+                    description: successful retrieval
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    $ref: '#/components/schemas/Standard'
+                5xx:
+                    $ref: '#/components/responses/5xxServerError'
+    /standards/{standardId}:
+        get:
+            tags:
+                - standards
+            summary: Get standard by Id
+            description: Get all details about a single standard
+            parameters:
+                - $ref: '#/components/parameters/StandardId'
+            responses:
+                200:
+                    description: successful retrieval
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Standard'
+                404:
+                    $ref: '#/components/responses/404NotFoundError'
+                5xx:
+                    $ref: '#/components/responses/5xxServerError'
+
+    /service-info:
+        get:
+            tags:
+                - service info
+            summary: Get service info
+            description: Get all details about this service
+            responses:
+                200:
+                    description: successful retrieval
+                5xx:
+                    $ref: '#/components/responses/5xxServerError'
+
+components:
+    schemas:
+        Standard:
+            type: object
+            properties:
+                id:
+                    type: string
+                    description: unique identifier
+                    example: bffd4855-31c7-4c84-a8c8-b89c7036311c
+                name:
+                    type: string
+                    description: official name
+                    example: htsget
+                artifact:
+                    type: string
+                    description: short, unique name identifying this standard, and services of this type
+                oneliner:
+                    type: string
+                    description: short, single-sentence description of standard
+                    example: Download high-throughput sequencing reads and variants
+                documentationUrl:
+                    type: string
+                    description: url to standard homepage
+                    example: https://github.com/samtools/hts-specs/blob/master/htsget.md
+                category:
+                    type: string
+                    description: broad classification of standard category
+                    enum:
+                        - API
+                        - FileFormat
+                        - Schema
+                        - Policy
+                status:
+                    type: string
+                    description: release status of standard
+                    enum:
+                        - Proposed
+                        - Approved
+                        - Deprecated
+                description:
+                    type: string
+                    description: longer description of standard
+                    example: Download high-throughput sequencing reads and variants via flexible API
+            required:
+                - id
+                - name
+                - artifact
+    parameters:
+        StandardId:
+            in: path
+            name: standardId
+            description: UUID for this standard
+            example: bffd4855-31c7-4c84-a8c8-b89c7036311c
+    responses:
+        404NotFoundError:
+            description: The requested resource could not be located
+        5xxServerError:
+            description: Unspecified server error encountered

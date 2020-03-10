@@ -5,15 +5,9 @@ import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.module.SimpleModule;
-
 import org.ga4gh.registry.annotation.openapi.ApiResponseBadRequest;
 import org.ga4gh.registry.annotation.openapi.ApiResponseNotFound;
 import org.ga4gh.registry.annotation.openapi.ApiResponseServerError;

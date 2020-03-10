@@ -1,13 +1,7 @@
 package org.ga4gh.registry.util;
 
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-
 import com.fasterxml.jackson.databind.module.SimpleModule;
-
-import org.ga4gh.registry.model.Implementation;
 
 public class QuerySerializer<T> {
 
