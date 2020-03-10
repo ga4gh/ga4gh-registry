@@ -1,7 +1,5 @@
 package org.ga4gh.registry.model;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import java.util.List;
 import java.util.UUID;
 import javax.persistence.CascadeType;
@@ -18,10 +16,6 @@ import org.hibernate.annotations.GenericGenerator;
 
 @Entity
 @Table(name="standard")
-@JsonIdentityInfo(
-    generator = ObjectIdGenerators.PropertyGenerator.class,
-    property = "id"
-)
 public class Standard {
 
     @Id

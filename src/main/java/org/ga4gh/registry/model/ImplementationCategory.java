@@ -34,8 +34,6 @@ public class ImplementationCategory {
                         CascadeType.DETACH, CascadeType.REFRESH})
     private List<Implementation> implementations;
 
-    // private Implementation implementation;
-
     public ImplementationCategory() {
 
     }

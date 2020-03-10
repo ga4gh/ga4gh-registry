@@ -5,9 +5,15 @@ import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.module.SimpleModule;
+
 import org.ga4gh.registry.annotation.openapi.ApiResponseBadRequest;
 import org.ga4gh.registry.annotation.openapi.ApiResponseNotFound;
 import org.ga4gh.registry.annotation.openapi.ApiResponseServerError;
@@ -15,11 +21,13 @@ import org.ga4gh.registry.annotation.openapi.ParameterType;
 import org.ga4gh.registry.constant.HttpStatus;
 import org.ga4gh.registry.constant.HttpStatusDescription;
 import org.ga4gh.registry.example.Example;
-import org.ga4gh.registry.exception.BadRequestException;
-import org.ga4gh.registry.exception.ResourceNotFoundException;
 import org.ga4gh.registry.model.Implementation;
 import org.ga4gh.registry.model.ServiceType;
+import org.ga4gh.registry.util.QuerySerializer;
+import org.ga4gh.registry.util.QuerySerializerBuilder;
 import org.ga4gh.registry.util.HibernateQuerier;
+import org.ga4gh.registry.util.serialize.modules.ImplementationShallowSerializerModule;
+import org.ga4gh.registry.util.validate.TypeValidator;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -54,31 +62,25 @@ public class Services {
     @ApiResponseBadRequest
     @ApiResponseServerError
     @GetMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public List<Implementation> getServices(
-        @RequestParam(required = false) String type
-    ) {
+    public String getServices(@RequestParam(required = false) String type) {
+        
+        TypeValidator.validate(type);
 
-        ServiceType serviceType = null;
+        QuerySerializer<Implementation> querySerializer =
+            new QuerySerializerBuilder<>(Implementation.class)
+                .build()
+                .join("standardVersion")
+                .join("implementationCategory")
+                .join("organization")
+                .filter("implementationCategory.category", "APIService")
+                .addModule(new ImplementationShallowSerializerModule());
         if (type != null) {
-            try {
-                serviceType = new ServiceType(type);
-            } catch (InstantiationError e) {
-                throw new BadRequestException(e);
-            }
+            ServiceType serviceType = new ServiceType(type);
+            querySerializer
+                .filter("standardVersion.standard.artifact", serviceType.getArtifact())
+                .filter("standardVersion.versionNumber", serviceType.getVersion());
         }
-
-        String q = 
-            "select i from Implementation i "
-            + "JOIN FETCH i.standardVersion "
-            + "JOIN FETCH i.implementationCategory "
-            + "JOIN FETCH i.organization "
-            + "WHERE i.implementationCategory.category='APIService'";
-        if (serviceType != null) {
-            q += " AND i.standardVersion.standard.artifact = '" + serviceType.getArtifact() + "'";
-            q += " AND i.standardVersion.versionNumber = '" + serviceType.getVersion() + "'";
-        }
-
-        return new HibernateQuerier<>(Implementation.class, q).query();
+        return querySerializer.queryAndSerialize();
     }
 
     @Operation(summary = "Get service by Id",
@@ -104,23 +106,18 @@ public class Services {
     @ApiResponseServerError
     @GetMapping(path = "/{serviceId}",
                 produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public Implementation getServiceById(
+    public String getServiceById(
         @PathVariable("serviceId") String serviceId) {
         
-        String queryString = 
-            "select i from Implementation i "
-            + "JOIN FETCH i.standardVersion "
-            + "JOIN FETCH i.implementationCategory "
-            + "JOIN FETCH i.organization "
-            + "WHERE i.id='" + serviceId + "'";
-        HibernateQuerier<Implementation> querier =
-            new HibernateQuerier<>(Implementation.class, queryString);
-        List<Implementation> implementations = querier.query();
-        if (implementations.size() < 1) {
-            throw new ResourceNotFoundException(
-                "No Service with id: " + serviceId);
-        }
-        return implementations.get(0);
+        return new QuerySerializerBuilder<>(Implementation.class)
+            .build()
+            .join("standardVersion")
+            .join("implementationCategory")
+            .join("organization")
+            .filter("id", serviceId)
+            .singleResult()
+            .addModule(new ImplementationShallowSerializerModule())
+            .queryAndSerialize();
     }
 
     @Operation(summary = "List service types",
@@ -146,16 +143,19 @@ public class Services {
     @GetMapping(path = "/types",
                 produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public Set<ServiceType> getServiceTypes() {
+
+        QuerySerializer<Implementation> querySerializer =
+            new QuerySerializerBuilder<>(Implementation.class)
+                .build()
+                .join("standardVersion")
+                .join("implementationCategory")
+                .join("organization")
+                .filter("implementationCategory.category", "APIService");
         
-        String queryString = 
-            "select i from Implementation i "
-            + "JOIN FETCH i.standardVersion "
-            + "JOIN FETCH i.implementationCategory "
-            + "JOIN FETCH i.organization "
-            + "WHERE i.implementationCategory.category='APIService'";
-        HibernateQuerier<Implementation> querier =
-            new HibernateQuerier<>(Implementation.class, queryString);
-        List<Implementation> implementations = querier.query();
+        HibernateQuerier<Implementation> querier = querySerializer.getHibernateQuerier();
+        String queryString = querySerializer.getQueryStringBuilder().build();
+        querier.setQueryString(queryString);
+        List<Implementation> implementations = querier.getResults();
         Set<ServiceType> serviceTypes = new HashSet<>();
         for (Implementation implementation: implementations) {
             serviceTypes.add(implementation.getServiceType());

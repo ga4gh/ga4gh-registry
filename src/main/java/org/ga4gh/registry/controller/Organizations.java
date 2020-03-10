@@ -1,13 +1,14 @@
 package org.ga4gh.registry.controller;
 
-import java.util.List;
 import org.ga4gh.registry.annotation.openapi.ApiResponseNotFound;
 import org.ga4gh.registry.annotation.openapi.ApiResponseServerError;
 import org.ga4gh.registry.constant.HttpStatus;
 import org.ga4gh.registry.constant.HttpStatusDescription;
 import org.ga4gh.registry.example.Example;
-import org.ga4gh.registry.exception.ResourceNotFoundException;
-import org.ga4gh.registry.util.HibernateQuerier;
+import org.ga4gh.registry.util.QuerySerializerBuilder;
+import org.ga4gh.registry.util.serialize.modules.ImplementationShallowSerializerModule;
+import org.ga4gh.registry.util.serialize.modules.OrganizationDeepSerializerModule;
+import org.ga4gh.registry.util.serialize.modules.OrganizationShallowSerializerModule;
 import org.ga4gh.registry.model.Organization;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -46,9 +47,11 @@ public class Organizations {
     )
     @ApiResponseServerError
     @GetMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public List<Organization> getOrganizations() {
-        String q = "select o from Organization o";            
-        return new HibernateQuerier<>(Organization.class, q).query();
+    public String getOrganizations() {
+        return new QuerySerializerBuilder<>(Organization.class)
+            .build()
+            .addModule(new OrganizationShallowSerializerModule())
+            .queryAndSerialize();
     }
 
     @Operation(
@@ -75,17 +78,16 @@ public class Organizations {
     @ApiResponseServerError
     @GetMapping(path = "/{organizationId}",
                 produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public Organization getOrganizationById(
+    public String getOrganizationById(
         @PathVariable("organizationId") String organizationId) {
         
-        String q = "select o from Organization o "
-                   + "JOIN FETCH o.implementations "
-                   + "WHERE o.id='" + organizationId + "'";
-        List<Organization> organizations = new HibernateQuerier<>(Organization.class, q).query();
-        if (organizations.size() < 1) {
-            throw new ResourceNotFoundException(
-                "No Organization with id: " + organizationId);
-        }
-        return organizations.get(0);
+        return new QuerySerializerBuilder<>(Organization.class)
+            .build()
+            .join("implementations")
+            .filter("id", organizationId)
+            .singleResult()
+            .addModule(new OrganizationDeepSerializerModule())
+            .addModule(new ImplementationShallowSerializerModule())
+            .queryAndSerialize();
     }
 }

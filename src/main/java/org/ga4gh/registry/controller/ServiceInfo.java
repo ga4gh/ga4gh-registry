@@ -1,13 +1,13 @@
 package org.ga4gh.registry.controller;
 
-import java.util.List;
 import org.ga4gh.registry.annotation.openapi.ApiResponseServerError;
 import org.ga4gh.registry.constant.HttpStatus;
 import org.ga4gh.registry.constant.HttpStatusDescription;
 import org.ga4gh.registry.constant.Ids;
 import org.ga4gh.registry.example.Example;
 import org.ga4gh.registry.model.Implementation;
-import org.ga4gh.registry.util.HibernateQuerier;
+import org.ga4gh.registry.util.QuerySerializerBuilder;
+import org.ga4gh.registry.util.serialize.modules.ImplementationShallowSerializerModule;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -44,16 +44,15 @@ public class ServiceInfo {
     )
     @ApiResponseServerError
     @GetMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public Implementation getServiceInfo() {
-        
-        String queryString =
-            "select i from Implementation i "
-            + "JOIN FETCH i.standardVersion "
-            + "JOIN FETCH i.organization "
-            + "WHERE i.id='" + Ids.SELF_UUID + "'";
-        HibernateQuerier<Implementation> querier =
-            new HibernateQuerier<>(Implementation.class, queryString);
-        List<Implementation> implementations = querier.query();
-        return implementations.get(0);
+    public String getServiceInfo() {
+    
+        return new QuerySerializerBuilder<>(Implementation.class)
+            .build()
+            .join("standardVersion")
+            .join("organization")
+            .filter("id", Ids.SELF_UUID)
+            .singleResult()
+            .addModule(new ImplementationShallowSerializerModule())
+            .queryAndSerialize();
     }
 }

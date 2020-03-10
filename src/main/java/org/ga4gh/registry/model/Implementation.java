@@ -10,17 +10,10 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import org.hibernate.annotations.GenericGenerator;
 
 @Entity
 @Table(name = "implementation")
-@JsonIdentityInfo(
-    generator = ObjectIdGenerators.PropertyGenerator.class,
-    property = "id"
-)
 public class Implementation {
 
     @Id
@@ -51,7 +44,6 @@ public class Implementation {
                           CascadeType.DETACH, CascadeType.REFRESH})
     @JoinColumn(name = "organization_id")
     private Organization organization;
-    // @JsonBackReference
 
     @Column(name = "contact_url")
     private String contactUrl;
@@ -197,7 +189,6 @@ public class Implementation {
         this.url = url;
     }
 
-    @JsonProperty("type")
     public ServiceType getServiceType() {
         ServiceType serviceType = new ServiceType();
         if (getStandardVersion() != null) {

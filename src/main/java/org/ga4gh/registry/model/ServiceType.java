@@ -9,17 +9,11 @@ public class ServiceType {
     public ServiceType() {}
 
     public ServiceType(String type) throws InstantiationError {
-        System.out.println("***");
-        System.out.println("the type string is: " + type);
         String[] components = type.split(":");
-        System.out.println(components.length);
-        System.out.println("***");
-
         if (components.length != 3)  {
             throw new InstantiationError(
                 "Could not instantiate ServiceType from 'type' string");
         }
-
         setGroup(components[0]);
         setArtifact(components[1]);
         setVersion(components[2]);

@@ -5,17 +5,14 @@ package org.ga4gh.registry;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
-
 import io.swagger.v3.oas.models.servers.Server;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Contact;
@@ -63,7 +60,7 @@ public class App {
     public Jackson2ObjectMapperBuilder configureObjectMapper() {
         Jackson2ObjectMapperBuilder builder =  new Jackson2ObjectMapperBuilder();
         builder.modulesToInstall(Hibernate4Module.class);
-        // builder.serializationInclusion(JsonInclude.Include.NON_NULL);
+        builder.serializationInclusion(JsonInclude.Include.NON_NULL);
         return builder;
     }
 }

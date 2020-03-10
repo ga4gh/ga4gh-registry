@@ -1,21 +1,20 @@
 package org.ga4gh.registry.controller;
 
-import java.util.List;
-
 import org.ga4gh.registry.annotation.openapi.ApiResponseNotFound;
 import org.ga4gh.registry.annotation.openapi.ApiResponseServerError;
 import org.ga4gh.registry.constant.HttpStatus;
 import org.ga4gh.registry.constant.HttpStatusDescription;
 import org.ga4gh.registry.example.Example;
-import org.ga4gh.registry.exception.ResourceNotFoundException;
 import org.ga4gh.registry.model.Standard;
-import org.ga4gh.registry.util.HibernateQuerier;
+import org.ga4gh.registry.util.QuerySerializerBuilder;
+import org.ga4gh.registry.util.serialize.modules.ReleaseStatusSerializerModule;
+import org.ga4gh.registry.util.serialize.modules.StandardCategorySerializerModule;
+import org.ga4gh.registry.util.serialize.modules.StandardShallowSerializerModule;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
@@ -47,14 +46,17 @@ public class Standards {
     )
     @ApiResponseServerError
     @GetMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public List<Standard> getStandards() {
+    public String getStandards() {
 
-        String queryString = 
-        "select distinct s from Standard s "
-        + "JOIN FETCH s.standardCategory "
-        + "JOIN FETCH s.releaseStatus "
-        + "JOIN FETCH s.standardVersions";
-        return new HibernateQuerier<>(Standard.class, queryString).query();
+        return new QuerySerializerBuilder<>(Standard.class)
+            .build()
+            .join("standardCategory")
+            .join("releaseStatus")
+            .join("standardVersions")
+            .addModule(new StandardShallowSerializerModule())
+            .addModule(new StandardCategorySerializerModule())
+            .addModule(new ReleaseStatusSerializerModule())
+            .queryAndSerialize();
     }
 
     @Operation(summary = "Get standard by Id",
@@ -80,21 +82,18 @@ public class Standards {
     @ApiResponseServerError
     @GetMapping(path = "/{standardId}",
                 produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public Standard getStandardById(@PathVariable("standardId") String standardId) {
+    public String getStandardById(@PathVariable("standardId") String standardId) {
 
-        String queryString = 
-            "select s from Standard s "
-            + "JOIN FETCH s.standardCategory "
-            + "JOIN FETCH s.releaseStatus "
-            + "JOIN FETCH s.standardVersions "
-            + "WHERE s.id='" + standardId + "'";
-        HibernateQuerier<Standard> querier =
-            new HibernateQuerier<>(Standard.class, queryString);
-        List<Standard> standards = querier.query();
-        if (standards.size() < 1) {
-            throw new ResourceNotFoundException(
-                "No Standard with id: " + standardId);
-        }
-        return standards.get(0);
+        return new QuerySerializerBuilder<>(Standard.class)
+            .build()
+            .join("standardCategory")
+            .join("releaseStatus")
+            .join("standardVersions")
+            .filter("id", standardId)
+            .singleResult()
+            .addModule(new StandardShallowSerializerModule())
+            .addModule(new StandardCategorySerializerModule())
+            .addModule(new ReleaseStatusSerializerModule())
+            .queryAndSerialize();
     }
 }
