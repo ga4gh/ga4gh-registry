@@ -16,6 +16,10 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
 @Table(name = "implementation")
+@JsonIdentityInfo(
+    generator = ObjectIdGenerators.PropertyGenerator.class,
+    property = "id"
+)
 public class Implementation {
 
     @Id
@@ -45,8 +49,8 @@ public class Implementation {
                cascade = {CascadeType.PERSIST, CascadeType.MERGE,
                           CascadeType.DETACH, CascadeType.REFRESH})
     @JoinColumn(name = "organization_id")
-    @JsonBackReference
     private Organization organization;
+    // @JsonBackReference
 
     @Column(name = "contact_url")
     private String contactUrl;
@@ -192,6 +196,7 @@ public class Implementation {
         this.url = url;
     }
 
+    @JsonProperty("type")
     public ServiceType getServiceType() {
         ServiceType serviceType = new ServiceType();
         if (getStandardVersion() != null) {

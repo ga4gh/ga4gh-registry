@@ -1,10 +1,9 @@
 package org.ga4gh.registry.model;
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import java.util.List;
 import java.util.UUID;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -15,12 +14,14 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import org.ga4gh.registry.util.serializer.StandardSerializer;
 import org.hibernate.annotations.GenericGenerator;
 
 @Entity
 @Table(name="standard")
-@JsonSerialize(using = StandardSerializer.class)
+@JsonIdentityInfo(
+    generator = ObjectIdGenerators.PropertyGenerator.class,
+    property = "id"
+)
 public class Standard {
 
     @Id

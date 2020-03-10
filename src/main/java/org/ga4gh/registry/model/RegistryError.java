@@ -6,22 +6,22 @@ import io.swagger.v3.oas.annotations.media.Schema;
         description = "Error encountered while using registry API")
 public class RegistryError {
 
-    private int responseCode;
+    private int status;
     private String message;
 
     public RegistryError() {}
 
-    public RegistryError(int responseCode, String message) {
-        setResponseCode(responseCode);
+    public RegistryError(int status, String message) {
+        setStatus(status);
         setMessage(message);
     }
 
-    public int getResponseCode() {
-        return responseCode;
+    public int getStatus() {
+        return status;
     }
 
-    public void setResponseCode(int responseCode) {
-        this.responseCode = responseCode;
+    public void setStatus(int status) {
+        this.status = status;
     }
 
     public String getMessage() {
@@ -33,7 +33,7 @@ public class RegistryError {
     }
 
     public String toString() {
-        return "RegistryError [responseCode=" + getResponseCode() 
+        return "RegistryError [status=" + getStatus() 
             + ", message=" + getMessage() + "]";
     }
 }
