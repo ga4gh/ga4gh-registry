@@ -1,5 +1,6 @@
 package org.ga4gh.registry.model;
 
+
 public class ServiceType {
 
     private String group;
