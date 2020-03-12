@@ -4,9 +4,9 @@
 
 ## Usage
 
-Run Spring Boot application:
+Run Spring Boot application with externalized properies file:
 ```
-./gradlew bootRun
+./gradlew bootRun --args="--spring.config.location=file:./config/test.application.properties"
 ```
 
 Execute tests:

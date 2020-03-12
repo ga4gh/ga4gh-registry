@@ -5,23 +5,18 @@ package org.ga4gh.registry;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.context.ConfigurableApplicationContext;
 
 @SpringBootApplication
-@Configuration
 public class App {
+
+    private static ConfigurableApplicationContext context;
     
     public static void main(String[] args) {
-        SpringApplication.run(App.class, args);
+        context = SpringApplication.run(App.class, args);
     }
 
-    /*
-    @Bean
-    public Jackson2ObjectMapperBuilder configureObjectMapper() {
-        Jackson2ObjectMapperBuilder builder =  new Jackson2ObjectMapperBuilder();
-        builder.modulesToInstall(Hibernate4Module.class);
-        builder.serializationInclusion(JsonInclude.Include.NON_NULL);
-        return builder;
+    public static ConfigurableApplicationContext getContext() {
+        return context;
     }
-    */
 }

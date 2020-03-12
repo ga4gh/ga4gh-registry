@@ -50,7 +50,6 @@ paths:
                     $ref: '#/components/responses/404NotFoundError'
                 5xx:
                     $ref: '#/components/responses/5xxServerError'
-
     /service-info:
         get:
             tags:
@@ -60,9 +59,105 @@ paths:
             responses:
                 200:
                     description: successful retrieval
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Service'
                 5xx:
                     $ref: '#/components/responses/5xxServerError'
-
+    /services:
+        get:
+            tags:
+                - services
+            summary: Get list of services
+            description: List all known web services matching search criteria
+            parameters:
+                - $ref: '#/components/parameters/Type'
+            responses:
+                200:
+                    description: successful retrieval
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    $ref: '#/components/schemas/Service'
+                400:
+                    $ref: '#/components/responses/400BadRequestError'
+                5xx:
+                    $ref: '#/components/responses/5xxServerError'
+    /services/{serviceId}:
+        get:
+            tags:
+                - services
+            summary: Get service by Id
+            description: Get all details about a single service
+            parameters:
+                - $ref: '#/components/parameters/ServiceId'
+            responses:
+                200:
+                    description: successful retrieval
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Service'
+                404:
+                    $ref: '#/components/responses/404NotFoundError'
+                5xx:
+                    $ref: '#/components/responses/5xxServerError'
+    /services/types:
+        get:
+            tags:
+                - services
+            summary: List service types
+            description: Get list of all implemented service types in the registry
+            responses:
+                200:
+                    description: successful retrieval
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    $ref: '#/components/schemas/ServiceType'
+                5xx:
+                    $ref: '#/components/responses/5xxServerError'
+    /organizations:
+        get:
+            tags:
+                - organizations
+            summary: List organizations
+            description: Get list of organizations implementing GA4GH standards
+            responses:
+                200:
+                    description: successful retrieval
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    $ref: '#/components/schemas/Organization'
+                5xx:
+                    $ref: '#/components/responses/5xxServerError'
+    /organizations/{organizationId}:
+        get:
+            tags:
+                - organizations
+            summary: Get organization by Id
+            description: Get all details about a single organization implementing GA4GH standards
+            parameters:
+                - $ref: '#/components/parameters/OrganizationId'
+            responses:
+                200:
+                    description: successful retrieval
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Organization'
+                404:
+                    $ref: '#/components/responses/404NotFoundError'
+                5xx:
+                    $ref: '#/components/responses/5xxServerError'
 components:
     schemas:
         Standard:
@@ -110,13 +205,59 @@ components:
                 - id
                 - name
                 - artifact
+        Service:
+            allOf:
+                - $ref: 'https://raw.githubusercontent.com/ga4gh-discovery/ga4gh-service-registry/develop/service-registry.yaml#/components/schemas/ExternalService'
+        ServiceType:
+            allOf:
+                - $ref: 'https://raw.githubusercontent.com/ga4gh-discovery/ga4gh-service-info/develop/service-info.yaml#/components/schemas/ServiceType'
+        Organization:
+            type: object
+            properties:
+                id:
+                    type: string
+                    description: unique identifier for this organization
+                    example: f3cfc0d2-e9bd-4b26-a856-0d2b2f47d1f4
+                name:
+                    type: string
+                    description: organization full name
+                    example: Global Alliance for Genomics and Health
+                shortName:
+                    type: string
+                    description: organization short name (abbreviation or acronym)
+                    example: GA4GH
+                url:
+                    type: string
+                    description: Organization's home page
+                    example: https://ga4gh.org
+            required:
+                - id
+                - name
+                - url
     parameters:
         StandardId:
             in: path
             name: standardId
             description: UUID for this standard
             example: bffd4855-31c7-4c84-a8c8-b89c7036311c
+        ServiceId:
+            in: path
+            name: serviceId
+            description: UUID for this web service
+            example: 7893404d-7b73-4983-9891-89023c8a34fa
+        OrganizationId:
+            in: path
+            name: organizationId
+            description: UUID for this organization
+            example: f3cfc0d2-e9bd-4b26-a856-0d2b2f47d1f4
+        Type:
+            in: query
+            name: type
+            description: Filter services/implementations by ServiceType (the standard they implement). Serialized as 'GROUP:ARTIFACT:VERSION'
+            example: org.ga4gh:beacon:1.0.0
     responses:
+        400BadRequestError:
+            description: The service could not complete your request. One or more request parameters were likely malformed
         404NotFoundError:
             description: The requested resource could not be located
         5xxServerError:

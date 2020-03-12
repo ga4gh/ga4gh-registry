@@ -15,7 +15,7 @@ public class ServiceInfo {
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public String getServiceInfo() {
-    
+
         return new QuerySerializerBuilder<>(Implementation.class)
             .build()
             .join("standardVersion")
