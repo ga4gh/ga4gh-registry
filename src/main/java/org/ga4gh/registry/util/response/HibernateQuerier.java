@@ -1,10 +1,11 @@
-package org.ga4gh.registry.util;
+package org.ga4gh.registry.util.response;
 
 import java.util.List;
 import javax.persistence.PersistenceException;
 import org.hibernate.query.Query;
 import org.ga4gh.registry.exception.BadRequestException;
 import org.ga4gh.registry.exception.ResourceNotFoundException;
+import org.ga4gh.registry.util.HibernateUtil;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 

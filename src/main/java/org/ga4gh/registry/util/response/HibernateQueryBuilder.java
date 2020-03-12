@@ -1,15 +1,15 @@
-package org.ga4gh.registry.util;
+package org.ga4gh.registry.util.response;
 
 import java.util.StringJoiner;
 
-public class QueryStringBuilder<T> {
+public class HibernateQueryBuilder<T> {
 
     private Class<T> responseClass;
     private StringBuffer startBuffer;
     private StringBuffer joinBuffer;
     private StringJoiner filterBuffer;
 
-    public QueryStringBuilder(Class<T> responseClass) {
+    public HibernateQueryBuilder(Class<T> responseClass) {
         this.responseClass = responseClass;
         startBuffer = new StringBuffer();
         joinBuffer = new StringBuffer();

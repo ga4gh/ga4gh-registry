@@ -1,8 +1,7 @@
-package org.ga4gh.registry.util;
+package org.ga4gh.registry.util.response;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;

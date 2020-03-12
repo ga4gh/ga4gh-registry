@@ -5,9 +5,9 @@ import java.util.List;
 import java.util.Set;
 import org.ga4gh.registry.model.Implementation;
 import org.ga4gh.registry.model.ServiceType;
-import org.ga4gh.registry.util.QuerySerializer;
-import org.ga4gh.registry.util.QuerySerializerBuilder;
-import org.ga4gh.registry.util.HibernateQuerier;
+import org.ga4gh.registry.util.response.HibernateQuerier;
+import org.ga4gh.registry.util.response.ResponseCreator;
+import org.ga4gh.registry.util.response.ResponseCreatorBuilder;
 import org.ga4gh.registry.util.serialize.modules.ImplementationShallowSerializerModule;
 import org.ga4gh.registry.util.validate.TypeValidator;
 import org.springframework.http.MediaType;
@@ -25,22 +25,23 @@ public class Services {
     public String getServices(@RequestParam(required = false) String type) {
         
         TypeValidator.validate(type);
-
-        QuerySerializer<Implementation> querySerializer =
-            new QuerySerializerBuilder<>(Implementation.class)
-                .build()
-                .join("standardVersion")
-                .join("implementationCategory")
-                .join("organization")
-                .filter("implementationCategory.category", "APIService")
+        ResponseCreatorBuilder<Implementation> builder =
+            new ResponseCreatorBuilder<>(Implementation.class)
+                .joinData("standardVersion")
+                .joinData("implementationCategory")
+                .joinData("organization")
+                .filterData("implementationCategory.category", "APIService")
                 .addModule(new ImplementationShallowSerializerModule());
         if (type != null) {
             ServiceType serviceType = new ServiceType(type);
-            querySerializer
-                .filter("standardVersion.standard.artifact", serviceType.getArtifact())
-                .filter("standardVersion.versionNumber", serviceType.getVersion());
+            builder
+                .filterData("standardVersion.standard.artifact", serviceType.getArtifact())
+                .filterData("standardVersion.versionNumber", serviceType.getVersion());
         }
-        return querySerializer.queryAndSerialize();
+        return builder
+            .buildResponseCreator()
+            .buildResponse()
+            .getResponse();
     }
 
     @GetMapping(path = "/{serviceId}",
@@ -48,32 +49,33 @@ public class Services {
     public String getServiceById(
         @PathVariable("serviceId") String serviceId) {
         
-        return new QuerySerializerBuilder<>(Implementation.class)
-            .build()
-            .join("standardVersion")
-            .join("implementationCategory")
-            .join("organization")
-            .filter("id", serviceId)
+        return new ResponseCreatorBuilder<>(Implementation.class)
+            .joinData("standardVersion")
+            .joinData("implementationCategory")
+            .joinData("organization")
+            .filterData("id", serviceId)
             .singleResult()
             .addModule(new ImplementationShallowSerializerModule())
-            .queryAndSerialize();
+            .buildResponseCreator()
+            .buildResponse()
+            .getResponse();
     }
 
     @GetMapping(path = "/types",
                 produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public Set<ServiceType> getServiceTypes() {
-
-        QuerySerializer<Implementation> querySerializer =
-            new QuerySerializerBuilder<>(Implementation.class)
-                .build()
-                .join("standardVersion")
-                .join("implementationCategory")
-                .join("organization")
-                .filter("implementationCategory.category", "APIService");
         
-        HibernateQuerier<Implementation> querier = querySerializer.getHibernateQuerier();
-        String queryString = querySerializer.getQueryStringBuilder().build();
-        querier.setQueryString(queryString);
+        ResponseCreator<Implementation> creator =
+            new ResponseCreatorBuilder<>(Implementation.class)
+                .joinData("standardVersion")
+                .joinData("implementationCategory")
+                .joinData("organization")
+                .filterData("implementationCategory.category", "APIService")
+                .buildResponseCreator();
+        HibernateQuerier<Implementation> querier =
+            creator.getHibernateQuerier();
+        String query = creator.getHibernateQueryBuilder().build();
+        querier.setQueryString(query);
         List<Implementation> implementations = querier.getResults();
         Set<ServiceType> serviceTypes = new HashSet<>();
         for (Implementation implementation: implementations) {

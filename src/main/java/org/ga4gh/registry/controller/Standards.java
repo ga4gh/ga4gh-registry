@@ -1,7 +1,7 @@
 package org.ga4gh.registry.controller;
 
 import org.ga4gh.registry.model.Standard;
-import org.ga4gh.registry.util.QuerySerializerBuilder;
+import org.ga4gh.registry.util.response.ResponseCreatorBuilder;
 import org.ga4gh.registry.util.serialize.modules.ReleaseStatusSerializerModule;
 import org.ga4gh.registry.util.serialize.modules.StandardCategorySerializerModule;
 import org.ga4gh.registry.util.serialize.modules.StandardShallowSerializerModule;
@@ -18,31 +18,32 @@ public class Standards {
     @GetMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public String getStandards() {
 
-        return new QuerySerializerBuilder<>(Standard.class)
-            .build()
-            .join("standardCategory")
-            .join("releaseStatus")
-            .join("standardVersions")
+        return new ResponseCreatorBuilder<>(Standard.class)
+            .joinData("standardCategory")
+            .joinData("releaseStatus")
+            .joinData("standardVersions")
             .addModule(new StandardShallowSerializerModule())
             .addModule(new StandardCategorySerializerModule())
             .addModule(new ReleaseStatusSerializerModule())
-            .queryAndSerialize();
+            .buildResponseCreator()
+            .buildResponse()
+            .getResponse();
     }
 
     @GetMapping(path = "/{standardId}",
                 produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public String getStandardById(@PathVariable("standardId") String standardId) {
-
-        return new QuerySerializerBuilder<>(Standard.class)
-            .build()
-            .join("standardCategory")
-            .join("releaseStatus")
-            .join("standardVersions")
-            .filter("id", standardId)
+        return new ResponseCreatorBuilder<>(Standard.class)
+            .joinData("standardCategory")
+            .joinData("releaseStatus")
+            .joinData("standardVersions")
+            .filterData("id", standardId)
             .singleResult()
             .addModule(new StandardShallowSerializerModule())
             .addModule(new StandardCategorySerializerModule())
             .addModule(new ReleaseStatusSerializerModule())
-            .queryAndSerialize();
+            .buildResponseCreator()
+            .buildResponse()
+            .getResponse();
     }
 }

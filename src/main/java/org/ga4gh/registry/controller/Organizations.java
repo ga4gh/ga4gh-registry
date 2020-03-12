@@ -1,6 +1,6 @@
 package org.ga4gh.registry.controller;
 
-import org.ga4gh.registry.util.QuerySerializerBuilder;
+import org.ga4gh.registry.util.response.ResponseCreatorBuilder;
 import org.ga4gh.registry.util.serialize.modules.ImplementationShallowSerializerModule;
 import org.ga4gh.registry.util.serialize.modules.OrganizationDeepSerializerModule;
 import org.ga4gh.registry.util.serialize.modules.OrganizationShallowSerializerModule;
@@ -17,24 +17,27 @@ public class Organizations {
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public String getOrganizations() {
-        return new QuerySerializerBuilder<>(Organization.class)
-            .build()
+
+        return new ResponseCreatorBuilder<>(Organization.class)
             .addModule(new OrganizationShallowSerializerModule())
-            .queryAndSerialize();
+            .buildResponseCreator()
+            .buildResponse()
+            .getResponse();
     }
 
     @GetMapping(path = "/{organizationId}",
                 produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public String getOrganizationById(
         @PathVariable("organizationId") String organizationId) {
-        
-        return new QuerySerializerBuilder<>(Organization.class)
-            .build()
-            .join("implementations")
-            .filter("id", organizationId)
+
+        return new ResponseCreatorBuilder<>(Organization.class)
+            .joinData("implementations")
+            .filterData("id", organizationId)
             .singleResult()
             .addModule(new OrganizationDeepSerializerModule())
             .addModule(new ImplementationShallowSerializerModule())
-            .queryAndSerialize();
+            .buildResponseCreator()
+            .buildResponse()
+            .getResponse();
     }
 }
