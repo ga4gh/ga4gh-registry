@@ -4,7 +4,8 @@ import org.ga4gh.registry.model.Standard;
 import org.ga4gh.registry.util.response.ResponseCreatorBuilder;
 import org.ga4gh.registry.util.serialize.modules.ReleaseStatusSerializerModule;
 import org.ga4gh.registry.util.serialize.modules.StandardCategorySerializerModule;
-import org.ga4gh.registry.util.serialize.modules.StandardShallowSerializerModule;
+import org.ga4gh.registry.util.serialize.modules.StandardSerializerModule;
+import org.ga4gh.registry.util.serialize.modules.StandardVersionSerializerModule;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,7 +23,7 @@ public class Standards {
             .joinData("standardCategory")
             .joinData("releaseStatus")
             .joinData("standardVersions")
-            .addModule(new StandardShallowSerializerModule())
+            .addModule(new StandardSerializerModule())
             .addModule(new StandardCategorySerializerModule())
             .addModule(new ReleaseStatusSerializerModule())
             .buildResponseCreator()
@@ -39,7 +40,8 @@ public class Standards {
             .joinData("standardVersions")
             .filterData("id", standardId)
             .singleResult()
-            .addModule(new StandardShallowSerializerModule())
+            .addModule(new StandardSerializerModule(true))
+            .addModule(new StandardVersionSerializerModule())
             .addModule(new StandardCategorySerializerModule())
             .addModule(new ReleaseStatusSerializerModule())
             .buildResponseCreator()

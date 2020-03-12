@@ -3,7 +3,8 @@ package org.ga4gh.registry.controller;
 import org.ga4gh.registry.constant.Ids;
 import org.ga4gh.registry.model.Implementation;
 import org.ga4gh.registry.util.response.ResponseCreatorBuilder;
-import org.ga4gh.registry.util.serialize.modules.ImplementationShallowSerializerModule;
+import org.ga4gh.registry.util.serialize.modules.ImplementationSerializerModule;
+import org.ga4gh.registry.util.serialize.modules.OrganizationSerializerModule;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,7 +22,8 @@ public class ServiceInfo {
             .joinData("organization")
             .filterData("id", Ids.SELF_UUID)
             .singleResult()
-            .addModule(new ImplementationShallowSerializerModule())
+            .addModule(new ImplementationSerializerModule(true))
+            .addModule(new OrganizationSerializerModule())
             .buildResponseCreator()
             .buildResponse()
             .getResponse();

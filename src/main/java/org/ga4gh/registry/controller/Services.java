@@ -8,7 +8,8 @@ import org.ga4gh.registry.model.ServiceType;
 import org.ga4gh.registry.util.response.HibernateQuerier;
 import org.ga4gh.registry.util.response.ResponseCreator;
 import org.ga4gh.registry.util.response.ResponseCreatorBuilder;
-import org.ga4gh.registry.util.serialize.modules.ImplementationShallowSerializerModule;
+import org.ga4gh.registry.util.serialize.modules.ImplementationSerializerModule;
+import org.ga4gh.registry.util.serialize.modules.OrganizationSerializerModule;
 import org.ga4gh.registry.util.validate.TypeValidator;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,7 +32,8 @@ public class Services {
                 .joinData("implementationCategory")
                 .joinData("organization")
                 .filterData("implementationCategory.category", "APIService")
-                .addModule(new ImplementationShallowSerializerModule());
+                .addModule(new ImplementationSerializerModule())
+                .addModule(new OrganizationSerializerModule());
         if (type != null) {
             ServiceType serviceType = new ServiceType(type);
             builder
@@ -55,7 +57,8 @@ public class Services {
             .joinData("organization")
             .filterData("id", serviceId)
             .singleResult()
-            .addModule(new ImplementationShallowSerializerModule())
+            .addModule(new ImplementationSerializerModule(true))
+            .addModule(new OrganizationSerializerModule())
             .buildResponseCreator()
             .buildResponse()
             .getResponse();

@@ -14,7 +14,7 @@ public class HibernateQueryBuilder<T> {
         startBuffer = new StringBuffer();
         joinBuffer = new StringBuffer();
         filterBuffer = new StringJoiner(" AND ");
-        startBuffer.append("select a from " + this.responseClass.getName() + " a ");
+        startBuffer.append("select distinct a from " + this.responseClass.getName() + " a ");
     }
 
     public void join(String property) {

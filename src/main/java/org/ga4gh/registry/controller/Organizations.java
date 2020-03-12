@@ -1,9 +1,8 @@
 package org.ga4gh.registry.controller;
 
 import org.ga4gh.registry.util.response.ResponseCreatorBuilder;
-import org.ga4gh.registry.util.serialize.modules.ImplementationShallowSerializerModule;
-import org.ga4gh.registry.util.serialize.modules.OrganizationDeepSerializerModule;
-import org.ga4gh.registry.util.serialize.modules.OrganizationShallowSerializerModule;
+import org.ga4gh.registry.util.serialize.modules.ImplementationSerializerModule;
+import org.ga4gh.registry.util.serialize.modules.OrganizationSerializerModule;
 import org.ga4gh.registry.model.Organization;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,7 +18,7 @@ public class Organizations {
     public String getOrganizations() {
 
         return new ResponseCreatorBuilder<>(Organization.class)
-            .addModule(new OrganizationShallowSerializerModule())
+            .addModule(new OrganizationSerializerModule())
             .buildResponseCreator()
             .buildResponse()
             .getResponse();
@@ -34,8 +33,8 @@ public class Organizations {
             .joinData("implementations")
             .filterData("id", organizationId)
             .singleResult()
-            .addModule(new OrganizationDeepSerializerModule())
-            .addModule(new ImplementationShallowSerializerModule())
+            .addModule(new OrganizationSerializerModule(true))
+            .addModule(new ImplementationSerializerModule())
             .buildResponseCreator()
             .buildResponse()
             .getResponse();

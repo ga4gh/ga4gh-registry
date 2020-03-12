@@ -6,11 +6,8 @@ import org.ga4gh.registry.util.serialize.serializers.ReleaseStatusSerializer;
 
 public class ReleaseStatusSerializerModule extends SimpleModule {
 
-    /**
-     *
-     */
     private static final long serialVersionUID = 1L;
-    private static final String NAME = "StandardCategorySerializerModule";
+    private static final String NAME = "ReleaseStatusSerializerModule";
 
     public ReleaseStatusSerializerModule() {
         super(NAME);
