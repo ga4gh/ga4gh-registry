@@ -17,19 +17,19 @@ SET client_min_messages = warning;
 SET row_security = off;
 
 --
--- Name: ga4gh_schema; Type: SCHEMA; Schema: -; Owner: ga4gh_db_writer
+-- Name: test_schema; Type: SCHEMA; Schema: -; Owner: test_user
 --
 
-CREATE SCHEMA ga4gh_schema;
+CREATE SCHEMA test_schema;
 
 
-ALTER SCHEMA ga4gh_schema OWNER TO ga4gh_db_writer;
+ALTER SCHEMA test_schema OWNER TO test_user;
 
 --
 -- Name: uuid-ossp; Type: EXTENSION; Schema: -; Owner: 
 --
 
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp" WITH SCHEMA ga4gh_schema;
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp" WITH SCHEMA test_schema;
 
 
 --
@@ -44,11 +44,11 @@ SET default_tablespace = '';
 SET default_with_oids = false;
 
 --
--- Name: implementation; Type: TABLE; Schema: ga4gh_schema; Owner: ga4gh_db_writer
+-- Name: implementation; Type: TABLE; Schema: test_schema; Owner: test_user
 --
 
-CREATE TABLE ga4gh_schema.implementation (
-    id uuid DEFAULT ga4gh_schema.uuid_generate_v4() NOT NULL,
+CREATE TABLE test_schema.implementation (
+    id uuid DEFAULT test_schema.uuid_generate_v4() NOT NULL,
     standard_version_id uuid NOT NULL,
     implementation_category_id uuid NOT NULL,
     name text NOT NULL,
@@ -64,52 +64,52 @@ CREATE TABLE ga4gh_schema.implementation (
 );
 
 
-ALTER TABLE ga4gh_schema.implementation OWNER TO ga4gh_db_writer;
+ALTER TABLE test_schema.implementation OWNER TO test_user;
 
 --
--- Name: implementation_category; Type: TABLE; Schema: ga4gh_schema; Owner: ga4gh_db_writer
+-- Name: implementation_category; Type: TABLE; Schema: test_schema; Owner: test_user
 --
 
-CREATE TABLE ga4gh_schema.implementation_category (
-    id uuid DEFAULT ga4gh_schema.uuid_generate_v4() NOT NULL,
+CREATE TABLE test_schema.implementation_category (
+    id uuid DEFAULT test_schema.uuid_generate_v4() NOT NULL,
     category text NOT NULL
 );
 
 
-ALTER TABLE ga4gh_schema.implementation_category OWNER TO ga4gh_db_writer;
+ALTER TABLE test_schema.implementation_category OWNER TO test_user;
 
 --
--- Name: organization; Type: TABLE; Schema: ga4gh_schema; Owner: ga4gh_db_writer
+-- Name: organization; Type: TABLE; Schema: test_schema; Owner: test_user
 --
 
-CREATE TABLE ga4gh_schema.organization (
-    id uuid DEFAULT ga4gh_schema.uuid_generate_v4() NOT NULL,
+CREATE TABLE test_schema.organization (
+    id uuid DEFAULT test_schema.uuid_generate_v4() NOT NULL,
     name text NOT NULL,
     short_name text,
     url text NOT NULL
 );
 
 
-ALTER TABLE ga4gh_schema.organization OWNER TO ga4gh_db_writer;
+ALTER TABLE test_schema.organization OWNER TO test_user;
 
 --
--- Name: release_status; Type: TABLE; Schema: ga4gh_schema; Owner: ga4gh_db_writer
+-- Name: release_status; Type: TABLE; Schema: test_schema; Owner: test_user
 --
 
-CREATE TABLE ga4gh_schema.release_status (
-    id uuid DEFAULT ga4gh_schema.uuid_generate_v4() NOT NULL,
+CREATE TABLE test_schema.release_status (
+    id uuid DEFAULT test_schema.uuid_generate_v4() NOT NULL,
     status text NOT NULL
 );
 
 
-ALTER TABLE ga4gh_schema.release_status OWNER TO ga4gh_db_writer;
+ALTER TABLE test_schema.release_status OWNER TO test_user;
 
 --
--- Name: standard; Type: TABLE; Schema: ga4gh_schema; Owner: ga4gh_db_writer
+-- Name: standard; Type: TABLE; Schema: test_schema; Owner: test_user
 --
 
-CREATE TABLE ga4gh_schema.standard (
-    id uuid DEFAULT ga4gh_schema.uuid_generate_v4() NOT NULL,
+CREATE TABLE test_schema.standard (
+    id uuid DEFAULT test_schema.uuid_generate_v4() NOT NULL,
     name text NOT NULL,
     standard_category_id uuid NOT NULL,
     oneliner text NOT NULL,
@@ -120,26 +120,26 @@ CREATE TABLE ga4gh_schema.standard (
 );
 
 
-ALTER TABLE ga4gh_schema.standard OWNER TO ga4gh_db_writer;
+ALTER TABLE test_schema.standard OWNER TO test_user;
 
 --
--- Name: standard_category; Type: TABLE; Schema: ga4gh_schema; Owner: ga4gh_db_writer
+-- Name: standard_category; Type: TABLE; Schema: test_schema; Owner: test_user
 --
 
-CREATE TABLE ga4gh_schema.standard_category (
-    id uuid DEFAULT ga4gh_schema.uuid_generate_v4() NOT NULL,
+CREATE TABLE test_schema.standard_category (
+    id uuid DEFAULT test_schema.uuid_generate_v4() NOT NULL,
     category text NOT NULL
 );
 
 
-ALTER TABLE ga4gh_schema.standard_category OWNER TO ga4gh_db_writer;
+ALTER TABLE test_schema.standard_category OWNER TO test_user;
 
 --
--- Name: standard_version; Type: TABLE; Schema: ga4gh_schema; Owner: ga4gh_db_writer
+-- Name: standard_version; Type: TABLE; Schema: test_schema; Owner: test_user
 --
 
-CREATE TABLE ga4gh_schema.standard_version (
-    id uuid DEFAULT ga4gh_schema.uuid_generate_v4() NOT NULL,
+CREATE TABLE test_schema.standard_version (
+    id uuid DEFAULT test_schema.uuid_generate_v4() NOT NULL,
     standard_id uuid NOT NULL,
     version_number text NOT NULL,
     documentation_url text NOT NULL,
@@ -147,13 +147,13 @@ CREATE TABLE ga4gh_schema.standard_version (
 );
 
 
-ALTER TABLE ga4gh_schema.standard_version OWNER TO ga4gh_db_writer;
+ALTER TABLE test_schema.standard_version OWNER TO test_user;
 
 --
--- Data for Name: implementation; Type: TABLE DATA; Schema: ga4gh_schema; Owner: ga4gh_db_writer
+-- Data for Name: implementation; Type: TABLE DATA; Schema: test_schema; Owner: test_user
 --
 
-COPY ga4gh_schema.implementation (id, standard_version_id, implementation_category_id, name, description, organization_id, contact_url, documentation_url, created_at, updated_at, environment, version, url) FROM stdin;
+COPY test_schema.implementation (id, standard_version_id, implementation_category_id, name, description, organization_id, contact_url, documentation_url, created_at, updated_at, environment, version, url) FROM stdin;
 a25ff2a4-9233-4192-a029-1a6b69f6aff6	9da4ec68-19ca-4603-9d0c-ad62c8e56796	de7fe9c3-2a40-4dc8-bd58-fcda4b705b04	GA4GH htsget Reference Implementation	Davids htsget implementation using Tabula Muris dataset	f3cfc0d2-e9bd-4b26-a856-0d2b2f47d1f4	jeremy.adams@ga4gh.org	https://htsget.ga4gh.org/	\N	\N	production	1.0.0	https://htsget.ga4gh.org/
 d6adc4c4-919a-4093-a089-b55bacfe3216	efe59fb4-1522-4ddc-9a4e-f1e5dfb52189	de7fe9c3-2a40-4dc8-bd58-fcda4b705b04	Caltech RNAget Reference Implementation	RNAget implementation serving compliance test dataset	c176bd06-c5a1-43ed-865d-0b6a1a448962	sau@caltech.edu	https://felcat.caltech.edu/rnaget	\N	\N	production	1.0.0	https://felcat.caltech.edu/rnaget
 8bc004a5-2698-40a1-9611-589e85cd68ca	efe59fb4-1522-4ddc-9a4e-f1e5dfb52189	de7fe9c3-2a40-4dc8-bd58-fcda4b705b04	CRG RNAget Reference Implementation	RNAget implementation serving compliance test dataset	e9079cb9-4c14-479d-8ced-2268cbc33e8c	emilio.palumbo@crg.eu	https://genome.crg.cat/rnaget	\N	\N	production	1.0.0	https://genome.crg.cat/rnaget
@@ -164,10 +164,10 @@ f725e2e6-8949-4f49-8569-9dabdafc76ab	a6a6f7f3-e546-4f26-90bc-70f9dd5dc98a	de7fe9
 
 
 --
--- Data for Name: implementation_category; Type: TABLE DATA; Schema: ga4gh_schema; Owner: ga4gh_db_writer
+-- Data for Name: implementation_category; Type: TABLE DATA; Schema: test_schema; Owner: test_user
 --
 
-COPY ga4gh_schema.implementation_category (id, category) FROM stdin;
+COPY test_schema.implementation_category (id, category) FROM stdin;
 7c938056-ed89-4653-a873-0b2ea02d2837	APIClient
 05856f83-9416-4a9d-b3ac-fd9623db574b	APIServer
 de7fe9c3-2a40-4dc8-bd58-fcda4b705b04	APIService
@@ -178,10 +178,10 @@ a9d6094d-8b78-4468-b13e-b2573245f579	FileFormatTool
 
 
 --
--- Data for Name: organization; Type: TABLE DATA; Schema: ga4gh_schema; Owner: ga4gh_db_writer
+-- Data for Name: organization; Type: TABLE DATA; Schema: test_schema; Owner: test_user
 --
 
-COPY ga4gh_schema.organization (id, name, short_name, url) FROM stdin;
+COPY test_schema.organization (id, name, short_name, url) FROM stdin;
 f3cfc0d2-e9bd-4b26-a856-0d2b2f47d1f4	Global Alliance for Genomics and Health	GA4GH	https://ga4gh.org
 c176bd06-c5a1-43ed-865d-0b6a1a448962	California Institute of Technology	Caltech	https://www.caltech.edu/
 e9079cb9-4c14-479d-8ced-2268cbc33e8c	Centre for Genomic Regulation	CRG	https://www.crg.eu/
@@ -191,10 +191,10 @@ c6a694c4-63ca-4d01-957a-7e466294d0b3	Biocontainers	\N	https://biocontainers.pro
 
 
 --
--- Data for Name: release_status; Type: TABLE DATA; Schema: ga4gh_schema; Owner: ga4gh_db_writer
+-- Data for Name: release_status; Type: TABLE DATA; Schema: test_schema; Owner: test_user
 --
 
-COPY ga4gh_schema.release_status (id, status) FROM stdin;
+COPY test_schema.release_status (id, status) FROM stdin;
 22e070a9-1381-4596-8134-02a7df419111	Proposed
 011e9615-cd2c-4f33-80d4-bbaedf351dcf	Approved
 a8bb9b01-ba2d-4074-acf0-6aeedd1ea3b3	Deprecated
@@ -202,10 +202,10 @@ a8bb9b01-ba2d-4074-acf0-6aeedd1ea3b3	Deprecated
 
 
 --
--- Data for Name: standard; Type: TABLE DATA; Schema: ga4gh_schema; Owner: ga4gh_db_writer
+-- Data for Name: standard; Type: TABLE DATA; Schema: test_schema; Owner: test_user
 --
 
-COPY ga4gh_schema.standard (id, name, standard_category_id, oneliner, description, documentation_url, release_status_id, artifact) FROM stdin;
+COPY test_schema.standard (id, name, standard_category_id, oneliner, description, documentation_url, release_status_id, artifact) FROM stdin;
 3c57ebf6-a020-419f-b3e2-ddbc9ce5f417	RNAget	85d9b790-65be-4caa-8669-15fe04281090	Download RNAseq matrix	A longer description of RNAget	https://github.com/ga4gh-rnaseq/schema	011e9615-cd2c-4f33-80d4-bbaedf351dcf	rnaget
 bffd4855-31c7-4c84-a8c8-b89c7036311c	htsget	85d9b790-65be-4caa-8669-15fe04281090	Download high-throughput sequencing reads and variants	A longer description of htsget	https://github.com/samtools/hts-specs/blob/master/htsget.md	011e9615-cd2c-4f33-80d4-bbaedf351dcf	htsget
 65c259b6-79dd-4f3d-b128-2583ce64edc8	Tool Registry Service (TRS)	85d9b790-65be-4caa-8669-15fe04281090	Exchange tools and workflows to analyze, read, and manipulate genomic data	​The Tool Registry Service (TRS) is a standard API for exchanging tools and workflows to analyze, read, and manipulate genomic data. The ​TRS API is one of a series of technical standards from the Cloud Work Stream that together allow genomics researchers to bring algorithms to datasets in disparate cloud environments, rather than moving data around. TRS gives researchers access to far more tools than they can presently use, and allows developers to register their products so that they are visible on a multitude of sites, expanding their audience reach. The API also provides a set of requirements for tool and workflow registries to implement TRS.	https://ga4gh.github.io/tool-registry-service-schemas/	011e9615-cd2c-4f33-80d4-bbaedf351dcf	trs
@@ -228,10 +228,10 @@ ec794fca-2e04-4b2a-be3c-20d9bee7065c	Pedigree	ef7084e9-d3b3-4ed3-bb26-236112a097
 
 
 --
--- Data for Name: standard_category; Type: TABLE DATA; Schema: ga4gh_schema; Owner: ga4gh_db_writer
+-- Data for Name: standard_category; Type: TABLE DATA; Schema: test_schema; Owner: test_user
 --
 
-COPY ga4gh_schema.standard_category (id, category) FROM stdin;
+COPY test_schema.standard_category (id, category) FROM stdin;
 85d9b790-65be-4caa-8669-15fe04281090	API
 ef7084e9-d3b3-4ed3-bb26-236112a09798	FileFormat
 b36d84cf-7d81-4ed1-9ded-f3b30fadb3c7	Schema
@@ -240,10 +240,10 @@ b36d84cf-7d81-4ed1-9ded-f3b30fadb3c7	Schema
 
 
 --
--- Data for Name: standard_version; Type: TABLE DATA; Schema: ga4gh_schema; Owner: ga4gh_db_writer
+-- Data for Name: standard_version; Type: TABLE DATA; Schema: test_schema; Owner: test_user
 --
 
-COPY ga4gh_schema.standard_version (id, standard_id, version_number, documentation_url, release_status_id) FROM stdin;
+COPY test_schema.standard_version (id, standard_id, version_number, documentation_url, release_status_id) FROM stdin;
 efe59fb4-1522-4ddc-9a4e-f1e5dfb52189	3c57ebf6-a020-419f-b3e2-ddbc9ce5f417	1.0.0	https://ga4gh-rnaseq.github.io/schema/release/1.0.0/	011e9615-cd2c-4f33-80d4-bbaedf351dcf
 6b50a044-7056-44a7-aae2-327a210087ff	0980a95f-125a-4c4c-bc64-076aa437c083	1.0.0	https://github.com/samtools/hts-specs/blob/master/refget.md	011e9615-cd2c-4f33-80d4-bbaedf351dcf
 9da4ec68-19ca-4603-9d0c-ad62c8e56796	bffd4855-31c7-4c84-a8c8-b89c7036311c	1.2.0	https://github.com/samtools/hts-specs/blob/master/htsget.md	011e9615-cd2c-4f33-80d4-bbaedf351dcf
@@ -270,163 +270,163 @@ bd898754-0ca1-4534-8814-ed1191930efb	4dd0bcb1-2704-4874-8775-61d96613b7ed	1.0.0	
 
 
 --
--- Name: implementation_category implementation_category_category_key; Type: CONSTRAINT; Schema: ga4gh_schema; Owner: ga4gh_db_writer
+-- Name: implementation_category implementation_category_category_key; Type: CONSTRAINT; Schema: test_schema; Owner: test_user
 --
 
-ALTER TABLE ONLY ga4gh_schema.implementation_category
+ALTER TABLE ONLY test_schema.implementation_category
     ADD CONSTRAINT implementation_category_category_key UNIQUE (category);
 
 
 --
--- Name: implementation_category implementation_category_pkey; Type: CONSTRAINT; Schema: ga4gh_schema; Owner: ga4gh_db_writer
+-- Name: implementation_category implementation_category_pkey; Type: CONSTRAINT; Schema: test_schema; Owner: test_user
 --
 
-ALTER TABLE ONLY ga4gh_schema.implementation_category
+ALTER TABLE ONLY test_schema.implementation_category
     ADD CONSTRAINT implementation_category_pkey PRIMARY KEY (id);
 
 
 --
--- Name: implementation implementation_pkey; Type: CONSTRAINT; Schema: ga4gh_schema; Owner: ga4gh_db_writer
+-- Name: implementation implementation_pkey; Type: CONSTRAINT; Schema: test_schema; Owner: test_user
 --
 
-ALTER TABLE ONLY ga4gh_schema.implementation
+ALTER TABLE ONLY test_schema.implementation
     ADD CONSTRAINT implementation_pkey PRIMARY KEY (id);
 
 
 --
--- Name: organization organization_name_key; Type: CONSTRAINT; Schema: ga4gh_schema; Owner: ga4gh_db_writer
+-- Name: organization organization_name_key; Type: CONSTRAINT; Schema: test_schema; Owner: test_user
 --
 
-ALTER TABLE ONLY ga4gh_schema.organization
+ALTER TABLE ONLY test_schema.organization
     ADD CONSTRAINT organization_name_key UNIQUE (name);
 
 
 --
--- Name: organization organization_pkey; Type: CONSTRAINT; Schema: ga4gh_schema; Owner: ga4gh_db_writer
+-- Name: organization organization_pkey; Type: CONSTRAINT; Schema: test_schema; Owner: test_user
 --
 
-ALTER TABLE ONLY ga4gh_schema.organization
+ALTER TABLE ONLY test_schema.organization
     ADD CONSTRAINT organization_pkey PRIMARY KEY (id);
 
 
 --
--- Name: organization organization_short_name_key; Type: CONSTRAINT; Schema: ga4gh_schema; Owner: ga4gh_db_writer
+-- Name: organization organization_short_name_key; Type: CONSTRAINT; Schema: test_schema; Owner: test_user
 --
 
-ALTER TABLE ONLY ga4gh_schema.organization
+ALTER TABLE ONLY test_schema.organization
     ADD CONSTRAINT organization_short_name_key UNIQUE (short_name);
 
 
 --
--- Name: standard_category standard_category_category_key; Type: CONSTRAINT; Schema: ga4gh_schema; Owner: ga4gh_db_writer
+-- Name: standard_category standard_category_category_key; Type: CONSTRAINT; Schema: test_schema; Owner: test_user
 --
 
-ALTER TABLE ONLY ga4gh_schema.standard_category
+ALTER TABLE ONLY test_schema.standard_category
     ADD CONSTRAINT standard_category_category_key UNIQUE (category);
 
 
 --
--- Name: standard_category standard_category_pkey; Type: CONSTRAINT; Schema: ga4gh_schema; Owner: ga4gh_db_writer
+-- Name: standard_category standard_category_pkey; Type: CONSTRAINT; Schema: test_schema; Owner: test_user
 --
 
-ALTER TABLE ONLY ga4gh_schema.standard_category
+ALTER TABLE ONLY test_schema.standard_category
     ADD CONSTRAINT standard_category_pkey PRIMARY KEY (id);
 
 
 --
--- Name: standard standard_name_key; Type: CONSTRAINT; Schema: ga4gh_schema; Owner: ga4gh_db_writer
+-- Name: standard standard_name_key; Type: CONSTRAINT; Schema: test_schema; Owner: test_user
 --
 
-ALTER TABLE ONLY ga4gh_schema.standard
+ALTER TABLE ONLY test_schema.standard
     ADD CONSTRAINT standard_name_key UNIQUE (name);
 
 
 --
--- Name: standard standard_pkey; Type: CONSTRAINT; Schema: ga4gh_schema; Owner: ga4gh_db_writer
+-- Name: standard standard_pkey; Type: CONSTRAINT; Schema: test_schema; Owner: test_user
 --
 
-ALTER TABLE ONLY ga4gh_schema.standard
+ALTER TABLE ONLY test_schema.standard
     ADD CONSTRAINT standard_pkey PRIMARY KEY (id);
 
 
 --
--- Name: release_status standard_status_pkey; Type: CONSTRAINT; Schema: ga4gh_schema; Owner: ga4gh_db_writer
+-- Name: release_status standard_status_pkey; Type: CONSTRAINT; Schema: test_schema; Owner: test_user
 --
 
-ALTER TABLE ONLY ga4gh_schema.release_status
+ALTER TABLE ONLY test_schema.release_status
     ADD CONSTRAINT standard_status_pkey PRIMARY KEY (id);
 
 
 --
--- Name: release_status standard_status_status_key; Type: CONSTRAINT; Schema: ga4gh_schema; Owner: ga4gh_db_writer
+-- Name: release_status standard_status_status_key; Type: CONSTRAINT; Schema: test_schema; Owner: test_user
 --
 
-ALTER TABLE ONLY ga4gh_schema.release_status
+ALTER TABLE ONLY test_schema.release_status
     ADD CONSTRAINT standard_status_status_key UNIQUE (status);
 
 
 --
--- Name: standard_version standard_version_pkey; Type: CONSTRAINT; Schema: ga4gh_schema; Owner: ga4gh_db_writer
+-- Name: standard_version standard_version_pkey; Type: CONSTRAINT; Schema: test_schema; Owner: test_user
 --
 
-ALTER TABLE ONLY ga4gh_schema.standard_version
+ALTER TABLE ONLY test_schema.standard_version
     ADD CONSTRAINT standard_version_pkey PRIMARY KEY (id);
 
 
 --
--- Name: implementation implementation_implementation_category_id_fkey; Type: FK CONSTRAINT; Schema: ga4gh_schema; Owner: ga4gh_db_writer
+-- Name: implementation implementation_implementation_category_id_fkey; Type: FK CONSTRAINT; Schema: test_schema; Owner: test_user
 --
 
-ALTER TABLE ONLY ga4gh_schema.implementation
-    ADD CONSTRAINT implementation_implementation_category_id_fkey FOREIGN KEY (implementation_category_id) REFERENCES ga4gh_schema.implementation_category(id);
-
-
---
--- Name: implementation implementation_organization_id_fkey; Type: FK CONSTRAINT; Schema: ga4gh_schema; Owner: ga4gh_db_writer
---
-
-ALTER TABLE ONLY ga4gh_schema.implementation
-    ADD CONSTRAINT implementation_organization_id_fkey FOREIGN KEY (organization_id) REFERENCES ga4gh_schema.organization(id);
+ALTER TABLE ONLY test_schema.implementation
+    ADD CONSTRAINT implementation_implementation_category_id_fkey FOREIGN KEY (implementation_category_id) REFERENCES test_schema.implementation_category(id);
 
 
 --
--- Name: implementation implementation_standard_version_id_fkey; Type: FK CONSTRAINT; Schema: ga4gh_schema; Owner: ga4gh_db_writer
+-- Name: implementation implementation_organization_id_fkey; Type: FK CONSTRAINT; Schema: test_schema; Owner: test_user
 --
 
-ALTER TABLE ONLY ga4gh_schema.implementation
-    ADD CONSTRAINT implementation_standard_version_id_fkey FOREIGN KEY (standard_version_id) REFERENCES ga4gh_schema.standard_version(id);
-
-
---
--- Name: standard standard_standard_category_id_fkey; Type: FK CONSTRAINT; Schema: ga4gh_schema; Owner: ga4gh_db_writer
---
-
-ALTER TABLE ONLY ga4gh_schema.standard
-    ADD CONSTRAINT standard_standard_category_id_fkey FOREIGN KEY (standard_category_id) REFERENCES ga4gh_schema.standard_category(id);
+ALTER TABLE ONLY test_schema.implementation
+    ADD CONSTRAINT implementation_organization_id_fkey FOREIGN KEY (organization_id) REFERENCES test_schema.organization(id);
 
 
 --
--- Name: standard standard_standard_status_id_fkey; Type: FK CONSTRAINT; Schema: ga4gh_schema; Owner: ga4gh_db_writer
+-- Name: implementation implementation_standard_version_id_fkey; Type: FK CONSTRAINT; Schema: test_schema; Owner: test_user
 --
 
-ALTER TABLE ONLY ga4gh_schema.standard
-    ADD CONSTRAINT standard_standard_status_id_fkey FOREIGN KEY (release_status_id) REFERENCES ga4gh_schema.release_status(id);
-
-
---
--- Name: standard_version standard_version_release_status_id_fkey; Type: FK CONSTRAINT; Schema: ga4gh_schema; Owner: ga4gh_db_writer
---
-
-ALTER TABLE ONLY ga4gh_schema.standard_version
-    ADD CONSTRAINT standard_version_release_status_id_fkey FOREIGN KEY (release_status_id) REFERENCES ga4gh_schema.release_status(id);
+ALTER TABLE ONLY test_schema.implementation
+    ADD CONSTRAINT implementation_standard_version_id_fkey FOREIGN KEY (standard_version_id) REFERENCES test_schema.standard_version(id);
 
 
 --
--- Name: standard_version standard_version_standard_id_fkey; Type: FK CONSTRAINT; Schema: ga4gh_schema; Owner: ga4gh_db_writer
+-- Name: standard standard_standard_category_id_fkey; Type: FK CONSTRAINT; Schema: test_schema; Owner: test_user
 --
 
-ALTER TABLE ONLY ga4gh_schema.standard_version
-    ADD CONSTRAINT standard_version_standard_id_fkey FOREIGN KEY (standard_id) REFERENCES ga4gh_schema.standard(id);
+ALTER TABLE ONLY test_schema.standard
+    ADD CONSTRAINT standard_standard_category_id_fkey FOREIGN KEY (standard_category_id) REFERENCES test_schema.standard_category(id);
+
+
+--
+-- Name: standard standard_standard_status_id_fkey; Type: FK CONSTRAINT; Schema: test_schema; Owner: test_user
+--
+
+ALTER TABLE ONLY test_schema.standard
+    ADD CONSTRAINT standard_standard_status_id_fkey FOREIGN KEY (release_status_id) REFERENCES test_schema.release_status(id);
+
+
+--
+-- Name: standard_version standard_version_release_status_id_fkey; Type: FK CONSTRAINT; Schema: test_schema; Owner: test_user
+--
+
+ALTER TABLE ONLY test_schema.standard_version
+    ADD CONSTRAINT standard_version_release_status_id_fkey FOREIGN KEY (release_status_id) REFERENCES test_schema.release_status(id);
+
+
+--
+-- Name: standard_version standard_version_standard_id_fkey; Type: FK CONSTRAINT; Schema: test_schema; Owner: test_user
+--
+
+ALTER TABLE ONLY test_schema.standard_version
+    ADD CONSTRAINT standard_version_standard_id_fkey FOREIGN KEY (standard_id) REFERENCES test_schema.standard(id);
 
 
 --

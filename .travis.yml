@@ -4,14 +4,13 @@ jdk:
 services:
     postgresql
 before_script:
-    - psql -c "create database ga4gh_db;" -U postgres
-    - psql -c "create user ga4gh_db_writer with password 'password';" -U postgres
-    - psql -c "alter database ga4gh_db owner to ga4gh_db_writer;" -U postgres
-    - psql -c "alter user ga4gh_db_writer with superuser;" -U postgres
-    - psql ga4gh_db < ./config/ga4gh_db.bak -U ga4gh_db_writer
+    - psql -c "create database test_db;" -U postgres
+    - psql -c "create user test_user with password 'password';" -U postgres
+    - psql -c "alter database test_db owner to test_user;" -U postgres
+    - psql -c "alter user test_user with superuser;" -U postgres
+    - psql test_db < ./config/db.test.bak -U test_user
 script:
     ./gradlew test
 after_success:
-    #- ./gradlew jacocoTestReport coveralls
     - ./gradlew jacocoTestReport
     - bash <(curl -s https://codecov.io/bash)
