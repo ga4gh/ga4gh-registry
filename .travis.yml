@@ -10,4 +10,4 @@ before_script:
 script:
     ./gradlew test
 after_success:
-    - ./gradlew test jacocoTestReport coveralls
+    - ./gradlew jacocoTestReport coveralls
