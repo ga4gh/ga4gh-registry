@@ -2,10 +2,10 @@ language: java
 services:
     postgresql
 before_script:
-    psql -c "create database ga4gh_db;" -U postgres
-    psql -c "create user ga4gh_db_writer with password 'password';" -U postgres
-    psql -c "alter database ga4gh_db owner to ga4gh_db_writer;" -U postgres
-    psql -c "alter user ga4gh_db_writer with superuser;" -U postgres
-    psql ga4gh_db < ./config/ga4gh_db.bak -U ga4gh_db_writer
+    - psql -c "create database ga4gh_db;" -U postgres
+    - psql -c "create user ga4gh_db_writer with password 'password';" -U postgres
+    - psql -c "alter database ga4gh_db owner to ga4gh_db_writer;" -U postgres
+    - psql -c "alter user ga4gh_db_writer with superuser;" -U postgres
+    - psql ga4gh_db < ./config/ga4gh_db.bak -U ga4gh_db_writer
 script:
     ./gradlew test
