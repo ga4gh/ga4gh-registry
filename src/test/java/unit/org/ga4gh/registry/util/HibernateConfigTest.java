@@ -25,12 +25,12 @@ public class HibernateConfigTest {
 
         Assert.assertEquals(
             getProperty("hibernate.connection.url"),
-            "jdbc:postgresql://localhost:5432/ga4gh_db?currentSchema=ga4gh_schema&useSSL=false&serverTimezone=UTC"
+            "jdbc:postgresql://localhost:5432/test_db?currentSchema=test_schema&useSSL=false&serverTimezone=UTC"
         );
 
         Assert.assertEquals(
             getProperty("hibernate.connection.username"),
-            "ga4gh_db_writer"
+            "test_user"
         );
 
         Assert.assertEquals(
