@@ -9,3 +9,5 @@ before_script:
     - psql ga4gh_db < ./config/ga4gh_db.bak -U ga4gh_db_writer
 script:
     ./gradlew test
+after_success:
+    - ./gradlew test jacocoTestReport coveralls

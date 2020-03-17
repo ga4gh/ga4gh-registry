@@ -15,6 +15,7 @@ plugins {
     // Apply the application plugin to add support for building a CLI application.
     id 'application'
     id 'jacoco'
+    id 'com.github.kt3k.coveralls' version '2.6.3'
 
     id "io.freefair.lombok" version "5.0.0-rc4"
 }
@@ -93,4 +94,11 @@ bootJar {
 jacoco {
     toolVersion = '0.8.5'
     reportsDir = file("$buildDir/reports/jacoco")
+}
+
+jacocoTestReport {
+    reports {
+        xml.enabled = true
+        html.enabled = true
+    }
 }
