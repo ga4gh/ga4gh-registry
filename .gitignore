@@ -36,3 +36,4 @@ bin
 lombok.config
 src/main/resources/public/swagger/*
 !src/main/resources/public/swagger/index.html
+!gradle/wrapper/*
