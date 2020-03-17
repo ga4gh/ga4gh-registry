@@ -49,11 +49,11 @@ public class HibernateQuerier<T> {
         return typeClass;
     }
 
-    public String getQueryString() {
-        return queryString;
-    }
-
     public void setQueryString(String queryString) {
         this.queryString = queryString;
+    }
+
+    public String getQueryString() {
+        return queryString;
     }
 }
