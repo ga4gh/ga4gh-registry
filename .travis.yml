@@ -1,4 +1,6 @@
 language: java
+jdk:
+    oraclejdk11
 services:
     postgresql
 before_script:
@@ -10,4 +12,5 @@ before_script:
 script:
     ./gradlew test
 after_success:
-    - ./gradlew jacocoTestReport coveralls
+    #- ./gradlew jacocoTestReport coveralls
+    - bash <(curl -s https://codecov.io/bash)
