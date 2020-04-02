@@ -1,0 +1,13 @@
+server.servlet.context-path=VAR_SERVERCONTEXTPATH
+server.port=VAR_SERVERPORT
+spring.datasource.url=jdbc:postgresql://VAR_DBHOST:VAR_DBPORT/VAR_DBNAME?currentSchema=VAR_DBSCHEMA
+spring.datasource.username=VAR_DBUSER
+spring.datasource.password=VAR_DBPASSWORD
+hibernate.connection.driver_class=org.postgresql.Driver
+hibernate.connection.url=jdbc:postgresql://VAR_DBHOST:VAR_DBPORT/VAR_DBNAME?currentSchema=VAR_DBSCHEMA&useSSL=VAR_USESSL&serverTimezone=UTC
+hibernate.connection.username=VAR_DBUSER
+hibernate.connection.password=VAR_DBPASSWORD
+hibernate.connection.pool_size=1
+hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
+hibernate.show_sql=true
+hibernate.current_session_context_class=thread
