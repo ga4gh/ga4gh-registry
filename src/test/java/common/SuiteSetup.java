@@ -7,7 +7,7 @@ import org.testng.annotations.BeforeSuite;
 
 public class SuiteSetup {
 
-    public static String[] args = {"--spring.config.location=file:./config/test.application.properties"};
+    public static String[] args = {"--spring.config.location=file:./config/test/test.application.properties"};
 
     @BeforeSuite
     public void setup() {

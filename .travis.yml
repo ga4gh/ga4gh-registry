@@ -8,7 +8,7 @@ before_script:
     - psql -c "create user test_user with password 'password';" -U postgres
     - psql -c "alter database test_db owner to test_user;" -U postgres
     - psql -c "alter user test_user with superuser;" -U postgres
-    - psql test_db < ./config/db.test.bak -U test_user
+    - psql test_db < ./config/test/db.test.bak -U test_user
 script:
     ./gradlew test
 after_success:
