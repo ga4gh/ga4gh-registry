@@ -10,16 +10,6 @@ if [ -z "${DBUSER}" ]; then echo "DBUSER not set"; exit 1; fi;
 if [ -z "${DBPASSWORD}" ]; then echo "DBPASSWORD not set"; exit 1; fi;
 if [ -z "${USESSL}" ]; then echo "USESSL not set"; exit 1; fi;
 
-cat config/docker/application.properties.template | \
-sed "s/VAR_SERVERCONTEXTPATH/${SERVERCONTEXTPATH}/g" | \
-sed "s/VAR_SERVERPORT/${SERVERPORT}/g" | \
-sed "s/VAR_DBHOST/${DBHOST}/g" | \
-sed "s/VAR_DBPORT/${DBPORT}/g" | \
-sed "s/VAR_DBNAME/${DBNAME}/g" | \
-sed "s/VAR_DBSCHEMA/${DBSCHEMA}/g" | \
-sed "s/VAR_DBUSER/${DBUSER}/g" | \
-sed "s/VAR_DBPASSWORD/${DBPASSWORD}/g" | \
-sed "s/VAR_USESSL/${USESSL}/g" \
-> config/docker/application.properties
+python config/docker/configure.py
 
 ./gradlew bootRun --args="--spring.config.location=file:./config/docker/application.properties"
