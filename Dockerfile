@@ -12,7 +12,7 @@ WORKDIR /usr/src/app/ga4gh-registry-0.2.2
 RUN chmod 755 config/docker/run.sh
 
 RUN mv src/main/resources/public/swagger/index.html . \
-    && cp swagger-ui-3.25.0/dist/* src/main/resources/public/swagger/ \
+    && cp ../swagger-ui-3.25.0/dist/* src/main/resources/public/swagger/ \
     && mv ./index.html src/main/resources/public/swagger/
 
 CMD config/docker/run.sh
