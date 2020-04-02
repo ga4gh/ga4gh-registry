@@ -8,6 +8,7 @@ RUN wget https://github.com/ga4gh/ga4gh-registry/archive/v0.2.1.tar.gz \
     && tar -zxvf v3.25.0.tar.gz
 
 WORKDIR /usr/src/app/ga4gh-registry-0.2.1
+RUN chmod 755 config/run.sh
 
 RUN mv src/main/resources/public/swagger/index.html . \
     && cp ../swagger-ui-3.25.0/dist/* src/main/resources/public/swagger/ \
