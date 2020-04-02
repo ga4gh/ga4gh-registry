@@ -18,8 +18,8 @@ sed "s/VAR_DBPORT/${DBPORT}/g" | \
 sed "s/VAR_DBNAME/${DBNAME}/g" | \
 sed "s/VAR_DBSCHEMA/${DBSCHEMA}/g" | \
 sed "s/VAR_DBUSER/${DBUSER}/g" | \
-sed "s/VAR_DBPASSWORD/${DBPASSWORD}/g" \
+sed "s/VAR_DBPASSWORD/${DBPASSWORD}/g" | \
 sed "s/VAR_USESSL/${USESSL}/g" \
 > config/docker/application.properties
 
-tail -f /dev/null
+./gradlew bootRun --args="--spring.config.location=file:./config/docker/application.properties"
