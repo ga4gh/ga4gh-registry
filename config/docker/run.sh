@@ -10,7 +10,7 @@ if [ -z "${DBUSER}" ]; then echo "DBUSER not set"; exit 1; fi;
 if [ -z "${DBPASSWORD}" ]; then echo "DBPASSWORD not set"; exit 1; fi;
 if [ -z "${USESSL}" ]; then echo "USESSL not set"; exit 1; fi;
 
-cat config/application.properties.template | \
+cat config/docker/application.properties.template | \
 sed "s/VAR_SERVERCONTEXTPATH/${SERVERCONTEXTPATH}/g" | \
 sed "s/VAR_SERVERPORT/${SERVERPORT}/g" | \
 sed "s/VAR_DBHOST/${DBHOST}/g" | \
@@ -20,6 +20,6 @@ sed "s/VAR_DBSCHEMA/${DBSCHEMA}/g" | \
 sed "s/VAR_DBUSER/${DBUSER}/g" | \
 sed "s/VAR_DBPASSWORD/${DBPASSWORD}/g" \
 sed "s/VAR_USESSL/${USESSL}/g" \
-> config/application.properties
+> config/docker/application.properties
 
 tail -f /dev/null
