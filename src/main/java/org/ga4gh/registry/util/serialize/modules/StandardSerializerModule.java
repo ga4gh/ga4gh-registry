@@ -1,5 +1,7 @@
 package org.ga4gh.registry.util.serialize.modules;
 
+import java.util.Map;
+
 import org.ga4gh.registry.model.Standard;
 import org.ga4gh.registry.util.serialize.serializers.StandardSerializer;
 
@@ -13,9 +15,9 @@ public class StandardSerializerModule extends VariableDepthSerializerModule {
         addSerializer(Standard.class, new StandardSerializer());
     }
 
-    public StandardSerializerModule(boolean deep) {
-        super(deep);
-        addSerializer(Standard.class, new StandardSerializer(deep));
+    public StandardSerializerModule(Map<String, Boolean> serializeMappedAttrs) {
+        super(serializeMappedAttrs);
+        addSerializer(Standard.class, new StandardSerializer(serializeMappedAttrs));
     }
 
 }

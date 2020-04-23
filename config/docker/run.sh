@@ -12,4 +12,8 @@ if [ -z "${USESSL}" ]; then echo "USESSL not set"; exit 1; fi;
 
 python config/docker/configure.py
 
+gradle
+gradle wrapper
+./gradlew wrapper
+./gradlew build -x test
 ./gradlew bootRun --args="--spring.config.location=file:./config/docker/application.properties"

@@ -1,7 +1,7 @@
 package org.ga4gh.registry.util.serialize.serializers;
 
 import java.io.IOException;
-
+import java.util.Map;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
 
@@ -13,8 +13,8 @@ public class StandardVersionSerializer extends VariableDepthSerializer<StandardV
         super();
     }
 
-    public StandardVersionSerializer(boolean deep) {
-        super(deep);
+    public StandardVersionSerializer(Map<String, Boolean> serializeMappedAttrs) {
+        super(serializeMappedAttrs);
     }
 
     @Override
@@ -22,11 +22,11 @@ public class StandardVersionSerializer extends VariableDepthSerializer<StandardV
             throws IOException {
         gen.writeStartObject();
         writeStringIfExists(gen, "id", value.getId().toString());
-        writeObjectIfDeep(gen, "standard", value.getStandard());
+        writeObjectIfSelected(gen, "standard", value.getStandard());
         writeStringIfExists(gen, "versionNumber", value.getVersionNumber());
         writeStringIfExists(gen, "documentationUrl", value.getDocumentationUrl());
         writeObjectIfExists(gen, "status", value.getReleaseStatus());
-        writeObjectIfDeep(gen, "implementations", value.getImplementations());
+        writeObjectIfSelected(gen, "implementations", value.getImplementations());
         gen.writeEndObject();
     }
 }

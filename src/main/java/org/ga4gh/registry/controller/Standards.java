@@ -1,51 +1,33 @@
 package org.ga4gh.registry.controller;
 
-import org.ga4gh.registry.model.Standard;
-import org.ga4gh.registry.util.response.ResponseCreatorBuilder;
-import org.ga4gh.registry.util.serialize.modules.ReleaseStatusSerializerModule;
-import org.ga4gh.registry.util.serialize.modules.StandardCategorySerializerModule;
-import org.ga4gh.registry.util.serialize.modules.StandardSerializerModule;
-import org.ga4gh.registry.util.serialize.modules.StandardVersionSerializerModule;
+import java.util.Map;
+import org.ga4gh.registry.util.response.factory.GetStandardByIdResponseCreatorFactory;
+import org.ga4gh.registry.util.response.factory.GetStandardsResponseCreatorFactory;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 
 @RestController
 @RequestMapping("/standards")
 public class Standards {
 
-    @GetMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public String getStandards() {
+    @Autowired
+    GetStandardsResponseCreatorFactory getStandardsRCF;
 
-        return new ResponseCreatorBuilder<>(Standard.class)
-            .joinData("standardCategory")
-            .joinData("releaseStatus")
-            .joinData("standardVersions")
-            .addModule(new StandardSerializerModule())
-            .addModule(new StandardCategorySerializerModule())
-            .addModule(new ReleaseStatusSerializerModule())
-            .buildResponseCreator()
-            .buildResponse()
-            .getResponse();
+    @Autowired
+    GetStandardByIdResponseCreatorFactory getStandardByIdRCF;
+
+    @GetMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> getStandards() {
+        return getStandardsRCF.buildResponseEntity();
     }
 
-    @GetMapping(path = "/{standardId}",
-                produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public String getStandardById(@PathVariable("standardId") String standardId) {
-        return new ResponseCreatorBuilder<>(Standard.class)
-            .joinData("standardCategory")
-            .joinData("releaseStatus")
-            .joinData("standardVersions")
-            .filterData("id", standardId)
-            .singleResult()
-            .addModule(new StandardSerializerModule(true))
-            .addModule(new StandardVersionSerializerModule())
-            .addModule(new StandardCategorySerializerModule())
-            .addModule(new ReleaseStatusSerializerModule())
-            .buildResponseCreator()
-            .buildResponse()
-            .getResponse();
+    @GetMapping(path = "/{standardId}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> getStandardById(@PathVariable Map<String, String> pathVariables) {
+        return getStandardByIdRCF.buildResponseEntity(pathVariables);
     }
 }

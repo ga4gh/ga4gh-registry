@@ -1,5 +1,6 @@
 package org.ga4gh.registry.util.serialize.modules;
 
+import java.util.Map;
 import org.ga4gh.registry.model.Organization;
 import org.ga4gh.registry.util.serialize.serializers.OrganizationSerializer;
 
@@ -13,8 +14,8 @@ public class OrganizationSerializerModule extends VariableDepthSerializerModule 
         addSerializer(Organization.class, new OrganizationSerializer());
     }
 
-    public OrganizationSerializerModule(boolean deep) {
-        super(deep);
-        addSerializer(Organization.class, new OrganizationSerializer(deep));
+    public OrganizationSerializerModule(Map<String, Boolean> serializeMappedAttrs) {
+        super(serializeMappedAttrs);
+        addSerializer(Organization.class, new OrganizationSerializer(serializeMappedAttrs));
     }
 }

@@ -1,6 +1,8 @@
 package org.ga4gh.registry.util.response;
 
 import java.util.List;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpHeaders;
 
 public class ResponseCreator<T> {
 
@@ -9,7 +11,10 @@ public class ResponseCreator<T> {
     private HibernateQueryBuilder<T> hibernateQueryBuilder;
     private HibernateQuerier<T> hibernateQuerier;
     private ResponseMapper responseMapper;
-    private String response;
+    private T unserializedSingleResult;
+    private List<T> unserializedListResult;
+    private String serializedResponse;
+    private HttpHeaders httpHeaders;
 
     public ResponseCreator(Class<T> responseClass) {
         this.responseClass = responseClass;
@@ -17,21 +22,30 @@ public class ResponseCreator<T> {
         hibernateQueryBuilder = new HibernateQueryBuilder<>(this.responseClass);
         hibernateQuerier = new HibernateQuerier<>(this.responseClass);
         responseMapper = new ResponseMapper();
+        unserializedSingleResult = null;
+        unserializedListResult = null;
+        serializedResponse = null;
+        httpHeaders = new HttpHeaders();
+        httpHeaders.add(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, "*");
     }
 
     public ResponseCreator<T> buildResponse() {
-        String response = null;
         hibernateQuerier.setQueryString(hibernateQueryBuilder.build());
         responseMapper.registerModules();
         if (singleResult) {
-            T toSerialize = hibernateQuerier.getSingleResult();
-            response = responseMapper.serialize(toSerialize);
+            setUnserializedSingleResult(hibernateQuerier.getSingleResult());
+            this.setSerializedResponse(responseMapper.serialize(getUnserializedSingleResult()));
         } else {
-            List<T> toSerialize = hibernateQuerier.getResults();
-            response = responseMapper.serialize(toSerialize);
+            setUnserializedListResult(hibernateQuerier.getResults());
+            this.setSerializedResponse(responseMapper.serialize(getUnserializedListResult()));
         }
-        this.response = response;
         return this;
+    }
+
+    public ResponseEntity<String> getResponseEntity() {
+        return ResponseEntity.ok()
+            .headers(httpHeaders)
+            .body(this.getSerializedResponse());
     }
 
     public HibernateQueryBuilder<T> getHibernateQueryBuilder() {
@@ -50,8 +64,27 @@ public class ResponseCreator<T> {
         this.singleResult = singleResult;
     }
 
-    public String getResponse() {
-        return response;
+    public void setUnserializedSingleResult(T unserializedSingleResult) {
+        this.unserializedSingleResult = unserializedSingleResult;
     }
 
+    public T getUnserializedSingleResult() {
+        return unserializedSingleResult;
+    }
+
+    public void setUnserializedListResult(List<T> unserializedListResult) {
+        this.unserializedListResult = unserializedListResult;
+    }
+
+    public List<T> getUnserializedListResult() {
+        return unserializedListResult;
+    }
+
+    public void setSerializedResponse(String serializedResponse) {
+        this.serializedResponse = serializedResponse;
+    }
+
+    public String getSerializedResponse() {
+        return serializedResponse;
+    }
 }

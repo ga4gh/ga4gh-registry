@@ -2,7 +2,9 @@ package org.ga4gh.registry.util;
 
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ConfigurableApplicationContext;
+import javax.annotation.PostConstruct;
 import org.ga4gh.registry.App;
 import org.ga4gh.registry.model.Implementation;
 import org.ga4gh.registry.model.ImplementationCategory;
@@ -18,7 +20,7 @@ public class HibernateUtil {
 
     public static SessionFactory buildSessionFactory() {
         try {
-
+            
             ConfigurableApplicationContext ctx = App.getContext();
             HibernateConfig hConfig = ctx.getBean(HibernateConfig.class);
             SessionFactory sessionFactory = 

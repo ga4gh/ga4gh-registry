@@ -28,6 +28,9 @@ public class Standard {
     @Column(name = "name")
     private String name;
 
+    @Column(name = "abbreviation")
+    private String abbreviation;
+
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE,
                           CascadeType.DETACH, CascadeType.REFRESH})
     @JoinColumn(name = "standard_category_id")
@@ -85,6 +88,14 @@ public class Standard {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getAbbreviation() {
+        return abbreviation;
+    }
+
+    public void setAbbreviation(String abbreviation) {
+        this.abbreviation = abbreviation;
     }
 
     public StandardCategory getStandardCategory() {

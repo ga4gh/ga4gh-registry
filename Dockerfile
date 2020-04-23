@@ -4,21 +4,28 @@ USER root
 
 WORKDIR /usr/src/app
 
-RUN wget https://github.com/ga4gh/ga4gh-registry/archive/v0.2.5.tar.gz \
-    && tar -zxvf v0.2.5.tar.gz \
-    && wget https://github.com/swagger-api/swagger-ui/archive/v3.25.0.tar.gz \
+##################################################
+# COPY REQUIRED DIRECTORIES
+##################################################
+
+COPY config config
+COPY src src
+COPY build.gradle build.gradle
+
+##################################################
+# GET SWAGGER UI, MOVE TO PUBLIC HTML FOLDER
+##################################################
+
+RUN wget https://github.com/swagger-api/swagger-ui/archive/v3.25.0.tar.gz \
     && tar -zxvf v3.25.0.tar.gz
 
-WORKDIR /usr/src/app/ga4gh-registry-0.2.5
-
 RUN mv src/main/resources/public/swagger/index.html . \
-    && cp ../swagger-ui-3.25.0/dist/* src/main/resources/public/swagger/ \
+    && cp swagger-ui-3.25.0/dist/* src/main/resources/public/swagger/ \
     && mv ./index.html src/main/resources/public/swagger/
 
-RUN gradle \
-    && gradle wrapper \
-    && ./gradlew wrapper \
-    && ./gradlew build -x test
+##################################################
+# RUN THE DOCKER CONTAINER WRAPPER SCRIPT
+##################################################
 
 RUN chmod 755 config/docker/run.sh
 
