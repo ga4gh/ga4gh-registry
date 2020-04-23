@@ -7,7 +7,6 @@ import org.ga4gh.registry.util.serialize.serializers.OrganizationSerializer;
 public class OrganizationSerializerModule extends VariableDepthSerializerModule {
 
     private static final long serialVersionUID = 1L;
-    private static final String NAME = "OrganizationSerializerModule";
 
     public OrganizationSerializerModule() {
         super();

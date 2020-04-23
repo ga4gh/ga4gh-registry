@@ -5,22 +5,23 @@ package e2e.org.ga4gh.registry;
 
 import org.ga4gh.registry.App;
 import org.ga4gh.registry.AppConfig;
-import org.testng.annotations.*;
+// import org.testng.annotations.*;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.web.WebAppConfiguration;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import org.ga4gh.registry.controller.ServiceInfo;
-import org.ga4gh.registry.controller.Services;
+// import org.springframework.test.web.servlet.MockMvc;
+// import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+// import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+// import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+// import org.ga4gh.registry.controller.ServiceInfo;
+// import org.ga4gh.registry.controller.Services;
 
 @SpringBootTest(classes = App.class)
 @WebAppConfiguration
 @ContextConfiguration(classes = {AppConfig.class})
 public class AppTest {
 
+    /*
     private MockMvc mockMvc;
     private MockMvc mockMvc2;
 
@@ -43,4 +44,5 @@ public class AppTest {
         System.out.println("My service info results: ");
         System.out.println(results);
     }
+    */
 }

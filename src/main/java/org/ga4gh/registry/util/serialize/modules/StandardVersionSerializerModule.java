@@ -8,7 +8,6 @@ import org.ga4gh.registry.util.serialize.serializers.StandardVersionSerializer;
 public class StandardVersionSerializerModule extends VariableDepthSerializerModule {
 
     private static final long serialVersionUID = 1L;
-    private static final String NAME = "StandardVersionSerializerModule";
 
     public StandardVersionSerializerModule() {
         super();

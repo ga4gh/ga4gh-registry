@@ -4,8 +4,6 @@ import org.ga4gh.registry.model.Implementation;
 import org.ga4gh.registry.model.Organization;
 import org.ga4gh.registry.model.Standard;
 import org.ga4gh.registry.util.HibernateConfig;
-import org.ga4gh.registry.util.HibernateUtil;
-import org.ga4gh.registry.util.response.HibernateQuerier;
 import org.ga4gh.registry.util.response.factory.GetOrganizationByIdResponseCreatorFactory;
 import org.ga4gh.registry.util.response.factory.GetOrganizationsResponseCreatorFactory;
 import org.ga4gh.registry.util.response.factory.GetServiceByIdResponseCreatorFactory;
