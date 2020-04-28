@@ -1,5 +1,6 @@
 package org.ga4gh.registry.util.response.factory;
 
+import java.util.HashMap;
 import java.util.Map;
 import org.ga4gh.registry.model.Implementation;
 import org.ga4gh.registry.model.ServiceType;
@@ -15,11 +16,16 @@ public class GetServicesResponseCreatorFactory extends ResponseCreatorFactory<Im
     }
 
     public void load() {
+        HashMap<String, Boolean> serializeImplementation = new HashMap<>();
+        serializeImplementation.put("organization", true);
+        serializeImplementation.put("description", true);
+        serializeImplementation.put("contactUrl", true);
+        
         this.joinData("standardVersion")
             .joinData("implementationCategory")
             .joinData("organization")
             .filterData("implementationCategory.category", "APIService")
-            .addModule(new ImplementationSerializerModule())
+            .addModule(new ImplementationSerializerModule(serializeImplementation))
             .addModule(new OrganizationSerializerModule());
     }
 
