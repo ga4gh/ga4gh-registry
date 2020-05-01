@@ -11,6 +11,7 @@ import org.ga4gh.registry.model.Standard;
 import org.ga4gh.registry.model.StandardCategory;
 import org.ga4gh.registry.model.ReleaseStatus;
 import org.ga4gh.registry.model.StandardVersion;
+import org.ga4gh.registry.model.WorkStream;
 
 public class HibernateUtil {
 
@@ -31,6 +32,7 @@ public class HibernateUtil {
                 .addAnnotatedClass(StandardCategory.class)
                 .addAnnotatedClass(ReleaseStatus.class)
                 .addAnnotatedClass(StandardVersion.class)
+                .addAnnotatedClass(WorkStream.class)
                 .buildSessionFactory();
             return sessionFactory;
         } catch (Throwable ex) {

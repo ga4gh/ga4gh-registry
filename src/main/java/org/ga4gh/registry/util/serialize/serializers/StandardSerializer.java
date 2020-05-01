@@ -24,11 +24,12 @@ public class StandardSerializer extends VariableDepthSerializer<Standard> {
         writeStringIfExists(gen, "name", value.getName());
         writeStringIfExists(gen, "abbreviation", value.getAbbreviation());
         writeObjectIfExists(gen, "artifact", value.getArtifact());
-        writeStringIfExists(gen, "summary", value.getOneliner());
+        writeStringIfExists(gen, "summary", value.getSummary());
         writeStringIfSelected(gen, "description", value.getDescription());
         writeStringIfExists(gen, "documentationUrl", value.getDocumentationUrl());
         writeObjectIfExists(gen, "category", value.getStandardCategory());
         writeObjectIfExists(gen, "status", value.getReleaseStatus());
+        writeObjectIfSelected(gen, "workStream", value.getWorkStream());
         writeObjectIfSelected(gen, "versions", value.getStandardVersions());
         gen.writeEndObject();
     }

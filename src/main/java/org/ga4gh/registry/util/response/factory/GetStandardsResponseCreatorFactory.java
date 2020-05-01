@@ -15,6 +15,7 @@ public class GetStandardsResponseCreatorFactory extends ResponseCreatorFactory<S
         this.joinData("standardCategory")
             .joinData("releaseStatus")
             .joinData("standardVersions")
+            .joinData("workStream")
             .addModule(new StandardSerializerModule())
             .addModule(new StandardCategorySerializerModule())
             .addModule(new ReleaseStatusSerializerModule());

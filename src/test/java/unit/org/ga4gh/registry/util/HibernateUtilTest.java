@@ -18,4 +18,17 @@ public class HibernateUtilTest {
         SessionFactory factory = HibernateUtil.getSessionFactory();
         Assert.assertNotNull(factory);
     }
+
+    @Test
+    public void testBuildSessionFactoryWithoutContext() {
+
+        try {
+            HibernateUtil hUtil = new HibernateUtil();
+            hUtil.getClass();
+            hUtil.buildSessionFactory();
+            // HibernateUtil.buildSessionFactory();
+        } catch(ExceptionInInitializerError ex) {
+            System.out.println(ex);
+        }
+    }
 }

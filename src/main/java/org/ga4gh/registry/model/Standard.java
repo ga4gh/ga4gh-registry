@@ -36,8 +36,8 @@ public class Standard {
     @JoinColumn(name = "standard_category_id")
     private StandardCategory standardCategory;
 
-    @Column(name = "oneliner")
-    private String oneliner;
+    @Column(name = "summary")
+    private String summary;
 
     @Column(name = "description")
     private String description;
@@ -58,16 +58,21 @@ public class Standard {
                cascade = {})//CascadeType.ALL)
     private List<StandardVersion> standardVersions;
 
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE,
+                          CascadeType.DETACH, CascadeType.REFRESH})
+    @JoinColumn(name = "work_stream_id")
+    private WorkStream workStream;
+
     /* constructors */
 
     public Standard() {
 
     }
 
-    public Standard(String name, String oneliner, String description, 
+    public Standard(String name, String summary, String description, 
         String documentationUrl) {
             this.name = name;
-            this.oneliner = oneliner;
+            this.summary = summary;
             this.description = description;
             this.documentationUrl = documentationUrl;
         }
@@ -106,12 +111,12 @@ public class Standard {
         this.standardCategory = standardCategory;
     }
 
-    public String getOneliner() {
-        return oneliner;
+    public String getSummary() {
+        return summary;
     }
 
-    public void setOneliner(String oneliner) {
-        this.oneliner = oneliner;
+    public void setSummary(String summary) {
+        this.summary = summary;
     }
 
     public String getDescription() {
@@ -154,9 +159,17 @@ public class Standard {
         this.standardVersions = standardVersions;
     }
 
+    public WorkStream getWorkStream() {
+        return workStream;
+    }
+
+    public void setWorkStream(WorkStream workStream) {
+        this.workStream = workStream;
+    }
+
     public String toString() {
         return "Standard [id=" + id + ", name=" + name + 
-               ", oneliner=" + oneliner +
+               ", summary=" + summary +
                ", description=" + description +
                ", documentationUrl=" + documentationUrl +
                ", artifact=" + artifact + "]";

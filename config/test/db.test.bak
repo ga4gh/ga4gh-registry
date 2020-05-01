@@ -112,11 +112,13 @@ CREATE TABLE test_schema.standard (
     id uuid DEFAULT test_schema.uuid_generate_v4() NOT NULL,
     name text NOT NULL,
     standard_category_id uuid NOT NULL,
-    oneliner text NOT NULL,
+    summary text NOT NULL,
     description text NOT NULL,
     documentation_url text NOT NULL,
     release_status_id uuid NOT NULL,
-    artifact text DEFAULT 'standard'::text NOT NULL
+    artifact text DEFAULT 'standard'::text,
+    abbreviation text,
+    work_stream_id uuid DEFAULT '91055363-6963-432b-912f-6071bb63b0c7'::uuid NOT NULL
 );
 
 
@@ -150,16 +152,25 @@ CREATE TABLE test_schema.standard_version (
 ALTER TABLE test_schema.standard_version OWNER TO test_user;
 
 --
+-- Name: work_stream; Type: TABLE; Schema: test_schema; Owner: test_user
+--
+
+CREATE TABLE test_schema.work_stream (
+    id uuid DEFAULT test_schema.uuid_generate_v4() NOT NULL,
+    name text NOT NULL,
+    abbreviation text
+);
+
+
+ALTER TABLE test_schema.work_stream OWNER TO test_user;
+
+--
 -- Data for Name: implementation; Type: TABLE DATA; Schema: test_schema; Owner: test_user
 --
 
 COPY test_schema.implementation (id, standard_version_id, implementation_category_id, name, description, organization_id, contact_url, documentation_url, created_at, updated_at, environment, version, url) FROM stdin;
-a25ff2a4-9233-4192-a029-1a6b69f6aff6	9da4ec68-19ca-4603-9d0c-ad62c8e56796	de7fe9c3-2a40-4dc8-bd58-fcda4b705b04	GA4GH htsget Reference Implementation	Davids htsget implementation using Tabula Muris dataset	f3cfc0d2-e9bd-4b26-a856-0d2b2f47d1f4	jeremy.adams@ga4gh.org	https://htsget.ga4gh.org/	\N	\N	production	1.0.0	https://htsget.ga4gh.org/
-d6adc4c4-919a-4093-a089-b55bacfe3216	efe59fb4-1522-4ddc-9a4e-f1e5dfb52189	de7fe9c3-2a40-4dc8-bd58-fcda4b705b04	Caltech RNAget Reference Implementation	RNAget implementation serving compliance test dataset	c176bd06-c5a1-43ed-865d-0b6a1a448962	sau@caltech.edu	https://felcat.caltech.edu/rnaget	\N	\N	production	1.0.0	https://felcat.caltech.edu/rnaget
-8bc004a5-2698-40a1-9611-589e85cd68ca	efe59fb4-1522-4ddc-9a4e-f1e5dfb52189	de7fe9c3-2a40-4dc8-bd58-fcda4b705b04	CRG RNAget Reference Implementation	RNAget implementation serving compliance test dataset	e9079cb9-4c14-479d-8ced-2268cbc33e8c	emilio.palumbo@crg.eu	https://genome.crg.cat/rnaget	\N	\N	production	1.0.0	https://genome.crg.cat/rnaget
-2162d9f4-9753-4dae-94ae-8200afc73edb	a6a6f7f3-e546-4f26-90bc-70f9dd5dc98a	de7fe9c3-2a40-4dc8-bd58-fcda4b705b04	Dockstore	Dockstore TRS implementation	e7b2d376-7f8c-41b2-bf2d-ecb4620e8a90	\N	https://dockstore.org/api/static/swagger-ui/index.html	\N	\N	\N	1.8.1	https://dockstore.org/api/api/ga4gh/v2/
-f725e2e6-8949-4f49-8569-9dabdafc76ab	a6a6f7f3-e546-4f26-90bc-70f9dd5dc98a	de7fe9c3-2a40-4dc8-bd58-fcda4b705b04	Biocontainers	Biocontainers TRS implementation	c6a694c4-63ca-4d01-957a-7e466294d0b3	\N	https://biocontainers-edu.biocontainers.pro/en/latest/	\N	\N	\N	1.0.0	https://api.biocontainers.pro/api/ga4gh/v2
-7893404d-7b73-4983-9891-89023c8a34fa	20dc24de-86a5-4301-a9be-95211469dabd	de7fe9c3-2a40-4dc8-bd58-fcda4b705b04	GA4GH Standards and Implementations Registry	Flexible API registry of all GA4GH standards and associated implementations	f3cfc0d2-e9bd-4b26-a856-0d2b2f47d1f4	\N	https://ga4gh.org	\N	\N	\N	1.0.0	https://ga4gh.org
+a25ff2a4-9233-4192-a029-1a6b69f6aff6	9da4ec68-19ca-4603-9d0c-ad62c8e56796	de7fe9c3-2a40-4dc8-bd58-fcda4b705b04	GA4GH htsget	ga4gh implementation of htsget	f3cfc0d2-e9bd-4b26-a856-0d2b2f47d1f4	mailto:nobody@ga4gh.org	https://example.org/doc/ga4gh/htsget	\N	\N	production	1.0.0	https://example.org/api/ga4gh/htsget
+7893404d-7b73-4983-9891-89023c8a34fa	20dc24de-86a5-4301-a9be-95211469dabd	de7fe9c3-2a40-4dc8-bd58-fcda4b705b04	GA4GH service registry	ga4gh implementation of service registry	f3cfc0d2-e9bd-4b26-a856-0d2b2f47d1f4	mailto:nobody@ga4gh.org	https://example.org/doc/ga4gh/registry	\N	\N	\N	1.0.0	https://example.org/api/ga4gh/registry
 \.
 
 
@@ -183,10 +194,8 @@ a9d6094d-8b78-4468-b13e-b2573245f579	FileFormatTool
 
 COPY test_schema.organization (id, name, short_name, url) FROM stdin;
 f3cfc0d2-e9bd-4b26-a856-0d2b2f47d1f4	Global Alliance for Genomics and Health	GA4GH	https://ga4gh.org
-c176bd06-c5a1-43ed-865d-0b6a1a448962	California Institute of Technology	Caltech	https://www.caltech.edu/
-e9079cb9-4c14-479d-8ced-2268cbc33e8c	Centre for Genomic Regulation	CRG	https://www.crg.eu/
-e7b2d376-7f8c-41b2-bf2d-ecb4620e8a90	Dockstore	\N	https://dockstore.org
-c6a694c4-63ca-4d01-957a-7e466294d0b3	Biocontainers	\N	https://biocontainers.pro
+87f27e7a-4e69-423e-b24b-44201e3c0799	Genomic Developers Group	GDG	https://example.org/gdg
+516c43fd-4b65-419b-b433-3461ddb5e301	Canadian Genomics Engineering	CGE	https://example.org/cge
 \.
 
 
@@ -197,7 +206,7 @@ c6a694c4-63ca-4d01-957a-7e466294d0b3	Biocontainers	\N	https://biocontainers.pro
 COPY test_schema.release_status (id, status) FROM stdin;
 22e070a9-1381-4596-8134-02a7df419111	Proposed
 011e9615-cd2c-4f33-80d4-bbaedf351dcf	Approved
-a8bb9b01-ba2d-4074-acf0-6aeedd1ea3b3	Deprecated
+a8bb9b01-ba2d-4074-acf0-6aeedd1ea3b3	Legacy
 \.
 
 
@@ -205,25 +214,19 @@ a8bb9b01-ba2d-4074-acf0-6aeedd1ea3b3	Deprecated
 -- Data for Name: standard; Type: TABLE DATA; Schema: test_schema; Owner: test_user
 --
 
-COPY test_schema.standard (id, name, standard_category_id, oneliner, description, documentation_url, release_status_id, artifact) FROM stdin;
-3c57ebf6-a020-419f-b3e2-ddbc9ce5f417	RNAget	85d9b790-65be-4caa-8669-15fe04281090	Download RNAseq matrix	A longer description of RNAget	https://github.com/ga4gh-rnaseq/schema	011e9615-cd2c-4f33-80d4-bbaedf351dcf	rnaget
-bffd4855-31c7-4c84-a8c8-b89c7036311c	htsget	85d9b790-65be-4caa-8669-15fe04281090	Download high-throughput sequencing reads and variants	A longer description of htsget	https://github.com/samtools/hts-specs/blob/master/htsget.md	011e9615-cd2c-4f33-80d4-bbaedf351dcf	htsget
-65c259b6-79dd-4f3d-b128-2583ce64edc8	Tool Registry Service (TRS)	85d9b790-65be-4caa-8669-15fe04281090	Exchange tools and workflows to analyze, read, and manipulate genomic data	​The Tool Registry Service (TRS) is a standard API for exchanging tools and workflows to analyze, read, and manipulate genomic data. The ​TRS API is one of a series of technical standards from the Cloud Work Stream that together allow genomics researchers to bring algorithms to datasets in disparate cloud environments, rather than moving data around. TRS gives researchers access to far more tools than they can presently use, and allows developers to register their products so that they are visible on a multitude of sites, expanding their audience reach. The API also provides a set of requirements for tool and workflow registries to implement TRS.	https://ga4gh.github.io/tool-registry-service-schemas/	011e9615-cd2c-4f33-80d4-bbaedf351dcf	trs
-d37b54c1-e258-4828-a756-7b605afb626d	Service Registry	85d9b790-65be-4caa-8669-15fe04281090	Lists metadata about other GA4GH services within a network	The Service Registry API provides information about other GA4GH services, primarily for the purpose of organizing services into networks or groups and service discovery across organizational boundaries. It’s a minimalistic, simple, lightweight, read-only API for listing services and their metadata, as described by service-info.	https://github.com/ga4gh-discovery/ga4gh-service-registry/blob/develop/README.md	011e9615-cd2c-4f33-80d4-bbaedf351dcf	service-registry
-8c8abbf0-a55d-41a4-93b2-68f046a16e0a	Service Info	85d9b790-65be-4caa-8669-15fe04281090	Extensible endpoint describing service metadata for GA4GH API-based specifications	The Service Info API is an endpoint for describing GA4GH service metadata, designed for extension and inclusion in other APIs. Service info is used to describe a single service, while Service Registry is used to describe multiple services.	https://github.com/ga4gh-discovery/ga4gh-service-info/blob/develop/README.md	011e9615-cd2c-4f33-80d4-bbaedf351dcf	service-info
-95b20f57-9284-433f-a4d6-b9bdb60c6f97	CRAM	ef7084e9-d3b3-4ed3-bb26-236112a09798	Compression format for long-term storage of genomic data	The CRAM file format is an efficient storage format for read data, achieving significantly better lossless compression than BAM, whilst maintaining full compatibility.	http://samtools.github.io/hts-specs/CRAMv3.pdf	011e9615-cd2c-4f33-80d4-bbaedf351dcf	cram
-dc2d9d23-e7ac-4fb4-8bcc-524f62980bf5	Passports	85d9b790-65be-4caa-8669-15fe04281090	Easily communicate researcher data access authorizations across multiple organizations	The GA4GH Passport specification aims to support data access policies within current and evolving data access governance systems. This specification defines Passports and Passport Visas as the standard way of communicating the data access authorizations that a user has based on either their role (e.g. researcher), affiliation, or access status.	https://github.com/ga4gh-duri/ga4gh-duri.github.io/blob/master/researcher_ids/ga4gh_passport_v1.md#ga4gh-passport	011e9615-cd2c-4f33-80d4-bbaedf351dcf	passports
-e07ffb9d-db81-49f6-bf96-8be9b15e5277	Phenopackets	b36d84cf-7d81-4ed1-9ded-f3b30fadb3c7	Standardized data models for capturing clinical and phenotypic information	​While ontologies and terminologies provide the standard data concept definitions for capturing clinical information, an information model is required to successfully exchange that information between clinical information systems and with related information systems. Phenopackets provides information models with different levels of complexity to enable high level clinical phenotype information as well as deep clinical phenotype information to be exchanged.	https://phenopackets-schema.readthedocs.io/en/1.0.0/index.html	011e9615-cd2c-4f33-80d4-bbaedf351dcf	phenopackets
-3de0efa6-b929-4743-bafd-be5a178d3051	Beacon API	85d9b790-65be-4caa-8669-15fe04281090	Informs a researcher whether or not a user-specified mutation has been observed in a particular dataset	The Beacon API can be implemented as a web-accessible service that users may query for information about a specific allele. A user of a Beacon can pose the query “Have you observed this nucleotide (e.g. C) at this genomic location (e.g. position 32,936,732 on chromosome 13)?” to which the Beacon responds with either “yes” or “no”. The new release of the Beacon API extends its functionality through support for additional types of genomic variants and improved metadata support. Additionally, the accompanying ELIXIR Beacon reference implementation demonstrates ELIXIR Authorization and Authentication Infrastructure (AAI), enabling data owners to light Beacons at different tiers of data access: public, registered, or controlled.	https://github.com/ga4gh-beacon/specification	011e9615-cd2c-4f33-80d4-bbaedf351dcf	beacon
-7f154b0c-acf1-419c-becb-ef48ac483d7d	Crypt4GH	ef7084e9-d3b3-4ed3-bb26-236112a09798	Encrypt sensitive genomic data in transit and at rest	By its nature, genomic data can include information of a confidential nature about the health of individuals. It is important that such information is not accidentally disclosed. One part of the defense against such disclosure is to keep the data in an encrypted format as much as possible. Crypt4GH is a file format that can be used to store data in an encrypted and authenticated state. Existing applications can, with minimal modification, read and write data in the encrypted format. The choice of encryption also allows the encrypted data to be read starting from any location, facilitating indexed access to files.	http://samtools.github.io/hts-specs/crypt4gh.pdf	011e9615-cd2c-4f33-80d4-bbaedf351dcf	crypt4gh
-0980a95f-125a-4c4c-bc64-076aa437c083	refget	85d9b790-65be-4caa-8669-15fe04281090	Download reference sequences by checksum	A longer description of refget	https://github.com/samtools/hts-specs/blob/master/refget.md	011e9615-cd2c-4f33-80d4-bbaedf351dcf	refget
-41c15094-8129-4606-a563-7a3387c3ea4e	Data Repository Service (DRS)	85d9b790-65be-4caa-8669-15fe04281090	Access genomic datasets regardless of the repository in which they are stored or managed	The Data Repository Service (DRS) API, a standard for building data repositories and adapting access tools to work with those repositories, works with other approved APIs from the GA4GH Cloud Work Stream to allow researchers to discover algorithms across different cloud environments and send them to datasets they wish to analyze. The API allows data consumers to access datasets regardless of the repository in which they are stored or managed.	https://github.com/ga4gh/data-repository-service-schemas	011e9615-cd2c-4f33-80d4-bbaedf351dcf	drs
-dbf21b8f-aded-4b7e-8680-b182f994a2bf	Workflow Execution Service (WES)	85d9b790-65be-4caa-8669-15fe04281090	Submit and inspect genomic analysis workflow runs	Portable tools — the ability to execute a single analysis in a variety of environments — allow researchers to work with more data from more sources, and tool builders to support more researchers and more use cases. The Workflow Execution Service (WES) API provides a standard for exactly that. This API lets users run a single workflow (defined using CWL or WDL) on multiple different platforms, clouds, and environments, and be confident that it will work the same way. The API provides methods to request that a workflow be run, pass parameters to that workflow, get information about running workflows, and cancel a running workflow.	https://samtools.github.io/hts-specs/BCFv2_qref.pdf	011e9615-cd2c-4f33-80d4-bbaedf351dcf	wes
-2ff1eb74-8319-4ac0-b57b-b56705ad156c	Sequence Alignment Map (SAM/BAM)	ef7084e9-d3b3-4ed3-bb26-236112a09798	Specifications for storing next-generation sequencing read data	Specifications for storing next-generation sequencing read data.	https://samtools.github.io/hts-specs/SAMv1.pdf	011e9615-cd2c-4f33-80d4-bbaedf351dcf	sam
-4dd0bcb1-2704-4874-8775-61d96613b7ed	Variant Representation	b36d84cf-7d81-4ed1-9ded-f3b30fadb3c7	Standardized data models to precisely exchange genetic variation data across communities	The ​Variation Representation (VR) specification​ provides a flexible framework of computational models, schemas, and algorithms to precisely and consistently exchange genetic variation data across communities. The specification, which was developed with input from national information resource providers, major public initiatives, and diagnostic testing laboratories, significantly reduces ambiguity in exchanging variation data. In this way, VR aims to improve the reliability and utility of the clinical annotations that are central to personalized medicine. The VR specification consists of five key components that together produce a reliable way of describing and transferring genetic variation data: an extensible terminology and information model, a machine-readable schema, conventions for data normalization, globally unique computed identifiers, and a python implementation.	https://vr-spec.readthedocs.io/en/1.0/	011e9615-cd2c-4f33-80d4-bbaedf351dcf	vr
-53cc3fa6-cb40-40b1-a614-a9e351c6d2d9	Variant Call Format (VCF)	ef7084e9-d3b3-4ed3-bb26-236112a09798	The specifications for Variant Call Format Files (VCF)	The specifications for Variant Call Format Files (VCF)	https://samtools.github.io/hts-specs/VCFv4.3.pdf	011e9615-cd2c-4f33-80d4-bbaedf351dcf	vcf
-99ce371c-13d3-4108-9b4a-00f92af79c9c	Binary Variant Call Format (BCF)	ef7084e9-d3b3-4ed3-bb26-236112a09798	The specifications for VCF binary equivalent	The specifications for VCF binary equivalent	https://samtools.github.io/hts-specs/BCFv2_qref.pdf	011e9615-cd2c-4f33-80d4-bbaedf351dcf	bcf
-ec794fca-2e04-4b2a-be3c-20d9bee7065c	Pedigree	ef7084e9-d3b3-4ed3-bb26-236112a09798	Unambiguous, computable pedigree and family information	The need for high quality, unambiguous, computable pedigree and family information is critical for scaling genomic analysis to larger, complex families. Pedigree data is currently represented in heterogeneous formats that frequently result in the use of lowest-common-denominator formats (e.g., PED) or custom JSON formats for data transfer. The HL7 FHIR standard core data models do not support pedigrees, but there is a draft extension to support genomic pedigrees that should be evaluated and potentially extended by the GA4GH. Standardizing the way systems represent family structure will allow patients to share this information more easily between healthcare systems and help software tools to use this information to improve genome analysis and diagnosis. The collection of specific clinical or genetic data is outside the scope of this deliverable, and would instead be handled by other formats and references to individuals within the pedigree representation.	https://github.com/ga4gh-cp/pedigree	22e070a9-1381-4596-8134-02a7df419111	pedigree
+COPY test_schema.standard (id, name, standard_category_id, summary, description, documentation_url, release_status_id, artifact, abbreviation, work_stream_id) FROM stdin;
+3c57ebf6-a020-419f-b3e2-ddbc9ce5f417	RNAget	85d9b790-65be-4caa-8669-15fe04281090	Download RNAseq matrix	Long description of RNAget	https://rnaget.org	011e9615-cd2c-4f33-80d4-bbaedf351dcf	rnaget	\N	91055363-6963-432b-912f-6071bb63b0c7
+bffd4855-31c7-4c84-a8c8-b89c7036311c	htsget	85d9b790-65be-4caa-8669-15fe04281090	Download hts files	Long description of htsget	https://htsget.org	011e9615-cd2c-4f33-80d4-bbaedf351dcf	htsget	\N	91055363-6963-432b-912f-6071bb63b0c7
+95b20f57-9284-433f-a4d6-b9bdb60c6f97	CRAM	ef7084e9-d3b3-4ed3-bb26-236112a09798	Genomic compression	Longer desc of CRAM	https://cram.org	011e9615-cd2c-4f33-80d4-bbaedf351dcf	\N	\N	91055363-6963-432b-912f-6071bb63b0c7
+0980a95f-125a-4c4c-bc64-076aa437c083	refget	85d9b790-65be-4caa-8669-15fe04281090	Get reference seqs	Description of refget	https://refget.org	011e9615-cd2c-4f33-80d4-bbaedf351dcf	refget	\N	91055363-6963-432b-912f-6071bb63b0c7
+2ff1eb74-8319-4ac0-b57b-b56705ad156c	Sequence Alignment Map	ef7084e9-d3b3-4ed3-bb26-236112a09798	Genomic reads file format	Long desc of SAM and BAM	https://sam.org	011e9615-cd2c-4f33-80d4-bbaedf351dcf	\N	SAM/BAM	91055363-6963-432b-912f-6071bb63b0c7
+d37b54c1-e258-4828-a756-7b605afb626d	Service Registry	85d9b790-65be-4caa-8669-15fe04281090	Register services	Description of service registry	https://service-registry.org	011e9615-cd2c-4f33-80d4-bbaedf351dcf	service-registry	\N	fc3d69ac-59ba-4edb-8dfa-62353e4edf09
+8c8abbf0-a55d-41a4-93b2-68f046a16e0a	Service Info	85d9b790-65be-4caa-8669-15fe04281090	Info about service	Description of service info	https://service-info.org	011e9615-cd2c-4f33-80d4-bbaedf351dcf	\N	\N	fc3d69ac-59ba-4edb-8dfa-62353e4edf09
+e07ffb9d-db81-49f6-bf96-8be9b15e5277	Phenopackets	b36d84cf-7d81-4ed1-9ded-f3b30fadb3c7	Phenotypic data model	Longer desc of Phenopackets	https://phenopackets.org	011e9615-cd2c-4f33-80d4-bbaedf351dcf	\N	\N	33abf302-7007-441e-bae0-53e2a01dcd5d
+65c259b6-79dd-4f3d-b128-2583ce64edc8	Tool Registry Service	85d9b790-65be-4caa-8669-15fe04281090	Get Genomic workflows	Longer description of TRS	https://trs.org	011e9615-cd2c-4f33-80d4-bbaedf351dcf	trs	TRS	4f7094ad-8b0a-4b98-a711-c7b327709390
+41c15094-8129-4606-a563-7a3387c3ea4e	Data Repository Service	85d9b790-65be-4caa-8669-15fe04281090	Platform-agnostic data API	Long desc of DRS	https://drs.org	011e9615-cd2c-4f33-80d4-bbaedf351dcf	drs	DRS	4f7094ad-8b0a-4b98-a711-c7b327709390
+dbf21b8f-aded-4b7e-8680-b182f994a2bf	Workflow Execution Service	85d9b790-65be-4caa-8669-15fe04281090	Execute workflows	Long desc of WES	https://wes.org	011e9615-cd2c-4f33-80d4-bbaedf351dcf	wes	WES	4f7094ad-8b0a-4b98-a711-c7b327709390
+53cc3fa6-cb40-40b1-a614-a9e351c6d2d9	Variant Call Format	ef7084e9-d3b3-4ed3-bb26-236112a09798	Genomic variants format	Description of VCF	https://vcf.org	011e9615-cd2c-4f33-80d4-bbaedf351dcf	\N	VCF	91055363-6963-432b-912f-6071bb63b0c7
 \.
 
 
@@ -250,22 +253,31 @@ efe59fb4-1522-4ddc-9a4e-f1e5dfb52189	3c57ebf6-a020-419f-b3e2-ddbc9ce5f417	1.0.0	
 9e8baf14-86b4-4105-a928-342ab1cfb4c7	53cc3fa6-cb40-40b1-a614-a9e351c6d2d9	4.1	https://samtools.github.io/hts-specs/VCFv4.1.pdf	011e9615-cd2c-4f33-80d4-bbaedf351dcf
 835be12f-cff5-4bce-a860-392bfefd3629	53cc3fa6-cb40-40b1-a614-a9e351c6d2d9	4.2	https://samtools.github.io/hts-specs/VCFv4.2.pdf	011e9615-cd2c-4f33-80d4-bbaedf351dcf
 ee37184f-82d6-49f6-a062-0e5cc391a4fb	53cc3fa6-cb40-40b1-a614-a9e351c6d2d9	4.3	https://samtools.github.io/hts-specs/VCFv4.3.pdf	011e9615-cd2c-4f33-80d4-bbaedf351dcf
-1d3a1f8f-090d-4d30-81fc-533c8faa4445	99ce371c-13d3-4108-9b4a-00f92af79c9c	1.0.0	https://samtools.github.io/hts-specs/BCFv1_qref.pdf	011e9615-cd2c-4f33-80d4-bbaedf351dcf
-c9e0d9f8-6fa0-47ca-8099-a4c0ecaa4d1f	99ce371c-13d3-4108-9b4a-00f92af79c9c	2.1.0	https://samtools.github.io/hts-specs/BCFv2_qref.pdf	011e9615-cd2c-4f33-80d4-bbaedf351dcf
 b3802c7b-2409-43f2-92e8-c01574a7d5cd	41c15094-8129-4606-a563-7a3387c3ea4e	1.0.0	https://ga4gh.github.io/data-repository-service-schemas/preview/release/drs-1.0.0/docs/	011e9615-cd2c-4f33-80d4-bbaedf351dcf
-2c5265de-5f02-44db-aa89-87b2387164aa	dc2d9d23-e7ac-4fb4-8bcc-524f62980bf5	1.0.0	https://github.com/ga4gh-duri/ga4gh-duri.github.io/blob/master/researcher_ids/ga4gh_passport_v1.md#ga4gh-passport	011e9615-cd2c-4f33-80d4-bbaedf351dcf
 a7b9af1d-926e-4b75-a6a9-c892578fce53	e07ffb9d-db81-49f6-bf96-8be9b15e5277	1.0.0	https://phenopackets-schema.readthedocs.io/en/1.0.0/index.html	011e9615-cd2c-4f33-80d4-bbaedf351dcf
 30325c92-b7fa-4cfe-b2de-26df8065f8f8	8c8abbf0-a55d-41a4-93b2-68f046a16e0a	1.0.0	https://github.com/ga4gh-discovery/ga4gh-service-info/blob/develop/service-info.yaml	011e9615-cd2c-4f33-80d4-bbaedf351dcf
 20dc24de-86a5-4301-a9be-95211469dabd	d37b54c1-e258-4828-a756-7b605afb626d	1.0.0	https://github.com/ga4gh-discovery/ga4gh-service-registry/blob/develop/service-registry.yaml	011e9615-cd2c-4f33-80d4-bbaedf351dcf
 a6a6f7f3-e546-4f26-90bc-70f9dd5dc98a	65c259b6-79dd-4f3d-b128-2583ce64edc8	2.0.0	https://ga4gh.github.io/tool-registry-service-schemas/preview/2.0.0/docs/pdf/index.pdf	011e9615-cd2c-4f33-80d4-bbaedf351dcf
-4e8009a8-f71c-4f64-83d8-363d1046f84a	3de0efa6-b929-4743-bafd-be5a178d3051	1.0.0	https://github.com/ga4gh-beacon/specification/blob/master/beacon.md	011e9615-cd2c-4f33-80d4-bbaedf351dcf
 11b97c92-b4a0-48b0-9a8e-31fbc1e12fc2	95b20f57-9284-433f-a4d6-b9bdb60c6f97	2.1.0	https://samtools.github.io/hts-specs/CRAMv2.1.pdf	011e9615-cd2c-4f33-80d4-bbaedf351dcf
 1fd5101a-593c-495b-9642-bd8af41bb8eb	95b20f57-9284-433f-a4d6-b9bdb60c6f97	3.0.0	https://samtools.github.io/hts-specs/CRAMv3.pdf	011e9615-cd2c-4f33-80d4-bbaedf351dcf
-66581e74-9497-4ff4-84c5-7d43e1cba63f	7f154b0c-acf1-419c-becb-ef48ac483d7d	1.0.0	http://samtools.github.io/hts-specs/crypt4gh.pdf	011e9615-cd2c-4f33-80d4-bbaedf351dcf
 5e64a884-1839-4d10-b69b-4f9d84601a03	2ff1eb74-8319-4ac0-b57b-b56705ad156c	1.0.0	https://samtools.github.io/hts-specs/SAMv1.pdf	011e9615-cd2c-4f33-80d4-bbaedf351dcf
-bd898754-0ca1-4534-8814-ed1191930efb	4dd0bcb1-2704-4874-8775-61d96613b7ed	1.0.0	https://vr-spec.readthedocs.io/en/1.0/	011e9615-cd2c-4f33-80d4-bbaedf351dcf
 8f09d364-b4ba-4cec-963a-55da7cad4d78	dbf21b8f-aded-4b7e-8680-b182f994a2bf	1.0.0	https://ga4gh.github.io/workflow-execution-service-schemas/openapi/workflow_execution_service.swagger.yaml	011e9615-cd2c-4f33-80d4-bbaedf351dcf
-27505caa-022a-4e6f-a8c7-6f2b6cd724f3	ec794fca-2e04-4b2a-be3c-20d9bee7065c	1.0.0	https://github.com/ga4gh-cp/pedigree	011e9615-cd2c-4f33-80d4-bbaedf351dcf
+\.
+
+
+--
+-- Data for Name: work_stream; Type: TABLE DATA; Schema: test_schema; Owner: test_user
+--
+
+COPY test_schema.work_stream (id, name, abbreviation) FROM stdin;
+91055363-6963-432b-912f-6071bb63b0c7	Large Scale Genomics	LSG
+fc3d69ac-59ba-4edb-8dfa-62353e4edf09	Discovery	\N
+4f7094ad-8b0a-4b98-a711-c7b327709390	Cloud	\N
+8e665e0f-2bda-4b15-b3ea-aa6736b263a8	Data Use and Researcher Identities	DURI
+546d8fbd-9ff2-49e3-93d5-7fc0d5c4100e	Genomic Knowledge Standards	GKS
+33abf302-7007-441e-bae0-53e2a01dcd5d	Clinical & Phenotypic Data Capture	Clin/Pheno
+6c6ec255-7419-4048-be89-9fe5689c6d5b	Data Security	\N
+6616c9a6-358d-47bf-a802-ff5a1e36c5e0	Regulatory & Ethics	REWS
 \.
 
 
@@ -374,6 +386,30 @@ ALTER TABLE ONLY test_schema.standard_version
 
 
 --
+-- Name: work_stream work_stream_abbreviation_key; Type: CONSTRAINT; Schema: test_schema; Owner: test_user
+--
+
+ALTER TABLE ONLY test_schema.work_stream
+    ADD CONSTRAINT work_stream_abbreviation_key UNIQUE (abbreviation);
+
+
+--
+-- Name: work_stream work_stream_name_key; Type: CONSTRAINT; Schema: test_schema; Owner: test_user
+--
+
+ALTER TABLE ONLY test_schema.work_stream
+    ADD CONSTRAINT work_stream_name_key UNIQUE (name);
+
+
+--
+-- Name: work_stream work_stream_pkey; Type: CONSTRAINT; Schema: test_schema; Owner: test_user
+--
+
+ALTER TABLE ONLY test_schema.work_stream
+    ADD CONSTRAINT work_stream_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: implementation implementation_implementation_category_id_fkey; Type: FK CONSTRAINT; Schema: test_schema; Owner: test_user
 --
 
@@ -427,6 +463,14 @@ ALTER TABLE ONLY test_schema.standard_version
 
 ALTER TABLE ONLY test_schema.standard_version
     ADD CONSTRAINT standard_version_standard_id_fkey FOREIGN KEY (standard_id) REFERENCES test_schema.standard(id);
+
+
+--
+-- Name: standard standard_work_stream_id_fkey; Type: FK CONSTRAINT; Schema: test_schema; Owner: test_user
+--
+
+ALTER TABLE ONLY test_schema.standard
+    ADD CONSTRAINT standard_work_stream_id_fkey FOREIGN KEY (work_stream_id) REFERENCES test_schema.work_stream(id);
 
 
 --
