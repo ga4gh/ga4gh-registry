@@ -1,5 +1,7 @@
 package org.ga4gh.registry.model;
 
+import org.ga4gh.registry.exception.BadRequestException;
+
 public class ServiceType {
 
     private String group;
@@ -8,10 +10,10 @@ public class ServiceType {
 
     public ServiceType() {}
 
-    public ServiceType(String type) throws InstantiationError {
+    public ServiceType(String type) throws BadRequestException {
         String[] components = type.split(":");
         if (components.length != 3)  {
-            throw new InstantiationError(
+            throw new BadRequestException(
                 "Could not instantiate ServiceType from 'type' string");
         }
         setGroup(components[0]);
@@ -19,7 +21,7 @@ public class ServiceType {
         setVersion(components[2]);
 
         if (!getGroup().equals("org.ga4gh")) {
-            throw new InstantiationError(
+            throw new BadRequestException(
                 "Invalid type 'group' parameter");
         }
     }

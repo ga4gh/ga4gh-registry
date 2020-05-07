@@ -1,5 +1,6 @@
 package unit.org.ga4gh.registry.model;
 
+import org.ga4gh.registry.exception.BadRequestException;
 import org.ga4gh.registry.model.ServiceType;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
@@ -114,13 +115,13 @@ public class ServiceTypeTest {
             {new TypeStringTestCase(
                 "org.foo:fooget:1.0.0",
                 false,
-                "InstantiationError",
+                "BadRequestException",
                 "Invalid type 'group' parameter"
             )},
             {new TypeStringTestCase(
                 "ga4gh refget 1.0.0",
                 false,
-                "InstantiationError",
+                "BadRequestException",
                 "Could not instantiate ServiceType from 'type' string"
             )}
         };
@@ -162,7 +163,7 @@ public class ServiceTypeTest {
             Assert.assertEquals(serviceType.getGroup(), groupArtifactVersion[0]);
             Assert.assertEquals(serviceType.getArtifact(), groupArtifactVersion[1]);
             Assert.assertEquals(serviceType.getVersion(), groupArtifactVersion[2]);
-        } catch (InstantiationError ex) {
+        } catch (BadRequestException ex) {
             if (testCase.getExpSuccess()) {
                 throw new Exception("Instantiation by type string was supposed to succeed, but failed");
             } else {

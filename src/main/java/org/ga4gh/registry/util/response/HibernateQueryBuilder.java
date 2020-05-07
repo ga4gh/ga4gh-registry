@@ -1,24 +1,24 @@
 package org.ga4gh.registry.util.response;
 
 import java.util.StringJoiner;
+import org.ga4gh.registry.model.Implementation;
+import org.ga4gh.registry.model.Queryable;
 
-public class HibernateQueryBuilder<T> {
+public class HibernateQueryBuilder {
 
-    private Class<T> responseClass;
-    private StringBuffer startBuffer;
+    private Class<? extends Queryable> responseClass;
     private StringBuffer joinBuffer;
     private StringJoiner filterBuffer;
 
-    public HibernateQueryBuilder(Class<T> responseClass) {
-        this.responseClass = responseClass;
-        startBuffer = new StringBuffer();
+    public HibernateQueryBuilder() {
+        responseClass = Implementation.class;
         joinBuffer = new StringBuffer();
         filterBuffer = new StringJoiner(" AND ");
-        startBuffer.append("select distinct a from " + this.responseClass.getName() + " a ");
     }
 
     public void join(String property) {
-        joinBuffer.append("JOIN FETCH a." + property + " ");
+        // joinBuffer.append("JOIN FETCH a." + property + " ");
+        joinBuffer.append("LEFT JOIN FETCH a." + property + " ");
     }
 
     public void filter(String property, String value) {
@@ -26,11 +26,25 @@ public class HibernateQueryBuilder<T> {
     }
 
     public String build() {
-        String queryString = startBuffer.toString() + joinBuffer.toString();
+        String queryString = getStartString() + joinBuffer.toString();
         if (filterBuffer.length() > 0) {
             queryString += "WHERE ";
             queryString += filterBuffer.toString();
         }
+        System.out.println("Building Query String");
+        System.out.println(queryString);
         return queryString;
+    }
+
+    public String getStartString() {
+        return "select distinct a from " + this.responseClass.getName() + " a ";
+    }
+
+    public void setResponseClass(Class<? extends Queryable> responseClass) {
+        this.responseClass = responseClass;
+    }
+
+    public Class<? extends Queryable> getResponseClass() {
+        return responseClass;
     }
 }

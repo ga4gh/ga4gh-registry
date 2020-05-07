@@ -16,7 +16,7 @@ import org.hibernate.annotations.GenericGenerator;
 
 @Entity
 @Table(name="standard")
-public class Standard {
+public class Standard implements Queryable {
 
     @Id
     @GeneratedValue(generator = "UUID")

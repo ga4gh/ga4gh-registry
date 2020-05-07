@@ -3,13 +3,23 @@ package org.ga4gh.registry.util.response;
 import java.util.List;
 import javax.persistence.PersistenceException;
 import org.hibernate.query.Query;
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.ga4gh.registry.exception.BadRequestException;
 import org.ga4gh.registry.exception.ResourceNotFoundException;
 import org.ga4gh.registry.util.HibernateUtil;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 
-public class HibernateQuerier<T> {
+public class HibernateQuerier<T> implements ApplicationContextAware {
+
+    private ApplicationContext context;
+
+    @Autowired
+    private HibernateUtil hibernateUtil;
 
     private final Class<T> typeClass;
     private String queryString;
@@ -19,8 +29,12 @@ public class HibernateQuerier<T> {
     }
 
     public List<T> getResults() {
+        // hibernateUtil = context.getBean(HibernateUtil.class);
+        System.out.println("Inside HibernateQuerier.getResults");
+        System.out.println(hibernateUtil);
+        System.out.println("---");
 
-        SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
+        SessionFactory sessionFactory = hibernateUtil.getSessionFactory();
         Session session = sessionFactory.getCurrentSession();
         List<T> results = null;
 
@@ -55,5 +69,14 @@ public class HibernateQuerier<T> {
 
     public String getQueryString() {
         return queryString;
+    }
+
+    @Override
+    public void setApplicationContext(ApplicationContext context) throws BeansException {
+        this.context = context;
+    }
+
+    public ApplicationContext getContext() {
+        return context;
     }
 }

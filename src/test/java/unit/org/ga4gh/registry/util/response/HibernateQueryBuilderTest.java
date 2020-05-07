@@ -1,22 +1,27 @@
 package unit.org.ga4gh.registry.util.response;
 
 import org.ga4gh.registry.model.Implementation;
+import org.ga4gh.registry.model.Queryable;
 import org.ga4gh.registry.model.Standard;
 import org.ga4gh.registry.util.response.HibernateQueryBuilder;
+import org.springframework.context.ApplicationContext;
+import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
+import common.RegistryTestFullContext;
 
-public class HibernateQueryBuilderTest {
+@RegistryTestFullContext
+public class HibernateQueryBuilderTest extends AbstractTestNGSpringContextTests {
 
     private class TestCase {
 
-        private Class<?> typeClass;
+        private Class<? extends Queryable> typeClass;
         private String expected;
         private String[] joins;
         private String[][] filters;
 
-        public TestCase(Class<?> typeClass, String[] joins, String[][] filters,
+        public TestCase(Class<? extends Queryable> typeClass, String[] joins, String[][] filters,
             String expected) {
             this.typeClass = typeClass;
             this.joins = joins;
@@ -24,7 +29,7 @@ public class HibernateQueryBuilderTest {
             this.expected = expected;
         }
 
-        public Class<?> getTypeClass() {
+        public Class<? extends Queryable> getTypeClass() {
             return typeClass;
         }
 
@@ -55,7 +60,7 @@ public class HibernateQueryBuilderTest {
                 new String[]{"releaseStatus"},
                 new String[0][0],
                 "select distinct a from org.ga4gh.registry.model.Standard a "
-                + "JOIN FETCH a.releaseStatus "
+                + "LEFT JOIN FETCH a.releaseStatus "
             )},
             {new TestCase(
                 Implementation.class,
@@ -68,9 +73,9 @@ public class HibernateQueryBuilderTest {
                     {"implementationCategory.category", "APIService"}
                 },
                 "select distinct a from org.ga4gh.registry.model.Implementation a "
-                + "JOIN FETCH a.standardVersion "
-                + "JOIN FETCH a.implementationCategory "
-                + "JOIN FETCH a.organization "
+                + "LEFT JOIN FETCH a.standardVersion "
+                + "LEFT JOIN FETCH a.implementationCategory "
+                + "LEFT JOIN FETCH a.organization "
                 + "WHERE a.implementationCategory.category='APIService'"
             )}
         };
@@ -78,8 +83,8 @@ public class HibernateQueryBuilderTest {
     
     @Test(dataProvider = "cases")
     public void testQueryStringBuild(TestCase testCase) {
-
-        HibernateQueryBuilder<?> builder = new HibernateQueryBuilder<>(testCase.getTypeClass());
+        HibernateQueryBuilder builder = getContext().getBean(HibernateQueryBuilder.class);
+        builder.setResponseClass(testCase.getTypeClass());
 
         if (testCase.getJoins().length > 0) {
             for (String s : testCase.getJoins()) {
@@ -94,5 +99,9 @@ public class HibernateQueryBuilderTest {
         }
 
         Assert.assertEquals(builder.build(), testCase.getExpected());
+    }
+
+    public ApplicationContext getContext() {
+        return this.applicationContext;
     }
 }

@@ -2,8 +2,8 @@ package org.ga4gh.registry.util;
 
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
-import org.springframework.context.ConfigurableApplicationContext;
-import org.ga4gh.registry.App;
+import org.springframework.beans.factory.annotation.Autowired;
+import javax.annotation.PostConstruct;
 import org.ga4gh.registry.model.Implementation;
 import org.ga4gh.registry.model.ImplementationCategory;
 import org.ga4gh.registry.model.Organization;
@@ -15,16 +15,22 @@ import org.ga4gh.registry.model.WorkStream;
 
 public class HibernateUtil {
 
-    private static final SessionFactory sessionFactory = buildSessionFactory();
+    @Autowired
+    private HibernateConfig hibernateConfig;
 
-    public static SessionFactory buildSessionFactory() {
+    private boolean configured;
+    private SessionFactory sessionFactory;
+
+    public HibernateUtil() {
+        configured = false;
+    }
+
+    @PostConstruct
+    public void buildSessionFactory() {
         try {
-            
-            ConfigurableApplicationContext ctx = App.getContext();
-            HibernateConfig hConfig = ctx.getBean(HibernateConfig.class);
             SessionFactory sessionFactory = 
                 new Configuration()
-                .setProperties(hConfig.getAllProperties())
+                .setProperties(hibernateConfig.getAllProperties())
                 .addAnnotatedClass(Implementation.class)
                 .addAnnotatedClass(ImplementationCategory.class)
                 .addAnnotatedClass(Organization.class)
@@ -34,18 +40,42 @@ public class HibernateUtil {
                 .addAnnotatedClass(StandardVersion.class)
                 .addAnnotatedClass(WorkStream.class)
                 .buildSessionFactory();
-            return sessionFactory;
+            System.out.println("Done building, now going to set");
+            setSessionFactory(sessionFactory);
+            System.out.println("Done setting");
+            setConfigured(true);
+            System.out.println("Session Factory Build Success");
         } catch (Throwable ex) {
+            System.out.println("Session Factory Build Failure");
+            System.out.println(ex);
+            System.out.println(ex.toString());
+            System.out.println(ex.getMessage());
+            System.out.println("**********");
+            ex.printStackTrace();
+            System.out.println("**********");
+            System.out.println("***");
             System.err.println("Initial SessionFactory creation failed." + ex);
             throw new ExceptionInInitializerError(ex);
         }
     }
 
-    public static SessionFactory getSessionFactory() {
+    public void shutdown() {
+        getSessionFactory().close();
+    }
+
+    private void setSessionFactory(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
+    }
+
+    public SessionFactory getSessionFactory() {
         return sessionFactory;
     }
 
-    public static void shutdown() {
-        getSessionFactory().close();
+    private void setConfigured(boolean configured) {
+        this.configured = configured;
+    }
+
+    public boolean getConfigured() {
+        return configured;
     }
 }

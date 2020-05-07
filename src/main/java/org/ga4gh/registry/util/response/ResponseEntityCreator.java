@@ -1,27 +1,45 @@
 package org.ga4gh.registry.util.response;
 
+import java.util.HashMap;
 import java.util.List;
-import org.springframework.http.ResponseEntity;
+import java.util.Map;
+import javax.annotation.PostConstruct;
+import org.ga4gh.registry.model.Implementation;
+import org.ga4gh.registry.model.Standard;
+import org.ga4gh.registry.model.Organization;
+import org.ga4gh.registry.model.Queryable;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 
-public class ResponseCreator<T> {
+public class ResponseEntityCreator<T extends Queryable> {
+
+    @Autowired
+    private HibernateQuerierFactory hibernateQuerierFactory;
+
+    @Autowired
+    private HibernateQueryBuilder hibernateQueryBuilder;
+
+    @Autowired
+    private ResponseMapper responseMapper;
+
+    private Map<Class<? extends Queryable>, String> beanPrefixMap = new HashMap<>(){{
+        put(Standard.class, "standards");
+        put(Implementation.class, "implementations");
+        put(Organization.class, "organizations");
+    }};
 
     private Class<T> responseClass;
-    private boolean singleResult;
-    private HibernateQueryBuilder<T> hibernateQueryBuilder;
     private HibernateQuerier<T> hibernateQuerier;
-    private ResponseMapper responseMapper;
+    private boolean singleResult;
     private T unserializedSingleResult;
     private List<T> unserializedListResult;
     private String serializedResponse;
     private HttpHeaders httpHeaders;
 
-    public ResponseCreator(Class<T> responseClass) {
+    public ResponseEntityCreator(Class<T> responseClass) {
         this.responseClass = responseClass;
         singleResult = false;
-        hibernateQueryBuilder = new HibernateQueryBuilder<>(this.responseClass);
-        hibernateQuerier = new HibernateQuerier<>(this.responseClass);
-        responseMapper = new ResponseMapper();
         unserializedSingleResult = null;
         unserializedListResult = null;
         serializedResponse = null;
@@ -29,7 +47,15 @@ public class ResponseCreator<T> {
         httpHeaders.add(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, "*");
     }
 
-    public ResponseCreator<T> buildResponse() {
+    @PostConstruct
+    @SuppressWarnings("unchecked")
+    private void setup() {
+        hibernateQuerier = (HibernateQuerier<T>) hibernateQuerierFactory.createHibernateQuerier(beanPrefixMap.get(responseClass));
+        hibernateQueryBuilder.setResponseClass(responseClass);
+    }
+
+    public ResponseEntityCreator<T> buildResponseEntity() {
+        
         hibernateQuerier.setQueryString(hibernateQueryBuilder.build());
         responseMapper.registerModules();
         if (singleResult) {
@@ -48,7 +74,7 @@ public class ResponseCreator<T> {
             .body(this.getSerializedResponse());
     }
 
-    public HibernateQueryBuilder<T> getHibernateQueryBuilder() {
+    public HibernateQueryBuilder getHibernateQueryBuilder() {
         return hibernateQueryBuilder;
     }
 

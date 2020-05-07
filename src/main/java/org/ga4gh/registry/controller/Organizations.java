@@ -1,8 +1,8 @@
 package org.ga4gh.registry.controller;
 
 import java.util.Map;
-import org.ga4gh.registry.util.response.factory.GetOrganizationByIdResponseCreatorFactory;
-import org.ga4gh.registry.util.response.factory.GetOrganizationsResponseCreatorFactory;
+import org.ga4gh.registry.util.response.factory.GetOrganizationByIdResponseEntityCreatorFactory;
+import org.ga4gh.registry.util.response.factory.GetOrganizationsResponseEntityCreatorFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,18 +16,18 @@ import org.springframework.http.ResponseEntity;
 public class Organizations {
 
     @Autowired
-    GetOrganizationsResponseCreatorFactory getOrganizationsRCF;
+    GetOrganizationsResponseEntityCreatorFactory getOrganizations;
 
     @Autowired
-    GetOrganizationByIdResponseCreatorFactory getOrganizationByIdRCF;
+    GetOrganizationByIdResponseEntityCreatorFactory getOrganizationById;
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<String> getOrganizations() {
-        return getOrganizationsRCF.buildResponseEntity();
+        return getOrganizations.createResponseEntity();
     }
 
     @GetMapping(path = "/{organizationId}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<String> getOrganizationById(@PathVariable Map<String, String> pathVariables) {
-        return getOrganizationByIdRCF.buildResponseEntity(pathVariables);
+        return getOrganizationById.createResponseEntity(pathVariables);
     }
 }

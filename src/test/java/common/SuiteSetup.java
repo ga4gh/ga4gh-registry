@@ -1,21 +1,15 @@
 package common;
 
-import org.ga4gh.registry.App;
-import org.ga4gh.registry.util.HibernateUtil;
+import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.annotations.AfterSuite;
 import org.testng.annotations.BeforeSuite;
 
-public class SuiteSetup {
-
-    public static String[] args = {"--spring.config.location=file:./config/test/test.application.properties"};
+@RegistryTestFullContext
+public class SuiteSetup extends AbstractTestNGSpringContextTests {
 
     @BeforeSuite
-    public void setup() {
-        App.start(args);
-    }
+    public void setup() {}
 
     @AfterSuite
-    public void close() {
-        HibernateUtil.shutdown();
-    }
+    public void close() {}
 }

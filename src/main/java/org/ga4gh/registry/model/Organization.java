@@ -20,7 +20,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @Table(name = "organization")
 @Schema(name = "Organization",
         description = "Organization implementing GA4GH standard(s)")
-public class Organization {
+public class Organization implements Queryable {
 
     @Id
     @GeneratedValue(generator = "UUID")

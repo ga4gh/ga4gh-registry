@@ -4,21 +4,32 @@ import org.ga4gh.registry.model.Implementation;
 import org.ga4gh.registry.model.Organization;
 import org.ga4gh.registry.model.Standard;
 import org.ga4gh.registry.util.HibernateConfig;
-import org.ga4gh.registry.util.response.factory.GetOrganizationByIdResponseCreatorFactory;
-import org.ga4gh.registry.util.response.factory.GetOrganizationsResponseCreatorFactory;
-import org.ga4gh.registry.util.response.factory.GetServiceByIdResponseCreatorFactory;
-import org.ga4gh.registry.util.response.factory.GetServiceInfoResponseCreatorFactory;
-import org.ga4gh.registry.util.response.factory.GetServiceTypesResponseCreatorFactory;
-import org.ga4gh.registry.util.response.factory.GetServicesResponseCreatorFactory;
-import org.ga4gh.registry.util.response.factory.GetStandardByIdResponseCreatorFactory;
-import org.ga4gh.registry.util.response.factory.GetStandardsResponseCreatorFactory;
+import org.ga4gh.registry.util.HibernateUtil;
+import org.ga4gh.registry.util.response.HibernateQuerier;
+import org.ga4gh.registry.util.response.HibernateQuerierFactory;
+import org.ga4gh.registry.util.response.HibernateQueryBuilder;
+import org.ga4gh.registry.util.response.ResponseEntityCreator;
+import org.ga4gh.registry.util.response.ResponseMapper;
+import org.ga4gh.registry.util.response.factory.GetOrganizationByIdResponseEntityCreatorFactory;
+import org.ga4gh.registry.util.response.factory.GetOrganizationsResponseEntityCreatorFactory;
+import org.ga4gh.registry.util.response.factory.GetServiceInfoResponseEntityCreatorFactory;
+import org.ga4gh.registry.util.response.factory.GetServiceByIdResponseEntityCreatorFactory;
+import org.ga4gh.registry.util.response.factory.GetServiceTypesResponseEntityCreatorFactory;
+import org.ga4gh.registry.util.response.factory.GetServicesResponseEntityCreatorFactory;
+import org.ga4gh.registry.util.response.factory.GetStandardByIdResponseEntityCreatorFactory;
+import org.ga4gh.registry.util.response.factory.GetStandardsResponseEntityCreatorFactory;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Scope;
 
 @Configuration
 @ConfigurationProperties
 public class AppConfig {
+
+    /*
+     * HIBERNATE CONFIGURATION BEANS
+     */
 
     @Bean
     public HibernateConfig getHibernateConfig() {
@@ -26,42 +37,112 @@ public class AppConfig {
     }
 
     @Bean
-    public GetOrganizationsResponseCreatorFactory getOrganizationsResponseCreatorFactory() {
-        return new GetOrganizationsResponseCreatorFactory(Organization.class);
+    public HibernateUtil getHibernateUtil() {
+        return new HibernateUtil();
+    }
+
+    /*
+     * HIBERNATE QUERIER BEANS
+     */
+
+    @Bean
+    @Scope("prototype")
+    public ResponseMapper getResponseMapper() {
+        return new ResponseMapper();
     }
 
     @Bean
-    public GetOrganizationByIdResponseCreatorFactory getOrganizationByIdResponseCreatorFactory() {
-        return new GetOrganizationByIdResponseCreatorFactory(Organization.class);
+    @Scope("prototype")
+    public HibernateQueryBuilder getHibernateQueryBuilder() {
+        return new HibernateQueryBuilder();
     }
 
     @Bean
-    public GetServiceInfoResponseCreatorFactory getServiceInfoResponseCreatorFactory() {
-        return new GetServiceInfoResponseCreatorFactory(Implementation.class);
+    public HibernateQuerierFactory getHibernateQuerierFactory() {
+        return new HibernateQuerierFactory();
+    }
+
+    @Bean(name = "standardsHibernateQuerier")
+    @Scope("prototype")
+    public HibernateQuerier<Standard> getStandardsHibernateQuerier() {
+        return new HibernateQuerier<>(Standard.class);
+    }
+
+    @Bean(name = "implementationsHibernateQuerier")
+    @Scope("prototype")
+    public HibernateQuerier<Implementation> getImplementationsHibernateQuerier() {
+        return new HibernateQuerier<>(Implementation.class);
+    }
+
+    @Bean(name = "organizationsHibernateQuerier")
+    @Scope("prototype")
+    public HibernateQuerier<Organization> getOrganizationsHibernateQuerier() {
+        return new HibernateQuerier<>(Organization.class);
+    }
+
+    /*
+     * RESPONSE ENTITY CREATOR BEANS
+     */
+
+    @Bean(name = "standardsResponseEntityCreator")
+    @Scope("prototype")
+    public ResponseEntityCreator<Standard> getStandardsResponseEntityCreator() {
+        return new ResponseEntityCreator<>(Standard.class);
+    }
+
+    @Bean(name = "implementationsResponseEntityCreator")
+    @Scope("prototype")
+    public ResponseEntityCreator<Implementation> getImplementationsResponseEntityCreator() {
+        return new ResponseEntityCreator<>(Implementation.class);
+    }
+
+    @Bean(name = "organizationsResponseEntityCreator")
+    @Scope("prototype")
+    public ResponseEntityCreator<Organization> getOrganizationsResponseEntityCreator() {
+        return new ResponseEntityCreator<>(Organization.class);
+    }
+
+    /*
+     * RESPONSE ENTITY CREATOR FACTORY BEANS
+     */
+
+    @Bean
+    public GetStandardsResponseEntityCreatorFactory getStandardsResponseEntityCreatorFactory() {
+        return new GetStandardsResponseEntityCreatorFactory(Standard.class, "standards");
     }
 
     @Bean
-    public GetServicesResponseCreatorFactory getServicesResponseCreatorFactory() {
-        return new GetServicesResponseCreatorFactory(Implementation.class);
+    public GetStandardByIdResponseEntityCreatorFactory getStandardByIdResponseEntityCreatorFactory() {
+        return new GetStandardByIdResponseEntityCreatorFactory(Standard.class, "standards");
     }
 
     @Bean
-    public GetServiceByIdResponseCreatorFactory getServiceByIdResponseCreatorFactory() {
-        return new GetServiceByIdResponseCreatorFactory(Implementation.class);
+    public GetOrganizationsResponseEntityCreatorFactory getOrganizationsResponseEntityCreatorFactory() {
+        return new GetOrganizationsResponseEntityCreatorFactory(Organization.class, "organizations");
     }
 
     @Bean
-    public GetServiceTypesResponseCreatorFactory getServiceTypesResponseCreatorFactory() {
-        return new GetServiceTypesResponseCreatorFactory(Implementation.class);
+    public GetOrganizationByIdResponseEntityCreatorFactory getOrganizationByIdResponseEntityCreatorFactory() {
+        return new GetOrganizationByIdResponseEntityCreatorFactory(Organization.class, "organizations");
     }
 
     @Bean
-    public GetStandardsResponseCreatorFactory getStandardsResponseCreatorFactory() {
-        return new GetStandardsResponseCreatorFactory(Standard.class);
+    public GetServiceInfoResponseEntityCreatorFactory getServiceInfoResponseEntityCreatorFactory() {
+        return new GetServiceInfoResponseEntityCreatorFactory(Implementation.class, "implementations");
     }
 
     @Bean
-    public GetStandardByIdResponseCreatorFactory getStandardByIdResponseCreatorFactory() {
-        return new GetStandardByIdResponseCreatorFactory(Standard.class);
+    public GetServicesResponseEntityCreatorFactory getServicesResponseEntityCreatorFactory() {
+        return new GetServicesResponseEntityCreatorFactory(Implementation.class, "implementations");
+    }
+
+    @Bean
+    public GetServiceByIdResponseEntityCreatorFactory getServiceByIdResponseEntityCreatorFactory() {
+        return new GetServiceByIdResponseEntityCreatorFactory(Implementation.class, "implementations");
+    }
+
+    @Bean
+    public GetServiceTypesResponseEntityCreatorFactory getServiceTypesResponseEntityCreatorFactory() {
+        return new GetServiceTypesResponseEntityCreatorFactory(Implementation.class, "implementations");
     }
 }

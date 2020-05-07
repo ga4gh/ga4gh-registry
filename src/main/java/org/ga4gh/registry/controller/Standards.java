@@ -1,8 +1,8 @@
 package org.ga4gh.registry.controller;
 
 import java.util.Map;
-import org.ga4gh.registry.util.response.factory.GetStandardByIdResponseCreatorFactory;
-import org.ga4gh.registry.util.response.factory.GetStandardsResponseCreatorFactory;
+import org.ga4gh.registry.util.response.factory.GetStandardByIdResponseEntityCreatorFactory;
+import org.ga4gh.registry.util.response.factory.GetStandardsResponseEntityCreatorFactory;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,18 +16,18 @@ import org.springframework.http.ResponseEntity;
 public class Standards {
 
     @Autowired
-    GetStandardsResponseCreatorFactory getStandardsRCF;
+    GetStandardsResponseEntityCreatorFactory getStandards;
 
     @Autowired
-    GetStandardByIdResponseCreatorFactory getStandardByIdRCF;
+    GetStandardByIdResponseEntityCreatorFactory getStandardById;
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<String> getStandards() {
-        return getStandardsRCF.buildResponseEntity();
+        return getStandards.createResponseEntity();
     }
 
     @GetMapping(path = "/{standardId}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<String> getStandardById(@PathVariable Map<String, String> pathVariables) {
-        return getStandardByIdRCF.buildResponseEntity(pathVariables);
+        return getStandardById.createResponseEntity(pathVariables);
     }
 }

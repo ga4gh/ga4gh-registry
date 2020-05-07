@@ -1,19 +1,21 @@
 package unit.org.ga4gh.registry.util;
 
-import org.ga4gh.registry.App;
 import org.ga4gh.registry.util.HibernateConfig;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
+import common.RegistryTestFullContext;
 import org.testng.Assert;
 
-public class HibernateConfigTest {
+@RegistryTestFullContext
+public class HibernateConfigTest extends AbstractTestNGSpringContextTests {
 
-    private HibernateConfig config;
+    @Autowired
+    HibernateConfig hibernateConfig;
 
     @BeforeClass
-    public void setup() {
-        config = App.getContext().getBean(HibernateConfig.class);
-    }
+    public void setup() {}
 
     @Test
     public void testProperties() throws Exception {
@@ -60,6 +62,6 @@ public class HibernateConfigTest {
     }
 
     public String getProperty(String property) {
-        return config.getAllProperties().getProperty(property);
+        return hibernateConfig.getAllProperties().getProperty(property);
     }
 }
