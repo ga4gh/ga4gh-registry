@@ -45,6 +45,8 @@ public class ResponseEntityCreator<T extends Queryable> {
         serializedResponse = null;
         httpHeaders = new HttpHeaders();
         httpHeaders.add(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, "*");
+        httpHeaders.add(HttpHeaders.ACCESS_CONTROL_ALLOW_METHODS, "GET,PUT,POST,DELETE");
+        httpHeaders.add(HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS, "*");
     }
 
     @PostConstruct
