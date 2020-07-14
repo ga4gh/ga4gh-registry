@@ -2,11 +2,11 @@ package org.ga4gh.registry.util.response;
 
 import java.util.StringJoiner;
 import org.ga4gh.registry.model.Implementation;
-import org.ga4gh.registry.model.Queryable;
+import org.ga4gh.registry.model.RegistryModel;
 
 public class HibernateQueryBuilder {
 
-    private Class<? extends Queryable> responseClass;
+    private Class<? extends RegistryModel> responseClass;
     private StringBuffer joinBuffer;
     private StringJoiner filterBuffer;
 
@@ -40,11 +40,11 @@ public class HibernateQueryBuilder {
         return "select distinct a from " + this.responseClass.getName() + " a ";
     }
 
-    public void setResponseClass(Class<? extends Queryable> responseClass) {
+    public void setResponseClass(Class<? extends RegistryModel> responseClass) {
         this.responseClass = responseClass;
     }
 
-    public Class<? extends Queryable> getResponseClass() {
+    public Class<? extends RegistryModel> getResponseClass() {
         return responseClass;
     }
 }

@@ -29,11 +29,6 @@ public class HibernateQuerier<T> implements ApplicationContextAware {
     }
 
     public List<T> getResults() {
-        // hibernateUtil = context.getBean(HibernateUtil.class);
-        System.out.println("Inside HibernateQuerier.getResults");
-        System.out.println(hibernateUtil);
-        System.out.println("---");
-
         SessionFactory sessionFactory = hibernateUtil.getSessionFactory();
         Session session = sessionFactory.getCurrentSession();
         List<T> results = null;

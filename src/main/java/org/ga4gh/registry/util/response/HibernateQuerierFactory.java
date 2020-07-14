@@ -1,6 +1,6 @@
 package org.ga4gh.registry.util.response;
 
-import org.ga4gh.registry.model.Queryable;
+import org.ga4gh.registry.model.RegistryModel;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -16,7 +16,7 @@ public class HibernateQuerierFactory implements ApplicationContextAware {
     }
 
     @SuppressWarnings("unchecked")
-    public HibernateQuerier<? extends Queryable> createHibernateQuerier(String beanNamePrefix) {
+    public HibernateQuerier<? extends RegistryModel> createHibernateQuerier(String beanNamePrefix) {
         return getContext().getBean(getBeanName(beanNamePrefix), HibernateQuerier.class);
     }
 

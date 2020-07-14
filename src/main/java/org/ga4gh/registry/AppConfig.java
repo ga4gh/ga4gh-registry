@@ -5,6 +5,8 @@ import org.ga4gh.registry.model.Organization;
 import org.ga4gh.registry.model.Standard;
 import org.ga4gh.registry.util.HibernateConfig;
 import org.ga4gh.registry.util.HibernateUtil;
+import org.ga4gh.registry.util.requesthandler.put.PutOrganizationHandlerFactory;
+import org.ga4gh.registry.util.requesthandler.put.PutRequestHandler;
 import org.ga4gh.registry.util.response.HibernateQuerier;
 import org.ga4gh.registry.util.response.HibernateQuerierFactory;
 import org.ga4gh.registry.util.response.HibernateQueryBuilder;
@@ -18,6 +20,9 @@ import org.ga4gh.registry.util.response.factory.GetServiceTypesResponseEntityCre
 import org.ga4gh.registry.util.response.factory.GetServicesResponseEntityCreatorFactory;
 import org.ga4gh.registry.util.response.factory.GetStandardByIdResponseEntityCreatorFactory;
 import org.ga4gh.registry.util.response.factory.GetStandardsResponseEntityCreatorFactory;
+import org.ga4gh.registry.util.serialize.sets.OrganizationDeepSerializerModuleSet;
+import org.ga4gh.registry.util.serialize.sets.SerializerModuleSet;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -102,6 +107,12 @@ public class AppConfig {
         return new ResponseEntityCreator<>(Organization.class);
     }
 
+    @Bean(name = "putOrganizationHandler")
+    @Scope("prototype")
+    public PutRequestHandler<Organization> putRequestHandler() {
+        return new PutRequestHandler<>(Organization.class);
+    }
+
     /*
      * RESPONSE ENTITY CREATOR FACTORY BEANS
      */
@@ -127,6 +138,11 @@ public class AppConfig {
     }
 
     @Bean
+    public PutOrganizationHandlerFactory PutOrganizationHandlerFactory() {
+        return new PutOrganizationHandlerFactory(Organization.class, "putOrganizationHandler", "organizationId");
+    }
+
+    @Bean
     public GetServiceInfoResponseEntityCreatorFactory getServiceInfoResponseEntityCreatorFactory() {
         return new GetServiceInfoResponseEntityCreatorFactory(Implementation.class, "implementations");
     }
@@ -144,5 +160,13 @@ public class AppConfig {
     @Bean
     public GetServiceTypesResponseEntityCreatorFactory getServiceTypesResponseEntityCreatorFactory() {
         return new GetServiceTypesResponseEntityCreatorFactory(Implementation.class, "implementations");
+    }
+    
+    /* Serializer Module Sets */
+
+    @Bean
+    @Qualifier("organizationDeepSerializerModuleSet")
+    public SerializerModuleSet organizationDeepSerializerModuleSet() {
+        return new OrganizationDeepSerializerModuleSet();
     }
 }

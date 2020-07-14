@@ -3,11 +3,11 @@ package org.ga4gh.registry.util.response.factory;
 import java.util.List;
 import java.util.Map;
 import com.fasterxml.jackson.databind.module.SimpleModule;
-import org.ga4gh.registry.model.Queryable;
+import org.ga4gh.registry.model.RegistryModel;
 import org.ga4gh.registry.util.response.ResponseEntityCreator;
 import org.springframework.http.ResponseEntity;
 
-public interface ResponseEntityCreatorFactory<T extends Queryable> {
+public interface ResponseEntityCreatorFactory<T extends RegistryModel> {
 
     public ResponseEntity<String> createResponseEntity();
     public ResponseEntity<String> createResponseEntity(Map<String, String> reqVarsA);

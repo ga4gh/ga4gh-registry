@@ -7,12 +7,12 @@ import javax.annotation.PostConstruct;
 import org.ga4gh.registry.model.Implementation;
 import org.ga4gh.registry.model.Standard;
 import org.ga4gh.registry.model.Organization;
-import org.ga4gh.registry.model.Queryable;
+import org.ga4gh.registry.model.RegistryModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 
-public class ResponseEntityCreator<T extends Queryable> {
+public class ResponseEntityCreator<T extends RegistryModel> {
 
     @Autowired
     private HibernateQuerierFactory hibernateQuerierFactory;
@@ -23,7 +23,7 @@ public class ResponseEntityCreator<T extends Queryable> {
     @Autowired
     private ResponseMapper responseMapper;
 
-    private Map<Class<? extends Queryable>, String> beanPrefixMap = new HashMap<>(){{
+    private Map<Class<? extends RegistryModel>, String> beanPrefixMap = new HashMap<>(){{
         put(Standard.class, "standards");
         put(Implementation.class, "implementations");
         put(Organization.class, "organizations");

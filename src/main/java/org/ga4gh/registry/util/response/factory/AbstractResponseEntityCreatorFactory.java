@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import com.fasterxml.jackson.databind.module.SimpleModule;
-import org.ga4gh.registry.model.Queryable;
+import org.ga4gh.registry.model.RegistryModel;
 import org.ga4gh.registry.util.response.HibernateQueryBuilder;
 import org.ga4gh.registry.util.response.ResponseMapper;
 import org.ga4gh.registry.util.response.ResponseEntityCreator;
@@ -13,7 +13,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.http.ResponseEntity;
 
-public abstract class AbstractResponseEntityCreatorFactory<T extends Queryable> implements ResponseEntityCreatorFactory<T>, ApplicationContextAware {
+public abstract class AbstractResponseEntityCreatorFactory<T extends RegistryModel> implements ResponseEntityCreatorFactory<T>, ApplicationContextAware {
 
     private ApplicationContext context;
     private Class<T> responseEntityCreatorTypeClass;

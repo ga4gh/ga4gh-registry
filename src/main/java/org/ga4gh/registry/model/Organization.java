@@ -20,15 +20,15 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @Table(name = "organization")
 @Schema(name = "Organization",
         description = "Organization implementing GA4GH standard(s)")
-public class Organization implements Queryable {
+public class Organization implements RegistryModel {
 
     @Id
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(name = "UUID",
                       strategy = "org.hibernate.id.UUIDGenerator")
-    @Column(name = "id")
+    @Column(name = "id", nullable = false)
     @Schema(example = Ids.SELF_UUID)
-    @NotNull
+    // @NotNull
     private UUID id;
 
     @Column(name = "name")
@@ -38,7 +38,6 @@ public class Organization implements Queryable {
 
     @Column(name = "short_name")
     @Schema(example = "GA4GH")
-    @Null
     private String shortName;
 
     @Column(name = "url")
