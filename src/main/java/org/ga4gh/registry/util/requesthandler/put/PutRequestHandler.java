@@ -1,35 +1,35 @@
 package org.ga4gh.registry.util.requesthandler.put;
 
+import java.util.Map;
 import java.util.UUID;
 import org.ga4gh.registry.model.RegistryModel;
-import org.ga4gh.registry.util.requesthandler.AbstractRequestHandler;
+import org.ga4gh.registry.util.requesthandler.RequestHandler;
 import org.ga4gh.registry.util.serialize.sets.SerializerModuleSet;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.http.ResponseEntity;
 
-public class PutRequestHandler<T extends RegistryModel> extends AbstractRequestHandler<T> {
+public class PutRequestHandler<T extends RegistryModel> extends RequestHandler<T> {
 
     private String idPathParameterName;
 
-    /* Constructor */
-
-    public PutRequestHandler(Class<T> responseClass) {
-        super(responseClass);
+    public PutRequestHandler(Class<T> responseClass, SerializerModuleSet serializerModuleSet, String idPathParameterName) {
+        super(responseClass, serializerModuleSet);
+        setIdPathParameterName(idPathParameterName);
     }
 
-    /* Custom Methods */
-
     public ResponseEntity<String> createResponseEntity() {
-        // set id passed on path to the request body object
+
+        // initial setup
+        Map<String, String> pathVariables = getRequestVariablesA();
         T requestBody = getRequestBody();
-        requestBody = preProcessRequestBody(requestBody);
-        System.out.println(requestBody);
         SerializerModuleSet serializerModuleSet = getSerializerModuleSet();
-        System.out.println(getPathVariables());
-        System.out.println(getIdPathParameterName());
-        System.out.println(getPathVariables().get(getIdPathParameterName()));
-        UUID id = UUID.fromString(getPathVariables().get(getIdPathParameterName()));
+
+        // preprocess request
+        requestBody = preProcessRequestBody(requestBody);
+
+        // set id passed on path to the request body object        
+        UUID id = UUID.fromString(pathVariables.get(getIdPathParameterName()));
         requestBody.setId(id);
 
         // first hibernate operation, update the passed object
@@ -48,8 +48,6 @@ public class PutRequestHandler<T extends RegistryModel> extends AbstractRequestH
         String serialized = serializerModuleSet.serializeObject(object);
         return ResponseEntity.ok().body(serialized);
     }
-
-    /* Setters and Getters */
 
     public void setIdPathParameterName(String idPathParameterName) {
         this.idPathParameterName = idPathParameterName;

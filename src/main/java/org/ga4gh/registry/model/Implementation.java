@@ -47,9 +47,9 @@ public class Implementation implements RegistryModel {
     private String description;
 
     @ManyToOne(fetch = FetchType.LAZY,
-               cascade = CascadeType.ALL)
-               // cascade = {CascadeType.PERSIST, CascadeType.MERGE,
-               //            CascadeType.DETACH, CascadeType.REFRESH})
+               // cascade = CascadeType.ALL)
+               cascade = {CascadeType.PERSIST, CascadeType.MERGE,
+                          CascadeType.DETACH, CascadeType.REFRESH})
     @JoinColumn(name = "organization_id")
     private Organization organization;
 

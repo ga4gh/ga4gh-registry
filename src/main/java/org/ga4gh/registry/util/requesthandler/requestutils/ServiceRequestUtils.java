@@ -105,8 +105,14 @@ public class ServiceRequestUtils {
         qb.filter("url", requestBody.getOrganization().getUrl());
         querier.setQueryString(qb.build());
         Organization result = querier.getSingleResult();
-        if (result != null) {
+        if (result != null) { // found an existing org, set it to request Body
             requestBody.setOrganization(result);
+        } else { // org doesn't exist, save transient org first
+            SessionFactory sessionFactory = getHibernateUtil().getSessionFactory();
+            Session session = sessionFactory.getCurrentSession();
+            session.beginTransaction();
+            session.save(requestBody.getOrganization());
+            session.getTransaction().commit();
         }
     }
 

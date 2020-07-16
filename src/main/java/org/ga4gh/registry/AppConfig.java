@@ -6,17 +6,13 @@ import org.ga4gh.registry.model.Standard;
 import org.ga4gh.registry.model.StandardVersion;
 import org.ga4gh.registry.util.HibernateConfig;
 import org.ga4gh.registry.util.HibernateUtil;
-import org.ga4gh.registry.util.requesthandler.delete.DeleteOrganizationHandlerFactory;
+import org.ga4gh.registry.util.requesthandler.RequestHandler;
+import org.ga4gh.registry.util.requesthandler.RequestHandlerFactory;
 import org.ga4gh.registry.util.requesthandler.delete.DeleteRequestHandler;
-import org.ga4gh.registry.util.requesthandler.delete.DeleteServiceHandlerFactory;
-import org.ga4gh.registry.util.requesthandler.post.PostOrganizationHandlerFactory;
 import org.ga4gh.registry.util.requesthandler.post.PostRequestHandler;
 import org.ga4gh.registry.util.requesthandler.post.PostServiceHandler;
-import org.ga4gh.registry.util.requesthandler.post.PostServiceHandlerFactory;
-import org.ga4gh.registry.util.requesthandler.put.PutOrganizationHandlerFactory;
 import org.ga4gh.registry.util.requesthandler.put.PutRequestHandler;
 import org.ga4gh.registry.util.requesthandler.put.PutServiceHandler;
-import org.ga4gh.registry.util.requesthandler.put.PutServiceHandlerFactory;
 import org.ga4gh.registry.util.requesthandler.requestutils.ServiceRequestUtils;
 import org.ga4gh.registry.util.response.HibernateQuerier;
 import org.ga4gh.registry.util.response.HibernateQuerierFactory;
@@ -121,12 +117,15 @@ public class AppConfig {
         return new ResponseEntityCreator<>(Implementation.class);
     }
 
+    /*
     @Bean(name = "postImplementationHandler")
     @Scope("prototype")
     public PostRequestHandler<Implementation> implementationPostRequestHandler() {
         return new PostRequestHandler<>(Implementation.class);
     }
+    */
 
+    /*
     @Bean(name = "putImplementationHandler")
     @Scope("prototype")
     public PutRequestHandler<Implementation> implementationPutRequestHandler() {
@@ -138,19 +137,32 @@ public class AppConfig {
     public DeleteRequestHandler<Implementation> implementationDeleteRequestHandler() {
         return new DeleteRequestHandler<>(Implementation.class);
     }
+    */
 
     /* SERVICE REQUEST HANDLER BEANS */
 
     @Bean(name = "postServiceHandler")
     @Scope("prototype")
-    public PostServiceHandler servicePostRequestHandler() {
-        return new PostServiceHandler(Implementation.class);
+    public PostServiceHandler servicePostRequestHandler(
+        @Qualifier("implementationDeepSerializerModuleSet") SerializerModuleSet serializerModuleSet
+    ) {
+        return new PostServiceHandler(Implementation.class, serializerModuleSet);
     }
 
     @Bean(name = "putServiceHandler")
     @Scope("prototype")
-    public PutServiceHandler servicePutRequestHandler() {
-        return new PutServiceHandler(Implementation.class);
+    public PutServiceHandler servicePutRequestHandler(
+        @Qualifier("implementationDeepSerializerModuleSet") SerializerModuleSet serializerModuleSet
+    ) {
+        return new PutServiceHandler(Implementation.class, serializerModuleSet, "serviceId");
+    }
+
+    @Bean(name = "deleteServiceHandler")
+    @Scope("prototype")
+    public DeleteRequestHandler<Implementation> serviceDeleteRequestHandler(
+        @Qualifier("implementationDeepSerializerModuleSet") SerializerModuleSet serializerModuleSet
+    ) {
+        return new DeleteRequestHandler<>(Implementation.class, serializerModuleSet, "serviceId");
     }
 
     /* ORGANIZATION REQUEST HANDLER BEANS */
@@ -163,20 +175,26 @@ public class AppConfig {
 
     @Bean(name = "postOrganizationHandler")
     @Scope("prototype")
-    public PostRequestHandler<Organization> organizationPostRequestHandler() {
-        return new PostRequestHandler<>(Organization.class);
+    public PostRequestHandler<Organization> organizationPostRequestHandler(
+        @Qualifier ("organizationDeepSerializerModuleSet") SerializerModuleSet serializerModuleSet
+    ) {
+        return new PostRequestHandler<>(Organization.class, serializerModuleSet);
     }
 
     @Bean(name = "putOrganizationHandler")
     @Scope("prototype")
-    public PutRequestHandler<Organization> organizationPutRequestHandler() {
-        return new PutRequestHandler<>(Organization.class);
+    public PutRequestHandler<Organization> organizationPutRequestHandler(
+        @Qualifier ("organizationDeepSerializerModuleSet") SerializerModuleSet serializerModuleSet
+    ) {
+        return new PutRequestHandler<>(Organization.class, serializerModuleSet, "organizationId");
     }
 
     @Bean(name = "deleteOrganizationHandler")
     @Scope("prototype")
-    public DeleteRequestHandler<Organization> organizationDeleteRequestHandler() {
-        return new DeleteRequestHandler<>(Organization.class);
+    public DeleteRequestHandler<Organization> organizationDeleteRequestHandler(
+        @Qualifier("organizationDeepSerializerModuleSet") SerializerModuleSet serializerModuleSet
+    ) {
+        return new DeleteRequestHandler<>(Organization.class, serializerModuleSet, "organizationId");
     }
 
     /* ******************************
@@ -206,18 +224,21 @@ public class AppConfig {
     }
 
     @Bean
-    public PostOrganizationHandlerFactory postOrganizationHandlerFactory() {
-        return new PostOrganizationHandlerFactory(Organization.class, "postOrganizationHandler");
+    @Qualifier("postOrganizationHandlerFactory")
+    public RequestHandlerFactory<Organization> postOrganizationHandlerFactory() {
+        return new RequestHandlerFactory<>(Organization.class, "postOrganizationHandler");
     }
 
     @Bean
-    public PutOrganizationHandlerFactory putOrganizationHandlerFactory() {
-        return new PutOrganizationHandlerFactory(Organization.class, "putOrganizationHandler", "organizationId");
+    @Qualifier("putOrganizationHandlerFactory")
+    public RequestHandlerFactory<Organization> putOrganizationHandlerFactory() {
+        return new RequestHandlerFactory<>(Organization.class, "putOrganizationHandler");
     }
 
     @Bean
-    public DeleteOrganizationHandlerFactory deleteOrganizationHandlerFactory() {
-        return new DeleteOrganizationHandlerFactory(Organization.class, "deleteOrganizationHandler", "organizationId");
+    @Qualifier("deleteOrganizationHandlerFactory")
+    public RequestHandlerFactory<Organization> deleteOrganizationHandlerFactory() {
+        return new RequestHandlerFactory<>(Organization.class, "deleteOrganizationHandler");
     }
 
     /* SERVICE-INFO REQUEST HANDLER FACTORY BEANS */
@@ -245,18 +266,21 @@ public class AppConfig {
     }
 
     @Bean
-    public PostServiceHandlerFactory postServiceHandlerFactory() {
-        return new PostServiceHandlerFactory(Implementation.class, "postServiceHandler");
+    @Qualifier("postServiceHandlerFactory")
+    public RequestHandlerFactory<Implementation> postServiceHandlerFactory() {
+        return new RequestHandlerFactory<>(Implementation.class, "postServiceHandler");
     }
 
     @Bean
-    public PutServiceHandlerFactory putServiceHandlerFactory() {
-        return new PutServiceHandlerFactory(Implementation.class, "putServiceHandler", "serviceId");
+    @Qualifier("putServiceHandlerFactory")
+    public RequestHandlerFactory<Implementation> putServiceHandlerFactory() {
+        return new RequestHandlerFactory<>(Implementation.class, "putServiceHandler");
     }
 
     @Bean
-    public DeleteServiceHandlerFactory deleteServiceHandlerFactory() {
-        return new DeleteServiceHandlerFactory(Implementation.class, "deleteImplementationHandler", "serviceId");
+    @Qualifier("deleteServiceHandlerFactory")
+    public RequestHandlerFactory<Implementation> deleteServiceHandlerFactory() {
+        return new RequestHandlerFactory<>(Implementation.class, "deleteServiceHandler");
     }
     
     /* ******************************

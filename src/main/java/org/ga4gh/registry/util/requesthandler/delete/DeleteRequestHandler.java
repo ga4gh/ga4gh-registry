@@ -1,26 +1,27 @@
 package org.ga4gh.registry.util.requesthandler.delete;
 
+import java.util.Map;
 import java.util.UUID;
 import org.ga4gh.registry.model.RegistryModel;
-import org.ga4gh.registry.util.requesthandler.AbstractRequestHandler;
+import org.ga4gh.registry.util.requesthandler.RequestHandler;
+import org.ga4gh.registry.util.serialize.sets.SerializerModuleSet;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.http.ResponseEntity;
 
-public class DeleteRequestHandler<T extends RegistryModel> extends AbstractRequestHandler<T> {
+public class DeleteRequestHandler<T extends RegistryModel> extends RequestHandler<T> {
 
     private String idPathParameterName;
 
-    /* Constructor */
-
-    public DeleteRequestHandler(Class<T> responseClass) {
-        super(responseClass);
+    public DeleteRequestHandler(Class<T> responseClass, SerializerModuleSet serializerModuleSet, String idPathParameterName) {
+        super(responseClass, serializerModuleSet);
+        setIdPathParameterName(idPathParameterName);
     }
 
-    /* Custom Methods */
-
     public ResponseEntity<String> createResponseEntity() {
-        UUID id = UUID.fromString(getPathVariables().get(getIdPathParameterName()));
+
+        Map<String, String> pathVariables = getRequestVariablesA();
+        UUID id = UUID.fromString(pathVariables.get(getIdPathParameterName()));
 
         // first hibernate operation, get the object at the requested id
         SessionFactory sessionFactory = getHibernateUtil().getSessionFactory();
@@ -37,8 +38,6 @@ public class DeleteRequestHandler<T extends RegistryModel> extends AbstractReque
 
         return ResponseEntity.ok().body("");
     }
-
-    /* Setters and Getters */
 
     public void setIdPathParameterName(String idPathParameterName) {
         this.idPathParameterName = idPathParameterName;

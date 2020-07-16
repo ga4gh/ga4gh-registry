@@ -2,9 +2,7 @@ package org.ga4gh.registry.controller;
 
 import java.util.Map;
 import org.ga4gh.registry.model.Implementation;
-import org.ga4gh.registry.util.requesthandler.delete.DeleteServiceHandlerFactory;
-import org.ga4gh.registry.util.requesthandler.post.PostServiceHandlerFactory;
-import org.ga4gh.registry.util.requesthandler.put.PutServiceHandlerFactory;
+import org.ga4gh.registry.util.requesthandler.RequestHandlerFactory;
 import org.ga4gh.registry.util.response.factory.GetServiceByIdResponseEntityCreatorFactory;
 import org.ga4gh.registry.util.response.factory.GetServiceTypesResponseEntityCreatorFactory;
 import org.ga4gh.registry.util.response.factory.GetServicesResponseEntityCreatorFactory;
@@ -20,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.http.ResponseEntity;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 @RestController
 @RequestMapping("/services")
@@ -35,13 +34,16 @@ public class Services {
     GetServiceTypesResponseEntityCreatorFactory getServiceTypes;
 
     @Autowired
-    PostServiceHandlerFactory postService;
+    @Qualifier("postServiceHandlerFactory")
+    RequestHandlerFactory<Implementation> postService;
 
     @Autowired
-    PutServiceHandlerFactory putService;
+    @Qualifier("putServiceHandlerFactory")
+    RequestHandlerFactory<Implementation> putService;
 
     @Autowired
-    DeleteServiceHandlerFactory deleteService;
+    @Qualifier("deleteServiceHandlerFactory")
+    RequestHandlerFactory<Implementation> deleteService;
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<String> getServices(@RequestParam Map<String, String> queryVariables) {

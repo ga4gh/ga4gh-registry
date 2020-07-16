@@ -2,12 +2,11 @@ package org.ga4gh.registry.controller;
 
 import java.util.Map;
 import org.ga4gh.registry.model.Organization;
-import org.ga4gh.registry.util.requesthandler.delete.DeleteOrganizationHandlerFactory;
-import org.ga4gh.registry.util.requesthandler.post.PostOrganizationHandlerFactory;
-import org.ga4gh.registry.util.requesthandler.put.PutOrganizationHandlerFactory;
+import org.ga4gh.registry.util.requesthandler.RequestHandlerFactory;
 import org.ga4gh.registry.util.response.factory.GetOrganizationByIdResponseEntityCreatorFactory;
 import org.ga4gh.registry.util.response.factory.GetOrganizationsResponseEntityCreatorFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,13 +29,16 @@ public class Organizations {
     GetOrganizationByIdResponseEntityCreatorFactory getOrganizationById;
 
     @Autowired
-    PostOrganizationHandlerFactory postOrganization;
+    @Qualifier("postOrganizationHandlerFactory")
+    RequestHandlerFactory<Organization> postOrganization;
 
     @Autowired
-    PutOrganizationHandlerFactory putOrganization;
+    @Qualifier("putOrganizationHandlerFactory")
+    RequestHandlerFactory<Organization> putOrganization;
 
     @Autowired
-    DeleteOrganizationHandlerFactory deleteOrganization;
+    @Qualifier("deleteOrganizationHandlerFactory")
+    RequestHandlerFactory<Organization> deleteOrganization;
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<String> getOrganizations() {
@@ -55,17 +57,11 @@ public class Organizations {
 
     @PutMapping(path = "/{organizationId}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<String> updateOrganizationById(@PathVariable Map<String, String> pathVariables, @RequestBody Organization organization) {
-        return putOrganization.handleRequest(pathVariables, organization);
-        /*
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.add(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, "*");
-        httpHeaders.add(HttpHeaders.ACCESS_CONTROL_ALLOW_METHODS, "GET,PUT,POST,DELETE");
-        httpHeaders.add(HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS, "*");
-        */
+        return putOrganization.handleRequest(pathVariables, organization);        
     }
 
     @DeleteMapping(path = "/{organizationId}")
     public ResponseEntity<String> deleteOrganizationById(@PathVariable Map<String, String> pathVariables) {
         return deleteOrganization.handleRequest(pathVariables);
-    }
+    }   
 }
