@@ -2,7 +2,7 @@ package org.ga4gh.registry.util.requesthandler.put;
 
 import org.ga4gh.registry.exception.ResourceNotFoundException;
 import org.ga4gh.registry.model.Implementation;
-import org.ga4gh.registry.util.requesthandler.requestutils.ServiceRequestUtils;
+import org.ga4gh.registry.util.requesthandler.utils.ServiceRequestUtils;
 import org.ga4gh.registry.util.serialize.sets.SerializerModuleSet;
 import org.springframework.beans.factory.annotation.Autowired;
 

@@ -35,7 +35,8 @@ public class RequestHandlerFactory<T extends RegistryModel> implements RequestHa
     /* Override handleRequest Methods */
 
     public ResponseEntity<String> handleRequest() {
-        return emptyResponse();
+        RequestHandler<T> handler = spawnRequestHandler();
+        return handler.createResponseEntity();
     }
 
     public ResponseEntity<String> handleRequest(Map<String, String> requestVariables) {

@@ -1,4 +1,4 @@
-package org.ga4gh.registry.util.requesthandler.requestutils;
+package org.ga4gh.registry.util.requesthandler.utils;
 
 import java.util.UUID;
 

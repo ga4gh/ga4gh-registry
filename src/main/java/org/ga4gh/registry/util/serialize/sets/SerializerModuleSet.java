@@ -1,12 +1,49 @@
 package org.ga4gh.registry.util.serialize.sets;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 
-public interface SerializerModuleSet {
+import org.ga4gh.registry.exception.InternalServerError;
 
-    public void registerModules();
-    public String serializeObject(Object object);
-    public void addModule(SimpleModule module);
+public class SerializerModuleSet implements SerializerModuleSetI {
 
+    private List<SimpleModule> serializerModules;
+    private ObjectMapper objectMapper;
+
+    /* Constructor */
+
+    public SerializerModuleSet() {
+        serializerModules = new ArrayList<>();
+        objectMapper = new ObjectMapper();
+    }
+
+    /* Custom Methods */
+
+    public void registerModules() {
+        for (SimpleModule module: serializerModules) {
+            objectMapper.registerModule(module);
+        }
+    }
+
+    public String serializeObject(Object object) throws InternalServerError {
+        String response = null;
+        try {
+            response = objectMapper.writeValueAsString(object);
+        } catch (JsonProcessingException ex) {
+            throw new InternalServerError(
+                "Internal server error: could not serialize object as JSON");
+        }
+        return response;
+    }
+
+    /* Setters and Getters */
+
+    public void addModule(SimpleModule module) {
+        serializerModules.add(module);
+    }
     
 }

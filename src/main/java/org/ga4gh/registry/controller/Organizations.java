@@ -1,10 +1,10 @@
 package org.ga4gh.registry.controller;
 
 import java.util.Map;
+
+import org.ga4gh.registry.AppConfigConstants;
 import org.ga4gh.registry.model.Organization;
 import org.ga4gh.registry.util.requesthandler.RequestHandlerFactory;
-import org.ga4gh.registry.util.response.factory.GetOrganizationByIdResponseEntityCreatorFactory;
-import org.ga4gh.registry.util.response.factory.GetOrganizationsResponseEntityCreatorFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.MediaType;
@@ -23,31 +23,33 @@ import org.springframework.http.ResponseEntity;
 public class Organizations {
 
     @Autowired
-    GetOrganizationsResponseEntityCreatorFactory getOrganizations;
+    @Qualifier(AppConfigConstants.INDEX_ORGANIZATION_HANDLER_FACTORY)
+    RequestHandlerFactory<Organization> indexOrganization;
 
     @Autowired
-    GetOrganizationByIdResponseEntityCreatorFactory getOrganizationById;
+    @Qualifier(AppConfigConstants.SHOW_ORGANIZATION_HANDLER_FACTORY)
+    RequestHandlerFactory<Organization> showOrganization;
 
     @Autowired
-    @Qualifier("postOrganizationHandlerFactory")
+    @Qualifier(AppConfigConstants.POST_ORGANIZATION_HANDLER_FACTORY)
     RequestHandlerFactory<Organization> postOrganization;
 
     @Autowired
-    @Qualifier("putOrganizationHandlerFactory")
+    @Qualifier(AppConfigConstants.PUT_ORGANIZATION_HANDLER_FACTORY)
     RequestHandlerFactory<Organization> putOrganization;
 
     @Autowired
-    @Qualifier("deleteOrganizationHandlerFactory")
+    @Qualifier(AppConfigConstants.DELETE_ORGANIZATION_HANDLER_FACTORY)
     RequestHandlerFactory<Organization> deleteOrganization;
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<String> getOrganizations() {
-        return getOrganizations.createResponseEntity();
+        return indexOrganization.handleRequest();
     }
 
     @GetMapping(path = "/{organizationId}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<String> getOrganizationById(@PathVariable Map<String, String> pathVariables) {
-        return getOrganizationById.createResponseEntity(pathVariables);
+        return showOrganization.handleRequest(pathVariables);
     }
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)

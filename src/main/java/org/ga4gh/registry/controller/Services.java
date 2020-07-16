@@ -1,6 +1,8 @@
 package org.ga4gh.registry.controller;
 
 import java.util.Map;
+
+import org.ga4gh.registry.AppConfigConstants;
 import org.ga4gh.registry.model.Implementation;
 import org.ga4gh.registry.util.requesthandler.RequestHandlerFactory;
 import org.ga4gh.registry.util.response.factory.GetServiceByIdResponseEntityCreatorFactory;
@@ -25,39 +27,33 @@ import org.springframework.beans.factory.annotation.Qualifier;
 public class Services {
 
     @Autowired
-    GetServicesResponseEntityCreatorFactory getServices;
+    @Qualifier(AppConfigConstants.INDEX_SERVICE_HANDLER_FACTORY)
+    RequestHandlerFactory<Implementation> indexService;
 
     @Autowired
-    GetServiceByIdResponseEntityCreatorFactory getServiceById;
+    @Qualifier(AppConfigConstants.SHOW_SERVICE_HANDLER_FACTORY)
+    RequestHandlerFactory<Implementation> showService;
 
     @Autowired
-    GetServiceTypesResponseEntityCreatorFactory getServiceTypes;
-
-    @Autowired
-    @Qualifier("postServiceHandlerFactory")
+    @Qualifier(AppConfigConstants.POST_SERVICE_HANDLER_FACTORY)
     RequestHandlerFactory<Implementation> postService;
 
     @Autowired
-    @Qualifier("putServiceHandlerFactory")
+    @Qualifier(AppConfigConstants.PUT_SERVICE_HANDLER_FACTORY)
     RequestHandlerFactory<Implementation> putService;
 
     @Autowired
-    @Qualifier("deleteServiceHandlerFactory")
+    @Qualifier(AppConfigConstants.DELETE_SERVICE_HANDLER_FACTORY)
     RequestHandlerFactory<Implementation> deleteService;
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<String> getServices(@RequestParam Map<String, String> queryVariables) {
-        return getServices.createResponseEntity(queryVariables);
+        return indexService.handleRequest(queryVariables);
     }
 
     @GetMapping(path = "/{serviceId}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<String> getServiceById(@PathVariable Map<String, String> pathVariables) {
-        return getServiceById.createResponseEntity(pathVariables);
-    }
-
-    @GetMapping(path = "/types", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<String> getServiceTypes() {
-        return getServiceTypes.createResponseEntity();
+        return showService.handleRequest(pathVariables);
     }
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -74,4 +70,11 @@ public class Services {
     public ResponseEntity<String> deleteServiceById(@PathVariable Map<String, String> pathVariables) {
         return deleteService.handleRequest(pathVariables);
     }
+
+    /*
+    @GetMapping(path = "/types", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> getServiceTypes() {
+        return getServiceTypes.createResponseEntity();
+    }
+    */
 }

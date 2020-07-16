@@ -12,23 +12,22 @@ import org.springframework.http.ResponseEntity;
 
 public class IndexRequestHandler<T extends RegistryModel> extends RequestHandler<T> {
 
-    @Autowired
     HibernateQuerier<T> querier;
 
     @Autowired
     HibernateQueryBuilder queryBuilder;
 
-    public IndexRequestHandler(Class<T> responseClass, SerializerModuleSet serializerModuleSet) {
+    @Autowired
+    public IndexRequestHandler(Class<T> responseClass, SerializerModuleSet serializerModuleSet, HibernateQuerier<T> querier) {
         super(responseClass, serializerModuleSet);
+        setQuerier(querier);
     }
 
     public ResponseEntity<String> createResponseEntity() {
-        System.out.println("Index Request");
-        System.out.println("***");
         ResponseEntity<String> responseEntity = null;
-
         HibernateQuerier<T> q = getQuerier();
         HibernateQueryBuilder qb = getQueryBuilder();
+        qb.setResponseClass(q.getTypeClass());
         q.setQueryString(qb.build());
         List<T> object = q.getResults();
         String serialized = getSerializerModuleSet().serializeObject(object);
