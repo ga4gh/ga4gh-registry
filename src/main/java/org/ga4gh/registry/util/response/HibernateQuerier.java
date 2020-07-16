@@ -5,7 +5,6 @@ import javax.persistence.PersistenceException;
 import org.hibernate.query.Query;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.ga4gh.registry.exception.BadRequestException;
@@ -41,17 +40,20 @@ public class HibernateQuerier<T> implements ApplicationContextAware {
         } catch (PersistenceException ex) {
             throw new BadRequestException("Invalid search parameter and / or format");
         } finally {
-            session.close();
+            // session.close();
         }
         return results;
     }
 
     public T getSingleResult() throws ResourceNotFoundException {
         List<T> results = getResults();
+        T result = null;
         if (results.size() < 1) {
-            throw new ResourceNotFoundException("No resource by that id");
+            // throw new ResourceNotFoundException("No resource by that id");
+        } else {
+            result = results.get(0);
         }
-        return results.get(0);
+        return result;
     }
 
     public Class<T> getTypeClass() {

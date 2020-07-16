@@ -2,26 +2,18 @@ package org.ga4gh.registry.util.requesthandler.put;
 
 import java.util.Map;
 import org.ga4gh.registry.model.RegistryModel;
-import org.ga4gh.registry.util.serialize.sets.SerializerModuleSet;
-import org.springframework.beans.BeansException;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
+import org.ga4gh.registry.util.requesthandler.AbstractRequestHandlerFactory;
 import org.springframework.http.ResponseEntity;
 
-public abstract class AbstractPutRequestHandlerFactory<T extends RegistryModel> implements ApplicationContextAware {
+public abstract class AbstractPutRequestHandlerFactory<T extends RegistryModel> extends AbstractRequestHandlerFactory<T> {
 
-    private ApplicationContext context;
-    private Class<T> responseClass;
-    private String requestHandlerBeanName;
     private String idPathParameterName;
-    private SerializerModuleSet serializerModuleSet;
 
     /* Constructor */
 
     public AbstractPutRequestHandlerFactory(Class<T> responseClass, String requestHandlerBeanName, String idPathParameterName) {
-        this.responseClass = responseClass;
-        this.requestHandlerBeanName = requestHandlerBeanName;
-        this.idPathParameterName = idPathParameterName;
+        super(responseClass, requestHandlerBeanName);
+        setIdPathParameterName(idPathParameterName);
     }
 
     /* Custom Methods */
@@ -42,32 +34,11 @@ public abstract class AbstractPutRequestHandlerFactory<T extends RegistryModel> 
 
     /* Setters and Getters */
 
-    @Override
-    public void setApplicationContext(ApplicationContext context) throws BeansException {
-        this.context = context;
+    public void setIdPathParameterName(String idPathParameterName) {
+        this.idPathParameterName = idPathParameterName;
     }
 
-    public ApplicationContext getContext() {
-        return context;
-    }
-
-    public void setResponseClass(Class<T> responseClass) {
-        this.responseClass = responseClass;
-    }
-
-    public Class<T> getResponseClass() {
-        return responseClass;
-    }
-
-    public void setRequestHandlerBeanName(String requestHandlerBeanName) {
-        this.requestHandlerBeanName = requestHandlerBeanName;
-    }
-
-    public String getRequestHandlerBeanName() {
-        return requestHandlerBeanName;
-    }
-
-    public SerializerModuleSet getSerializerModuleSet() {
-        return serializerModuleSet;
+    public String getIdPathParameterName() {
+        return idPathParameterName;
     }
 }

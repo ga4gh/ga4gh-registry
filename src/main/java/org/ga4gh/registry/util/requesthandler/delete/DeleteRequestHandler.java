@@ -1,52 +1,41 @@
-package org.ga4gh.registry.util.requesthandler.put;
+package org.ga4gh.registry.util.requesthandler.delete;
 
 import java.util.UUID;
 import org.ga4gh.registry.model.RegistryModel;
 import org.ga4gh.registry.util.requesthandler.AbstractRequestHandler;
-import org.ga4gh.registry.util.serialize.sets.SerializerModuleSet;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.http.ResponseEntity;
 
-public class PutRequestHandler<T extends RegistryModel> extends AbstractRequestHandler<T> {
+public class DeleteRequestHandler<T extends RegistryModel> extends AbstractRequestHandler<T> {
 
     private String idPathParameterName;
 
     /* Constructor */
 
-    public PutRequestHandler(Class<T> responseClass) {
+    public DeleteRequestHandler(Class<T> responseClass) {
         super(responseClass);
     }
 
     /* Custom Methods */
 
     public ResponseEntity<String> createResponseEntity() {
-        // set id passed on path to the request body object
-        T requestBody = getRequestBody();
-        requestBody = preProcessRequestBody(requestBody);
-        System.out.println(requestBody);
-        SerializerModuleSet serializerModuleSet = getSerializerModuleSet();
-        System.out.println(getPathVariables());
-        System.out.println(getIdPathParameterName());
-        System.out.println(getPathVariables().get(getIdPathParameterName()));
         UUID id = UUID.fromString(getPathVariables().get(getIdPathParameterName()));
-        requestBody.setId(id);
 
-        // first hibernate operation, update the passed object
+        // first hibernate operation, get the object at the requested id
         SessionFactory sessionFactory = getHibernateUtil().getSessionFactory();
         Session session = sessionFactory.getCurrentSession();
-        session.beginTransaction();
-        session.update(requestBody);
-        session.getTransaction().commit();
-
-        // second hibernate operation, get updated db object to pass to client
-        session = sessionFactory.getCurrentSession();
         session.beginTransaction();
         T object = session.get(getResponseClass(), id);
         session.getTransaction().commit();
 
-        String serialized = serializerModuleSet.serializeObject(object);
-        return ResponseEntity.ok().body(serialized);
+        // second hibernate operation, delete the object at the requested id
+        session = sessionFactory.getCurrentSession();
+        session.beginTransaction();
+        session.delete(object);
+        session.getTransaction().commit();
+
+        return ResponseEntity.ok().body("");
     }
 
     /* Setters and Getters */

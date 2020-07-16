@@ -63,6 +63,8 @@ public class HibernateUtil {
         getSessionFactory().close();
     }
 
+    /* Setters and Getters */
+
     private void setSessionFactory(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
     }

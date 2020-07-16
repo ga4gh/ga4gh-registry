@@ -14,7 +14,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "standard_version")
-public class StandardVersion {
+public class StandardVersion implements RegistryModel {
     
     @Id
     @GeneratedValue(generator = "UUID")

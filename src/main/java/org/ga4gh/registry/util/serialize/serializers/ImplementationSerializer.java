@@ -29,8 +29,8 @@ public class ImplementationSerializer extends VariableDepthSerializer<Implementa
         writeStringIfSelected(gen, "description", value.getDescription());
         writeStringIfSelected(gen, "contactUrl", value.getContactUrl());
         writeStringIfExists(gen, "documentationUrl", value.getDocumentationUrl());
-        writeStringIfSelected(gen, "createdAt", value.getCreatedAt());
-        writeStringIfSelected(gen, "updatedAt", value.getUpdatedAt());
+        // writeStringIfSelected(gen, "createdAt", value.getCreatedAt().toString());
+        // writeStringIfSelected(gen, "updatedAt", value.getUpdatedAt().toString());
         writeStringIfSelected(gen, "environment", value.getEnvironment());
         gen.writeEndObject();
 

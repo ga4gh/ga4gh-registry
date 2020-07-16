@@ -1,5 +1,8 @@
 package org.ga4gh.registry.model;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.UUID;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -10,6 +13,10 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
+
+import org.ga4gh.registry.constant.RegistryConstants;
+import org.ga4gh.registry.exception.BadRequestException;
 import org.hibernate.annotations.GenericGenerator;
 
 @Entity
@@ -40,8 +47,9 @@ public class Implementation implements RegistryModel {
     private String description;
 
     @ManyToOne(fetch = FetchType.LAZY,
-               cascade = {CascadeType.PERSIST, CascadeType.MERGE,
-                          CascadeType.DETACH, CascadeType.REFRESH})
+               cascade = CascadeType.ALL)
+               // cascade = {CascadeType.PERSIST, CascadeType.MERGE,
+               //            CascadeType.DETACH, CascadeType.REFRESH})
     @JoinColumn(name = "organization_id")
     private Organization organization;
 
@@ -52,10 +60,10 @@ public class Implementation implements RegistryModel {
     private String documentationUrl;
 
     @Column(name = "created_at")
-    private String createdAt;
+    private Date createdAt;
 
     @Column(name = "updated_at")
-    private String updatedAt;
+    private Date updatedAt;
 
     @Column(name = "environment")
     private String environment;
@@ -65,6 +73,9 @@ public class Implementation implements RegistryModel {
 
     @Column(name = "url")
     private String url;
+
+    @Transient
+    private ServiceType type;
 
     public Implementation() {
 
@@ -78,11 +89,19 @@ public class Implementation implements RegistryModel {
         this.description = description;
         this.contactUrl = contactUrl;
         this.documentationUrl = documentationUrl;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
+        this.createdAt = parseDate(createdAt);
+        this.updatedAt = parseDate(updatedAt);
         this.environment = environment;
         this.version = version;
         this.url = url;
+    }
+
+    public Date parseDate(String dateString) {
+        try {
+            return RegistryConstants.DATE_TIME_FORMAT.parse(dateString);
+        } catch (ParseException e) {
+            throw new BadRequestException("invalid date string format");
+        }
     }
 
     public UUID getId() {
@@ -149,19 +168,19 @@ public class Implementation implements RegistryModel {
         this.documentationUrl = documentationUrl;
     }
 
-    public String getCreatedAt() {
+    public Date getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(String createdAt) {
+    public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
     }
 
-    public String getUpdatedAt() {
+    public Date getUpdatedAt() {
         return updatedAt;
     }
 
-    public void setUpdatedAt(String updatedAt) {
+    public void setUpdatedAt(Date updatedAt) {
         this.updatedAt = updatedAt;
     }
 
@@ -187,6 +206,14 @@ public class Implementation implements RegistryModel {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public void setType(ServiceType type) {
+        this.type = type;
+    }
+
+    public ServiceType getType() {
+        return type;
     }
 
     public ServiceType getServiceType() {
