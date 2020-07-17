@@ -4,8 +4,8 @@ import org.ga4gh.registry.model.Implementation;
 import org.ga4gh.registry.model.Organization;
 import org.ga4gh.registry.model.Standard;
 import org.ga4gh.registry.model.StandardVersion;
-import org.ga4gh.registry.util.HibernateConfig;
-import org.ga4gh.registry.util.HibernateUtil;
+import org.ga4gh.registry.util.hibernate.HibernateConfig;
+import org.ga4gh.registry.util.hibernate.HibernateUtil;
 import org.ga4gh.registry.util.requesthandler.RequestHandlerFactory;
 import org.ga4gh.registry.util.requesthandler.delete.DeleteRequestHandler;
 import org.ga4gh.registry.util.requesthandler.index.IndexRequestHandler;
@@ -17,11 +17,9 @@ import org.ga4gh.registry.util.requesthandler.put.PutRequestHandler;
 import org.ga4gh.registry.util.requesthandler.put.PutServiceHandler;
 import org.ga4gh.registry.util.requesthandler.utils.ServiceRequestUtils;
 import org.ga4gh.registry.util.requesthandler.show.ShowRequestHandler;
-import org.ga4gh.registry.util.response.HibernateQuerier;
-import org.ga4gh.registry.util.response.HibernateQuerierFactory;
-import org.ga4gh.registry.util.response.HibernateQueryBuilder;
-import org.ga4gh.registry.util.response.ResponseMapper;
-import org.ga4gh.registry.util.response.factory.GetServiceInfoResponseEntityCreatorFactory;
+import org.ga4gh.registry.util.requesthandler.show.ShowServiceInfoHandler;
+import org.ga4gh.registry.util.hibernate.HibernateQuerier;
+import org.ga4gh.registry.util.hibernate.HibernateQueryBuilder;
 import org.ga4gh.registry.util.serialize.modules.ImplementationSerializerModule;
 import org.ga4gh.registry.util.serialize.modules.OrganizationSerializerModule;
 import org.ga4gh.registry.util.serialize.modules.ReleaseStatusSerializerModule;
@@ -58,17 +56,6 @@ public class AppConfig {
     @Scope(AppConfigConstants.PROTOTYPE)
     public HibernateQueryBuilder getHibernateQueryBuilder() {
         return new HibernateQueryBuilder();
-    }
-
-    @Bean
-    @Scope(AppConfigConstants.PROTOTYPE)
-    public ResponseMapper getResponseMapper() {
-        return new ResponseMapper();
-    }
-
-    @Bean
-    public HibernateQuerierFactory getHibernateQuerierFactory() {
-        return new HibernateQuerierFactory();
     }
 
     /* ******************************
@@ -225,6 +212,16 @@ public class AppConfig {
         return new IndexServiceTypesHandler(Implementation.class, serializerModuleSet, querier);
     }
 
+    /* SERVICE-INFO REQUEST HANDLER BEANS */
+
+    @Bean(name = AppConfigConstants.SHOW_SERVICE_INFO_HANDLER)
+    @Scope(AppConfigConstants.PROTOTYPE)
+    public ShowServiceInfoHandler showServiceInfoRequestHandler(
+        @Qualifier(AppConfigConstants.DEEP_IMPLEMENTATION_SERIALIZER_SET) SerializerModuleSet serializerModuleSet
+    ) {
+        return new ShowServiceInfoHandler(Implementation.class, serializerModuleSet, AppConfigConstants.SERVICE_ID);
+    }
+
     /* ******************************
      * REQUEST HANDLER FACTORY BEANS
      * ****************************** */
@@ -316,8 +313,9 @@ public class AppConfig {
     /* SERVICE-INFO REQUEST HANDLER FACTORY BEANS */
 
     @Bean
-    public GetServiceInfoResponseEntityCreatorFactory getServiceInfoResponseEntityCreatorFactory() {
-        return new GetServiceInfoResponseEntityCreatorFactory(Implementation.class, "implementations");
+    @Qualifier(AppConfigConstants.SHOW_SERVICE_INFO_HANDLER_FACTORY)
+    public RequestHandlerFactory<Implementation> showServiceInfoHandlerFactory() {
+        return new RequestHandlerFactory<>(Implementation.class, AppConfigConstants.SHOW_SERVICE_INFO_HANDLER);
     }
     
     /* ******************************

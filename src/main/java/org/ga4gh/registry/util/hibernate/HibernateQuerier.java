@@ -1,4 +1,4 @@
-package org.ga4gh.registry.util.response;
+package org.ga4gh.registry.util.hibernate;
 
 import java.util.List;
 import javax.persistence.PersistenceException;
@@ -9,7 +9,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.ga4gh.registry.exception.BadRequestException;
 import org.ga4gh.registry.exception.ResourceNotFoundException;
-import org.ga4gh.registry.util.HibernateUtil;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 

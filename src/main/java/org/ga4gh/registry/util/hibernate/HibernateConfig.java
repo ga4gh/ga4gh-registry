@@ -1,4 +1,4 @@
-package org.ga4gh.registry.util;
+package org.ga4gh.registry.util.hibernate;
 
 import java.util.Properties;
 import org.springframework.beans.factory.annotation.Value;

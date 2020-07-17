@@ -3,7 +3,7 @@ package org.ga4gh.registry.util.requesthandler;
 import java.util.Map;
 import org.ga4gh.registry.exception.ResourceNotFoundException;
 import org.ga4gh.registry.model.RegistryModel;
-import org.ga4gh.registry.util.HibernateUtil;
+import org.ga4gh.registry.util.hibernate.HibernateUtil;
 import org.ga4gh.registry.util.serialize.sets.SerializerModuleSet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

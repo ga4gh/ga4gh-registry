@@ -1,4 +1,4 @@
-package org.ga4gh.registry.util;
+package org.ga4gh.registry.util.hibernate;
 
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;

@@ -38,6 +38,8 @@ public class AppConfigConstants {
     public static final String PUT_SERVICE_HANDLER = "putServiceHandler";
     public static final String DELETE_SERVICE_HANDLER = "deleteServiceHandler";
     public static final String INDEX_SERVICE_TYPES_HANDLER = "indexServiceTypesHandler";
+    // SERVICE-INFO
+    public static final String SHOW_SERVICE_INFO_HANDLER = "showServiceInfoHandler";
 
     /* ******************************
      * REQUEST HANDLER FACTORY 
@@ -59,6 +61,8 @@ public class AppConfigConstants {
     public static final String PUT_SERVICE_HANDLER_FACTORY = "putServiceHandlerFactory";
     public static final String DELETE_SERVICE_HANDLER_FACTORY = "deleteServiceHandlerFactory";
     public static final String INDEX_SERVICE_TYPES_HANDLER_FACTORY = "indexServiceTypesHandlerFactory";
+    // SERVICE-INFO
+    public static final String SHOW_SERVICE_INFO_HANDLER_FACTORY = "showServiceInfoHandlerFactory";
 
     /* ******************************
      * SERIALIZER MODULE SETS

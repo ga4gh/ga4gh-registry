@@ -1,7 +1,10 @@
 package org.ga4gh.registry.controller;
 
-import org.ga4gh.registry.util.response.factory.GetServiceInfoResponseEntityCreatorFactory;
+import org.ga4gh.registry.AppConfigConstants;
+import org.ga4gh.registry.model.Implementation;
+import org.ga4gh.registry.util.requesthandler.RequestHandlerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,10 +16,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class ServiceInfo {
 
     @Autowired
-    GetServiceInfoResponseEntityCreatorFactory getServiceInfo;
+    @Qualifier(AppConfigConstants.SHOW_SERVICE_INFO_HANDLER_FACTORY)
+    RequestHandlerFactory<Implementation> showServiceInfo;
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<String> getServiceInfo() {
-        return getServiceInfo.createResponseEntity();
+        return showServiceInfo.handleRequest();
     }
 }

@@ -4,8 +4,8 @@ import java.util.List;
 import java.util.Map;
 import org.ga4gh.registry.model.Implementation;
 import org.ga4gh.registry.model.ServiceType;
-import org.ga4gh.registry.util.response.HibernateQuerier;
-import org.ga4gh.registry.util.response.HibernateQueryBuilder;
+import org.ga4gh.registry.util.hibernate.HibernateQuerier;
+import org.ga4gh.registry.util.hibernate.HibernateQueryBuilder;
 import org.ga4gh.registry.util.serialize.sets.SerializerModuleSet;
 
 public class IndexServicesHandler extends IndexRequestHandler<Implementation> {

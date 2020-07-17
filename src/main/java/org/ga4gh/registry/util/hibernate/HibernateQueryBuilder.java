@@ -1,4 +1,4 @@
-package org.ga4gh.registry.util.response;
+package org.ga4gh.registry.util.hibernate;
 
 import java.util.StringJoiner;
 import org.ga4gh.registry.model.Implementation;

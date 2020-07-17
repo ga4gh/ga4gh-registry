@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Set;
 import org.ga4gh.registry.model.Implementation;
 import org.ga4gh.registry.model.ServiceType;
-import org.ga4gh.registry.util.response.HibernateQuerier;
+import org.ga4gh.registry.util.hibernate.HibernateQuerier;
 import org.ga4gh.registry.util.serialize.sets.SerializerModuleSet;
 import org.springframework.http.ResponseEntity;
 
