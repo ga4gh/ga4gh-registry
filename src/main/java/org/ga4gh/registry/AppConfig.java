@@ -1,8 +1,5 @@
 package org.ga4gh.registry;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-
 import org.ga4gh.registry.middleware.AuthorizationInterceptor;
 import org.ga4gh.registry.model.Implementation;
 import org.ga4gh.registry.model.Organization;

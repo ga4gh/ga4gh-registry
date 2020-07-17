@@ -1,7 +1,6 @@
 package org.ga4gh.registry.model;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.UUID;
 import javax.persistence.CascadeType;
@@ -14,7 +13,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-
 import org.ga4gh.registry.constant.RegistryConstants;
 import org.ga4gh.registry.exception.BadRequestException;
 import org.hibernate.annotations.GenericGenerator;

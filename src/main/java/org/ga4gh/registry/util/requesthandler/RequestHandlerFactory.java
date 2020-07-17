@@ -2,9 +2,7 @@ package org.ga4gh.registry.util.requesthandler;
 
 import java.util.Map;
 import org.ga4gh.registry.model.RegistryModel;
-import org.ga4gh.registry.util.serialize.sets.SerializerModuleSet;
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.http.ResponseEntity;
 

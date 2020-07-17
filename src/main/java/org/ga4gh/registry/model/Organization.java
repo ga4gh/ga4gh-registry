@@ -11,7 +11,6 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Null;
 import org.ga4gh.registry.constant.Ids;
 import org.hibernate.annotations.GenericGenerator;
 import io.swagger.v3.oas.annotations.media.Schema;
