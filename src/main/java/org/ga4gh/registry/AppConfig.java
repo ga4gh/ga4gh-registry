@@ -1,9 +1,14 @@
 package org.ga4gh.registry;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
+import org.ga4gh.registry.middleware.AuthorizationInterceptor;
 import org.ga4gh.registry.model.Implementation;
 import org.ga4gh.registry.model.Organization;
 import org.ga4gh.registry.model.Standard;
 import org.ga4gh.registry.model.StandardVersion;
+import org.ga4gh.registry.util.auth.PlaceholderAuth;
 import org.ga4gh.registry.util.hibernate.HibernateConfig;
 import org.ga4gh.registry.util.hibernate.HibernateUtil;
 import org.ga4gh.registry.util.requesthandler.RequestHandlerFactory;
@@ -22,6 +27,7 @@ import org.ga4gh.registry.util.hibernate.HibernateQuerier;
 import org.ga4gh.registry.util.hibernate.HibernateQueryBuilder;
 import org.ga4gh.registry.util.serialize.modules.ImplementationSerializerModule;
 import org.ga4gh.registry.util.serialize.modules.OrganizationSerializerModule;
+import org.ga4gh.registry.util.serialize.modules.RegistryErrorSerializerModule;
 import org.ga4gh.registry.util.serialize.modules.ReleaseStatusSerializerModule;
 import org.ga4gh.registry.util.serialize.modules.ServiceTypeSerializerModule;
 import org.ga4gh.registry.util.serialize.modules.StandardCategorySerializerModule;
@@ -33,10 +39,12 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 @ConfigurationProperties
-public class AppConfig {
+public class AppConfig implements WebMvcConfigurer {
 
     /* ******************************
      * HIGH-LEVEL HIBERNATE-RELATED BEANS
@@ -383,6 +391,15 @@ public class AppConfig {
         return set;
     }
 
+    @Bean
+    @Qualifier(AppConfigConstants.REGISTRY_ERROR_SERIALIZER_SET)
+    public SerializerModuleSet registryErrorSerializerSet() {
+        SerializerModuleSet set = new SerializerModuleSet();
+        set.addModule(new RegistryErrorSerializerModule());
+        set.registerModules();
+        return set;
+    }
+
     /* ******************************
      * OTHER UTILS BEANS
      * ****************************** */
@@ -391,5 +408,24 @@ public class AppConfig {
     @Scope(AppConfigConstants.PROTOTYPE)
     public ServiceRequestUtils getServiceRequestUtils() {
         return new ServiceRequestUtils();
+    }
+
+    /* ******************************
+     * MIDDLEWARE BEANS
+     * ****************************** */
+
+    @Bean
+    public PlaceholderAuth getPlaceholderAuth() {
+        return new PlaceholderAuth();
+    }
+
+    @Bean
+    public AuthorizationInterceptor authorizationInterceptor() {
+        return new AuthorizationInterceptor();
+    }
+
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(authorizationInterceptor());
     }
 }

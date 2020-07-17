@@ -20,9 +20,6 @@ public class ShowRequestHandler<T extends RegistryModel> extends RequestHandler<
     }
 
     public ResponseEntity<String> createResponseEntity() {
-        System.out.println("Creating Response Entity");
-        System.out.println("***");
-
         // initial setup
         Map<String, String> pathVariables = getRequestVariablesA();
         SerializerModuleSet serializerModuleSet = getSerializerModuleSet();

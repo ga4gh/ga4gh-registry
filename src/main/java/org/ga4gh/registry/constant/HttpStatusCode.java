@@ -3,7 +3,7 @@ package org.ga4gh.registry.constant;
 /**
  * String constants of HTTP status codes
  */
-public class HttpStatus {
+public class HttpStatusCode {
 
     /**
      * HTTP OK code
@@ -14,6 +14,8 @@ public class HttpStatus {
      * HTTP Bad Request code
      */
     public static final String BAD_REQUEST = "400";
+
+    public static final String FORBIDDEN = "403";
 
     /**
      * HTTP Not Found code
@@ -29,5 +31,4 @@ public class HttpStatus {
      * HTTP internal server error code
      */
     public static final String INTERNAL_SERVER_ERROR = "500";
-
 }

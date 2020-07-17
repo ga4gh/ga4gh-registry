@@ -73,6 +73,8 @@ public class AppConfigConstants {
     public static final String DEEP_ORGANIZATION_SERIALIZER_SET = "deepOrganizationSerializerSet";
     public static final String DEEP_IMPLEMENTATION_SERIALIZER_SET = "deepImplementationSerializerSet";
     public static final String SERVICE_TYPE_SERIALIZER_SET = "serviceTypeSerializerSet";
+    public static final String REGISTRY_ERROR_SERIALIZER_SET = "registryErrorSerializerSet";
+
 
     /* ******************************
      * MISCELLANEOUS
