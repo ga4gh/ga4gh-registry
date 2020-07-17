@@ -1,8 +1,6 @@
 package org.ga4gh.registry.util.requesthandler;
 
-import java.util.List;
 import java.util.Map;
-
 import org.ga4gh.registry.exception.ResourceNotFoundException;
 import org.ga4gh.registry.model.RegistryModel;
 import org.ga4gh.registry.util.HibernateUtil;

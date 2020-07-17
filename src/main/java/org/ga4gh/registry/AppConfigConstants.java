@@ -37,6 +37,7 @@ public class AppConfigConstants {
     public static final String POST_SERVICE_HANDLER = "postServiceHandler";
     public static final String PUT_SERVICE_HANDLER = "putServiceHandler";
     public static final String DELETE_SERVICE_HANDLER = "deleteServiceHandler";
+    public static final String INDEX_SERVICE_TYPES_HANDLER = "indexServiceTypesHandler";
 
     /* ******************************
      * REQUEST HANDLER FACTORY 
@@ -57,6 +58,7 @@ public class AppConfigConstants {
     public static final String POST_SERVICE_HANDLER_FACTORY = "postServiceHandlerFactory";
     public static final String PUT_SERVICE_HANDLER_FACTORY = "putServiceHandlerFactory";
     public static final String DELETE_SERVICE_HANDLER_FACTORY = "deleteServiceHandlerFactory";
+    public static final String INDEX_SERVICE_TYPES_HANDLER_FACTORY = "indexServiceTypesHandlerFactory";
 
     /* ******************************
      * SERIALIZER MODULE SETS
@@ -66,6 +68,7 @@ public class AppConfigConstants {
     public static final String SHALLOW_ORGANIZATION_SERIALIZER_SET = "shallowOrganizationSerializerSet";
     public static final String DEEP_ORGANIZATION_SERIALIZER_SET = "deepOrganizationSerializerSet";
     public static final String DEEP_IMPLEMENTATION_SERIALIZER_SET = "deepImplementationSerializerSet";
+    public static final String SERVICE_TYPE_SERIALIZER_SET = "serviceTypeSerializerSet";
 
     /* ******************************
      * MISCELLANEOUS

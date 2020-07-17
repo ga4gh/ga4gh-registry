@@ -1,7 +1,6 @@
 package org.ga4gh.registry.util.requesthandler.index;
 
 import java.util.List;
-
 import org.ga4gh.registry.model.RegistryModel;
 import org.ga4gh.registry.util.requesthandler.RequestHandler;
 import org.ga4gh.registry.util.response.HibernateQuerier;
@@ -23,13 +22,17 @@ public class IndexRequestHandler<T extends RegistryModel> extends RequestHandler
         setQuerier(querier);
     }
 
-    public ResponseEntity<String> createResponseEntity() {
-        ResponseEntity<String> responseEntity = null;
+    public List<T> getResultsFromDb() {
         HibernateQuerier<T> q = getQuerier();
         HibernateQueryBuilder qb = getQueryBuilder();
         qb.setResponseClass(q.getTypeClass());
         q.setQueryString(qb.build());
-        List<T> object = q.getResults();
+        return q.getResults();
+    } 
+
+    public ResponseEntity<String> createResponseEntity() {
+        ResponseEntity<String> responseEntity = null;
+        List<T> object = getResultsFromDb();
         String serialized = getSerializerModuleSet().serializeObject(object);
         responseEntity = ResponseEntity.ok().body(serialized);
         return responseEntity;

@@ -5,9 +5,6 @@ import java.util.Map;
 import org.ga4gh.registry.AppConfigConstants;
 import org.ga4gh.registry.model.Implementation;
 import org.ga4gh.registry.util.requesthandler.RequestHandlerFactory;
-import org.ga4gh.registry.util.response.factory.GetServiceByIdResponseEntityCreatorFactory;
-import org.ga4gh.registry.util.response.factory.GetServiceTypesResponseEntityCreatorFactory;
-import org.ga4gh.registry.util.response.factory.GetServicesResponseEntityCreatorFactory;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -46,6 +43,10 @@ public class Services {
     @Qualifier(AppConfigConstants.DELETE_SERVICE_HANDLER_FACTORY)
     RequestHandlerFactory<Implementation> deleteService;
 
+    @Autowired
+    @Qualifier(AppConfigConstants.INDEX_SERVICE_TYPES_HANDLER_FACTORY)
+    RequestHandlerFactory<Implementation> indexServiceType;
+
     @GetMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<String> getServices(@RequestParam Map<String, String> queryVariables) {
         return indexService.handleRequest(queryVariables);
@@ -71,10 +72,8 @@ public class Services {
         return deleteService.handleRequest(pathVariables);
     }
 
-    /*
     @GetMapping(path = "/types", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<String> getServiceTypes() {
-        return getServiceTypes.createResponseEntity();
+        return indexServiceType.handleRequest();
     }
-    */
 }

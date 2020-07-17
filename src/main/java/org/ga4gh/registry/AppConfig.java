@@ -6,10 +6,11 @@ import org.ga4gh.registry.model.Standard;
 import org.ga4gh.registry.model.StandardVersion;
 import org.ga4gh.registry.util.HibernateConfig;
 import org.ga4gh.registry.util.HibernateUtil;
-import org.ga4gh.registry.util.requesthandler.RequestHandler;
 import org.ga4gh.registry.util.requesthandler.RequestHandlerFactory;
 import org.ga4gh.registry.util.requesthandler.delete.DeleteRequestHandler;
 import org.ga4gh.registry.util.requesthandler.index.IndexRequestHandler;
+import org.ga4gh.registry.util.requesthandler.index.IndexServiceTypesHandler;
+import org.ga4gh.registry.util.requesthandler.index.IndexServicesHandler;
 import org.ga4gh.registry.util.requesthandler.post.PostRequestHandler;
 import org.ga4gh.registry.util.requesthandler.post.PostServiceHandler;
 import org.ga4gh.registry.util.requesthandler.put.PutRequestHandler;
@@ -19,23 +20,15 @@ import org.ga4gh.registry.util.requesthandler.show.ShowRequestHandler;
 import org.ga4gh.registry.util.response.HibernateQuerier;
 import org.ga4gh.registry.util.response.HibernateQuerierFactory;
 import org.ga4gh.registry.util.response.HibernateQueryBuilder;
-import org.ga4gh.registry.util.response.ResponseEntityCreator;
 import org.ga4gh.registry.util.response.ResponseMapper;
-import org.ga4gh.registry.util.response.factory.GetOrganizationByIdResponseEntityCreatorFactory;
-import org.ga4gh.registry.util.response.factory.GetOrganizationsResponseEntityCreatorFactory;
 import org.ga4gh.registry.util.response.factory.GetServiceInfoResponseEntityCreatorFactory;
-import org.ga4gh.registry.util.response.factory.GetServiceByIdResponseEntityCreatorFactory;
-import org.ga4gh.registry.util.response.factory.GetServiceTypesResponseEntityCreatorFactory;
-import org.ga4gh.registry.util.response.factory.GetServicesResponseEntityCreatorFactory;
-import org.ga4gh.registry.util.response.factory.GetStandardByIdResponseEntityCreatorFactory;
-import org.ga4gh.registry.util.response.factory.GetStandardsResponseEntityCreatorFactory;
 import org.ga4gh.registry.util.serialize.modules.ImplementationSerializerModule;
 import org.ga4gh.registry.util.serialize.modules.OrganizationSerializerModule;
 import org.ga4gh.registry.util.serialize.modules.ReleaseStatusSerializerModule;
+import org.ga4gh.registry.util.serialize.modules.ServiceTypeSerializerModule;
 import org.ga4gh.registry.util.serialize.modules.StandardCategorySerializerModule;
 import org.ga4gh.registry.util.serialize.modules.StandardSerializerModule;
 import org.ga4gh.registry.util.serialize.modules.StandardVersionSerializerModule;
-import org.ga4gh.registry.util.serialize.serializers.StandardCategorySerializer;
 import org.ga4gh.registry.util.serialize.sets.SerializerModuleSet;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -184,11 +177,11 @@ public class AppConfig {
 
     @Bean(name = AppConfigConstants.INDEX_SERVICE_HANDLER)
     @Scope(AppConfigConstants.PROTOTYPE)
-    public IndexRequestHandler<Implementation> serviceIndexRequestHandler(
+    public IndexServicesHandler serviceIndexRequestHandler(
         @Qualifier(AppConfigConstants.DEEP_IMPLEMENTATION_SERIALIZER_SET) SerializerModuleSet serializerModuleSet,
         @Qualifier(AppConfigConstants.IMPLEMENTATION_HIBERNATE_QUERIER) HibernateQuerier<Implementation> querier
     ) {
-        return new IndexRequestHandler<>(Implementation.class, serializerModuleSet, querier);
+        return new IndexServicesHandler(Implementation.class, serializerModuleSet, querier);
     }
 
     @Bean(name = AppConfigConstants.SHOW_SERVICE_HANDLER)
@@ -221,6 +214,15 @@ public class AppConfig {
         @Qualifier(AppConfigConstants.DEEP_IMPLEMENTATION_SERIALIZER_SET) SerializerModuleSet serializerModuleSet
     ) {
         return new DeleteRequestHandler<>(Implementation.class, serializerModuleSet, AppConfigConstants.SERVICE_ID);
+    }
+
+    @Bean(name = AppConfigConstants.INDEX_SERVICE_TYPES_HANDLER)
+    @Scope(AppConfigConstants.PROTOTYPE)
+    public IndexServiceTypesHandler serviceTypesHandler(
+        @Qualifier(AppConfigConstants.SERVICE_TYPE_SERIALIZER_SET) SerializerModuleSet serializerModuleSet,
+        @Qualifier(AppConfigConstants.IMPLEMENTATION_HIBERNATE_QUERIER) HibernateQuerier<Implementation> querier
+    ) {
+        return new IndexServiceTypesHandler(Implementation.class, serializerModuleSet, querier);
     }
 
     /* ******************************
@@ -305,6 +307,12 @@ public class AppConfig {
         return new RequestHandlerFactory<>(Implementation.class, AppConfigConstants.DELETE_SERVICE_HANDLER);
     }
 
+    @Bean
+    @Qualifier(AppConfigConstants.INDEX_SERVICE_TYPES_HANDLER_FACTORY)
+    public RequestHandlerFactory<Implementation> indexServiceTypesHandlerFactory() {
+        return new RequestHandlerFactory<>(Implementation.class, AppConfigConstants.INDEX_SERVICE_TYPES_HANDLER);
+    }
+
     /* SERVICE-INFO REQUEST HANDLER FACTORY BEANS */
 
     @Bean
@@ -364,6 +372,15 @@ public class AppConfig {
         SerializerModuleSet set = new SerializerModuleSet();
         set.addModule(new ImplementationSerializerModule());
         set.addModule(new OrganizationSerializerModule());
+        set.registerModules();
+        return set;
+    }
+
+    @Bean
+    @Qualifier(AppConfigConstants.SERVICE_TYPE_SERIALIZER_SET)
+    public SerializerModuleSet serviceTypeSerializerSet() {
+        SerializerModuleSet set = new SerializerModuleSet();
+        set.addModule(new ServiceTypeSerializerModule());
         set.registerModules();
         return set;
     }
