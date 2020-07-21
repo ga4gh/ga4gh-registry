@@ -1,9 +1,5 @@
 package org.ga4gh.registry.model;
 
-import io.swagger.v3.oas.annotations.media.Schema;
-
-@Schema(name = "RegistryError",
-        description = "Error encountered while using registry API")
 public class RegistryError {
 
     private String timestamp;

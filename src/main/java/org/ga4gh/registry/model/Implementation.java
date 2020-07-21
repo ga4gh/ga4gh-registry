@@ -2,31 +2,28 @@ package org.ga4gh.registry.model;
 
 import java.text.ParseException;
 import java.util.Date;
-import java.util.UUID;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import javax.validation.constraints.NotNull;
+
 import org.ga4gh.registry.constant.RegistryConstants;
 import org.ga4gh.registry.exception.BadRequestException;
-import org.hibernate.annotations.GenericGenerator;
 
 @Entity
 @Table(name = "implementation")
 public class Implementation implements RegistryModel {
 
     @Id
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(name = "UUID",
-                      strategy = "org.hibernate.id.UUIDGenerator")
     @Column(name = "id")
-    private UUID id;
+    @NotNull
+    private String id;
 
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE,
                           CascadeType.DETACH, CascadeType.REFRESH})
@@ -106,11 +103,11 @@ public class Implementation implements RegistryModel {
         }
     }
 
-    public UUID getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(UUID id) {
+    public void setId(String id) {
         this.id = id;
     }
 

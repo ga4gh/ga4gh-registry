@@ -16,24 +16,14 @@ public class PostRequestHandler<T extends RegistryModel> extends RequestHandler<
         super(responseClass, serializerModule);
     }
 
+    @SuppressWarnings("unchecked")
     public ResponseEntity<String> createResponseEntity() {
         ResponseEntity<String> responseEntity = null;
         try {
-            T requestBody = getRequestBody();
-            requestBody = preProcessRequestBody(requestBody);
-            // first hibernate operation, create db record from passed request body
-            SessionFactory sessionFactory = getHibernateUtil().getSessionFactory();
-            Session session = sessionFactory.getCurrentSession();
-            session.beginTransaction();
-            Serializable id = session.save(requestBody);
-            session.getTransaction().commit();
-            // second hibernate operation, get saved db object to pass to client
-            session = sessionFactory.getCurrentSession();
-            session.beginTransaction();
-            T object = session.get(getResponseClass(), id);
-            object.lazyLoad();
-            session.getTransaction().commit();
-
+            T newObject = getRequestBody();
+            newObject = preProcessRequestBody(newObject);
+            getHibernateUtil().createEntityObject(getResponseClass(), newObject);
+            T object = (T) getHibernateUtil().readEntityObject(getResponseClass(), newObject.getId());
             String serialized = serializeObject(object);
             responseEntity = ResponseEntity.ok().body(serialized);
         } catch (HibernateException e) {

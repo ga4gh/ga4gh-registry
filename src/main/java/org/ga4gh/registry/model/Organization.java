@@ -1,8 +1,6 @@
 package org.ga4gh.registry.model;
 
 import java.util.List;
-import java.util.UUID;
-import javax.persistence.GeneratedValue;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -11,44 +9,31 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
-import org.ga4gh.registry.constant.Ids;
 import org.hibernate.Hibernate;
-import org.hibernate.annotations.GenericGenerator;
-import io.swagger.v3.oas.annotations.media.Schema;
 
 @Entity
 @Table(name = "organization")
-@Schema(name = "Organization",
-        description = "Organization implementing GA4GH standard(s)")
 public class Organization implements RegistryModel {
 
     @Id
-    // @GeneratedValue(generator = "UUID")
-    // @GenericGenerator(name = "UUID",
-    //                   strategy = "org.hibernate.id.UUIDGenerator")
-    @Column(name = "id", nullable = false)
-    @Schema(example = Ids.SELF_UUID)
+    @Column(name = "id")
     @NotNull
-    private UUID id;
+    private String id;
 
     @Column(name = "name")
-    @Schema(example = "Global Alliance for Genomics and Health")
     @NotNull
     private String name;
 
     @Column(name = "short_name")
-    @Schema(example = "GA4GH")
     private String shortName;
 
     @Column(name = "url")
-    @Schema(example = "https://ga4gh.org")
     @NotNull
     private String url;
 
     @OneToMany(mappedBy = "organization",
                fetch = FetchType.LAZY,
-               cascade = {CascadeType.PERSIST, CascadeType.MERGE,
-                          CascadeType.DETACH, CascadeType.REFRESH})
+               cascade = CascadeType.ALL)
     private List<Implementation> implementations;
 
     /* constructors */
@@ -67,11 +52,11 @@ public class Organization implements RegistryModel {
 
     /* getters and setters */
 
-    public UUID getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(UUID id) {
+    public void setId(String id) {
         this.id = id;
     }
 

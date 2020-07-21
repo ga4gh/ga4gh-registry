@@ -2,8 +2,6 @@ package org.ga4gh.registry.util.requesthandler;
 
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.ga4gh.registry.exception.BadRequestException;
@@ -12,8 +10,6 @@ import org.ga4gh.registry.exception.ResourceNotFoundException;
 import org.ga4gh.registry.model.RegistryModel;
 import org.ga4gh.registry.util.hibernate.HibernateUtil;
 import org.ga4gh.registry.util.serialize.RegistrySerializerModule;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 
@@ -47,11 +43,11 @@ public class RequestHandler<T extends RegistryModel> implements RequestHandlerI<
 
     /* Custom Methods */
 
-    public UUID getUUID() throws BadRequestException {
-        UUID id = null;
+    public String getId() throws BadRequestException {
+        String id = null;
         try {
             Map<String, String> pathVariables = getRequestVariablesA();
-            id = UUID.fromString(pathVariables.get(getIdPathParameterName()));
+            id = pathVariables.get(getIdPathParameterName());
         } catch (IllegalArgumentException e) {
             throw new BadRequestException("requested id does not conform to UUID format");
         }
@@ -61,9 +57,9 @@ public class RequestHandler<T extends RegistryModel> implements RequestHandlerI<
     @SuppressWarnings("unchecked")
     public T getObjectById() throws BadRequestException, ResourceNotFoundException {
         T object = null;
-        object = (T) getHibernateUtil().readEntityObject(getResponseClass(), getUUID());
+        object = (T) getHibernateUtil().readEntityObject(getResponseClass(), getId());
         if (object == null) {
-            throw new ResourceNotFoundException("no object by id: " + getUUID().toString());
+            throw new ResourceNotFoundException("no object by id: " + getId().toString());
         }
         return object;
     }

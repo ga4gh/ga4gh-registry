@@ -1,25 +1,24 @@
 package org.ga4gh.registry.model;
 
 import java.util.List;
-import java.util.UUID;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "standard_version")
 public class StandardVersion implements RegistryModel {
     
     @Id
-    @GeneratedValue(generator = "UUID")
     @Column(name = "id")
-    private UUID id;
+    @NotNull
+    private String id;
 
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE,
                           CascadeType.DETACH, CascadeType.REFRESH})
@@ -58,11 +57,11 @@ public class StandardVersion implements RegistryModel {
 
     /* getters and setters */
 
-    public UUID getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(UUID id) {
+    public void setId(String id) {
         this.id = id;
     }
 

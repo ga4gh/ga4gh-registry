@@ -61,43 +61,43 @@ public class HibernateUtil {
         try {
             session.saveOrUpdate(newObject);
         } catch (Exception e) {
-            System.out.println("An exception in 'createEntityObject'");
+            System.out.println("An exception in 'createEntityObject'" + e.getMessage());
         } finally {
             endTransaction(session);
         }
     }
 
-    public RegistryModel readEntityObject(Class<? extends RegistryModel> entityClass, UUID id) {
+    public RegistryModel readEntityObject(Class<? extends RegistryModel> entityClass, String id) {
         Session session = newTransaction();
         RegistryModel object = null;
         try {
             object = (RegistryModel) session.get(entityClass, id);
             object.lazyLoad();
         } catch (Exception e) {
-            System.out.println("An exception in 'readEntityObject'");
+            System.out.println("An exception in 'readEntityObject'" + e.getMessage());
         } finally {
             endTransaction(session);
         }
         return object;
     }
 
-    public void updateEntityObject(Class<? extends RegistryModel> entityClass, UUID oldId, Object newObject) {
+    public void updateEntityObject(Class<? extends RegistryModel> entityClass, String oldId, Object newObject) {
         try {
             deleteEntityObject(entityClass, oldId);
             createEntityObject(entityClass, newObject);        
         } catch (Exception e) {
-            System.out.println("An exception in 'updateEntityObject'");
+            System.out.println("An exception in 'updateEntityObject'" + e.getMessage());
         }
     }
 
-    public void deleteEntityObject(Class<? extends RegistryModel> entityClass, UUID id) {
+    public void deleteEntityObject(Class<? extends RegistryModel> entityClass, String id) {
         Session session = newTransaction();
         RegistryModel object = null;
         try {
             object = session.get(entityClass, id);
             session.delete(object);
         } catch (Exception e) {
-            System.out.println("An exception in 'deleteObject'");
+            System.out.println("An exception in 'deleteObject'" + e.getMessage());
         } finally {
             endTransaction(session);
         }
