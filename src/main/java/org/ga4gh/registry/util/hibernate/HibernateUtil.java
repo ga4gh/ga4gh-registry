@@ -1,11 +1,12 @@
 package org.ga4gh.registry.util.hibernate;
 
+import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 import org.springframework.beans.factory.annotation.Autowired;
-import java.util.UUID;
 import javax.annotation.PostConstruct;
+import javax.persistence.PersistenceException;
 import org.ga4gh.registry.model.Implementation;
 import org.ga4gh.registry.model.ImplementationCategory;
 import org.ga4gh.registry.model.Organization;
@@ -43,61 +44,85 @@ public class HibernateUtil {
                 .addAnnotatedClass(StandardVersion.class)
                 .addAnnotatedClass(WorkStream.class)
                 .buildSessionFactory();
-            System.out.println("Done building, now going to set");
             setSessionFactory(sessionFactory);
-            System.out.println("Done setting");
             setConfigured(true);
-            System.out.println("Session Factory Build Success");
         } catch (Throwable ex) {
-            System.out.println("Session Factory Build Failure");
             throw new ExceptionInInitializerError(ex);
         }
     }
 
     /* API Methods */
 
-    public void createEntityObject(Class<? extends RegistryModel> entityClass, Object newObject) {
+    public void createEntityObject(Class<? extends RegistryModel> entityClass, Object newObject) throws HibernateException {
         Session session = newTransaction();
         try {
             session.saveOrUpdate(newObject);
+            endTransaction(session);
+        } catch (PersistenceException e) {
+            throw new HibernateException(e.getMessage());
         } catch (Exception e) {
-            System.out.println("An exception in 'createEntityObject'" + e.getMessage());
+            throw new HibernateException(e.getMessage());
         } finally {
             endTransaction(session);
         }
     }
 
-    public RegistryModel readEntityObject(Class<? extends RegistryModel> entityClass, String id) {
+    public RegistryModel readEntityObject(Class<? extends RegistryModel> entityClass, String id) throws HibernateException {
         Session session = newTransaction();
         RegistryModel object = null;
         try {
             object = (RegistryModel) session.get(entityClass, id);
-            object.lazyLoad();
+            if (object != null) {
+                object.lazyLoad();
+            }
+            endTransaction(session);
+        } catch (PersistenceException e) {
+            throw new HibernateException(e.getMessage());
         } catch (Exception e) {
-            System.out.println("An exception in 'readEntityObject'" + e.getMessage());
+            throw new HibernateException(e.getMessage());
         } finally {
             endTransaction(session);
         }
         return object;
     }
 
-    public void updateEntityObject(Class<? extends RegistryModel> entityClass, String oldId, Object newObject) {
+    public void updateEntityObject(Class<? extends RegistryModel> entityClass, String oldId, String newId, RegistryModel newObject) throws HibernateException {
+        Session session = newTransaction();
         try {
-            deleteEntityObject(entityClass, oldId);
-            createEntityObject(entityClass, newObject);        
+            // update the object at the existing id
+            newObject.setId(oldId);
+            session.update(newObject);
+            endTransaction(session);
+            // update the object's id via manual query
+            if (!newId.equals(oldId)) {
+                session = newTransaction();
+                String updateId =
+                "UPDATE " + newObject.getClass().getName()
+                + " set id='" + newId + "'"
+                + " WHERE id='" + oldId + "'";
+                session.createQuery(updateId).executeUpdate();
+                endTransaction(session);
+            }
+        } catch (PersistenceException e) {
+            throw new HibernateException(e.getMessage());
         } catch (Exception e) {
-            System.out.println("An exception in 'updateEntityObject'" + e.getMessage());
+            throw new HibernateException(e.getMessage());
+        } finally {
+            endTransaction(session);
         }
     }
 
-    public void deleteEntityObject(Class<? extends RegistryModel> entityClass, String id) {
+    public void deleteEntityObject(Class<? extends RegistryModel> entityClass, String id) throws HibernateException {
         Session session = newTransaction();
         RegistryModel object = null;
         try {
             object = session.get(entityClass, id);
             session.delete(object);
+            endTransaction(session);
+        } catch (PersistenceException e) {
+            throw new HibernateException(e.getMessage());
         } catch (Exception e) {
-            System.out.println("An exception in 'deleteObject'" + e.getMessage());
+            throw new HibernateException(e.getMessage());
         } finally {
             endTransaction(session);
         }
@@ -112,7 +137,10 @@ public class HibernateUtil {
     }
 
     private void endTransaction(Session session) {
-        session.getTransaction().commit();
+        if (session.getTransaction().isActive()) {
+            session.getTransaction().commit();
+            session.close();
+        }
     }
 
     public void shutdown() {

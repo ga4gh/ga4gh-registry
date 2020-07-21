@@ -12,13 +12,14 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
-
 import org.ga4gh.registry.constant.RegistryConstants;
 import org.ga4gh.registry.exception.BadRequestException;
 
 @Entity
 @Table(name = "implementation")
 public class Implementation implements RegistryModel {
+
+    private static final String tableName = "implementation";
 
     @Id
     @Column(name = "id")
@@ -93,6 +94,10 @@ public class Implementation implements RegistryModel {
 
     public void lazyLoad() {
         
+    }
+
+    public String getTableName() {
+        return tableName;
     }
 
     public Date parseDate(String dateString) {

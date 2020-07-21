@@ -5,4 +5,5 @@ public interface RegistryModel {
     public void setId(String id);
     public String getId();
     public void lazyLoad();
+    public String getTableName();
 }

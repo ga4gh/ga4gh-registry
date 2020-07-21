@@ -14,6 +14,8 @@ import javax.validation.constraints.NotNull;
 @Table(name = "release_status")
 public class ReleaseStatus implements RegistryModel {
 
+    public static final String tableName = "release_status";
+
     @Id
     @Column(name = "id")
     @NotNull
@@ -46,6 +48,10 @@ public class ReleaseStatus implements RegistryModel {
 
     public void lazyLoad() {
         
+    }
+
+    public String getTableName() {
+        return tableName;
     }
 
     /* getters and setters */

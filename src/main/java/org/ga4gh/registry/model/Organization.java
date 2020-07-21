@@ -15,6 +15,8 @@ import org.hibernate.Hibernate;
 @Table(name = "organization")
 public class Organization implements RegistryModel {
 
+    private static final String tableName = "organization";
+
     @Id
     @Column(name = "id")
     @NotNull
@@ -48,6 +50,10 @@ public class Organization implements RegistryModel {
 
     public void lazyLoad() {
         Hibernate.initialize(getImplementations());
+    }
+
+    public String getTableName() {
+        return tableName;
     }
 
     /* getters and setters */

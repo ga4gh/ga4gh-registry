@@ -17,6 +17,8 @@ import org.hibernate.Hibernate;
 @Table(name="standard")
 public class Standard implements RegistryModel {
 
+    public static final String tableName = "standard";
+
     @Id
     @Column(name = "id")
     @NotNull
@@ -76,6 +78,10 @@ public class Standard implements RegistryModel {
 
     public void lazyLoad() {
         Hibernate.initialize(getStandardVersions());
+    }
+
+    public String getTableName() {
+        return tableName;
     }
 
     /* getters and setters */

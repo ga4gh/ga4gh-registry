@@ -14,6 +14,8 @@ import javax.validation.constraints.NotNull;
 @Table(name = "standard_category")
 public class StandardCategory implements RegistryModel {
 
+    public static final String tableName = "standard_category";
+
     @Id
     @Column(name = "id")
     @NotNull
@@ -40,6 +42,10 @@ public class StandardCategory implements RegistryModel {
 
     public void lazyLoad() {
         
+    }
+
+    public String getTableName() {
+        return tableName;
     }
 
     /* getters and setters */

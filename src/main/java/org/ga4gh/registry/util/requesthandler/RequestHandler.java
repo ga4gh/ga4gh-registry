@@ -43,25 +43,32 @@ public class RequestHandler<T extends RegistryModel> implements RequestHandlerI<
 
     /* Custom Methods */
 
-    public String getId() throws BadRequestException {
-        String id = null;
-        try {
-            Map<String, String> pathVariables = getRequestVariablesA();
-            id = pathVariables.get(getIdPathParameterName());
-        } catch (IllegalArgumentException e) {
-            throw new BadRequestException("requested id does not conform to UUID format");
-        }
-        return id;
+    public String getIdOnPath() {
+        Map<String, String> pathVariables = getRequestVariablesA();
+        return pathVariables.get(getIdPathParameterName());
     }
 
     @SuppressWarnings("unchecked")
-    public T getObjectById() throws BadRequestException, ResourceNotFoundException {
-        T object = null;
-        object = (T) getHibernateUtil().readEntityObject(getResponseClass(), getId());
+    public T getObjectById(String id) throws BadRequestException, ResourceNotFoundException {
+        System.out.println("CAA");
+        return (T) getHibernateUtil().readEntityObject(getResponseClass(), id);
+    }
+
+    public void validateObjectByIdExists(String id) {
+        T object = getObjectById(id);
         if (object == null) {
-            throw new ResourceNotFoundException("no object by id: " + getId().toString());
+            throw new ResourceNotFoundException("no " + getEntityClassName() + " by the id: " + id.toString());
         }
-        return object;
+    }
+
+    public void validateObjectByIdDoesNotExist(String id) {
+        System.out.println("CA");
+        T object = getObjectById(id);
+        System.out.println("CB");
+        if (object != null) {
+            System.out.println("CC");
+            throw new BadRequestException("another " + getEntityClassName() + " already exists by id: " + id.toString());
+        }
     }
 
     public String serializeObject(T object) {
@@ -101,6 +108,10 @@ public class RequestHandler<T extends RegistryModel> implements RequestHandlerI<
     public ResponseEntity<String> createResponseEntity() {
         return ResponseEntity.ok()
             .body("");
+    }
+
+    private String getEntityClassName() {
+        return getResponseClass().getSimpleName();
     }
 
     /* Setters and Getters */

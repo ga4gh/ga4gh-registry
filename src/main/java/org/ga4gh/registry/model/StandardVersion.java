@@ -14,6 +14,8 @@ import javax.validation.constraints.NotNull;
 @Entity
 @Table(name = "standard_version")
 public class StandardVersion implements RegistryModel {
+
+    public static final String tableName = "standard_version";
     
     @Id
     @Column(name = "id")
@@ -53,6 +55,10 @@ public class StandardVersion implements RegistryModel {
 
     public void lazyLoad() {
         
+    }
+
+    public String getTableName() {
+        return tableName;
     }
 
     /* getters and setters */

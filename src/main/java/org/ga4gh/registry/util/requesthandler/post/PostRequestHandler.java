@@ -1,13 +1,10 @@
 package org.ga4gh.registry.util.requesthandler.post;
 
-import java.io.Serializable;
 import org.ga4gh.registry.exception.BadRequestException;
 import org.ga4gh.registry.model.RegistryModel;
 import org.ga4gh.registry.util.requesthandler.RequestHandler;
 import org.ga4gh.registry.util.serialize.RegistrySerializerModule;
 import org.hibernate.HibernateException;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.springframework.http.ResponseEntity;
 
 public class PostRequestHandler<T extends RegistryModel> extends RequestHandler<T> {
@@ -22,13 +19,13 @@ public class PostRequestHandler<T extends RegistryModel> extends RequestHandler<
         try {
             T newObject = getRequestBody();
             newObject = preProcessRequestBody(newObject);
+            validateObjectByIdDoesNotExist(newObject.getId());
             getHibernateUtil().createEntityObject(getResponseClass(), newObject);
             T object = (T) getHibernateUtil().readEntityObject(getResponseClass(), newObject.getId());
-            String serialized = serializeObject(object);
-            responseEntity = ResponseEntity.ok().body(serialized);
+            responseEntity = ResponseEntity.ok().body(serializeObject(object));
         } catch (HibernateException e) {
-            throw new BadRequestException("Request could not be completed: " + e.toString());
-        }
+            throw new BadRequestException("Could not create " + getResponseClass().getSimpleName() + ": " + e.getMessage());
+        }       
         return responseEntity;
     }
 }
