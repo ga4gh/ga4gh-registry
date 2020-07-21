@@ -84,6 +84,8 @@ public class AppConfigConstants {
     public static final String RELATIONAL_IMPLEMENTATION_SERIALIZER = "relationalImplementationSerializer";
     // REGISTRY ERROR
     public static final String BASIC_REGISTRY_ERROR_SERIALIZER = "basicRegistryErrorSerializer";
+    // SERVICE TYPE
+    public static final String BASIC_SERVICE_TYPE_SERIALIZER = "basicServiceTypeSerializer";
 
     /* ******************************
      * SERIALIZER MODULES
@@ -105,6 +107,8 @@ public class AppConfigConstants {
     public static final String RELATIONAL_IMPLEMENTATION_SERIALIZER_MODULE = "relationalImplementationSerializerModule";
     // REGISTRY ERROR
     public static final String BASIC_REGISTRY_ERROR_SERIALIZER_MODULE = "basicRegistryErrorSerializerModule";
+    // SERVICE TYPE
+    public static final String BASIC_SERVICE_TYPE_SERIALIZER_MODULE = "basicServiceTypeSerializerModule";
 
     /* ******************************
      * MISCELLANEOUS

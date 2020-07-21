@@ -16,13 +16,10 @@ public class IndexServiceTypesHandler extends IndexRequestHandler<Implementation
     }
 
     public ResponseEntity<String> createResponseEntity() {
-        ResponseEntity<String> responseEntity = null;
         List<Implementation> implementations = getResultsFromDb();
         Set<ServiceType> serviceTypes = postProcessResults(implementations);
-        // String serialized = getSerializerModuleSet().serializeObject(serviceTypes);
-        // responseEntity = ResponseEntity.ok().body(serialized);
-        responseEntity = ResponseEntity.ok().body("");
-        return responseEntity;
+        String serialized = serializeObject(serviceTypes);
+        return ResponseEntity.ok().body(serialized);
     }
 
     public Set<ServiceType> postProcessResults(List<Implementation> implementations) {

@@ -36,6 +36,7 @@ import org.ga4gh.registry.util.serialize.serializers.ImplementationSerializer;
 import org.ga4gh.registry.util.serialize.serializers.OrganizationSerializer;
 import org.ga4gh.registry.util.serialize.serializers.RegistryErrorSerializer;
 import org.ga4gh.registry.util.serialize.serializers.ReleaseStatusSerializer;
+import org.ga4gh.registry.util.serialize.serializers.ServiceTypeSerializer;
 import org.ga4gh.registry.util.serialize.serializers.StandardCategorySerializer;
 import org.ga4gh.registry.util.serialize.serializers.StandardSerializer;
 import org.ga4gh.registry.util.serialize.serializers.StandardVersionSerializer;
@@ -227,16 +228,14 @@ public class AppConfig implements WebMvcConfigurer {
     }
     */
 
-    /*
     @Bean(name = AppConfigConstants.INDEX_SERVICE_TYPES_HANDLER)
     @Scope(AppConfigConstants.PROTOTYPE)
     public IndexServiceTypesHandler serviceTypesHandler(
-        @Qualifier(AppConfigConstants.SERVICE_TYPE_SERIALIZER_SET) SerializerModuleSet serializerModuleSet,
+        @Qualifier(AppConfigConstants.BASIC_SERVICE_TYPE_SERIALIZER_MODULE) RegistrySerializerModule serializerModule,
         @Qualifier(AppConfigConstants.IMPLEMENTATION_HIBERNATE_QUERIER) HibernateQuerier<Implementation> querier
     ) {
-        return new IndexServiceTypesHandler(Implementation.class, serializerModuleSet, querier);
+        return new IndexServiceTypesHandler(Implementation.class, serializerModule, querier);
     }
-    */
 
     /* SERVICE-INFO REQUEST HANDLER BEANS */
 
@@ -425,6 +424,14 @@ public class AppConfig implements WebMvcConfigurer {
         return new RegistryErrorSerializer();
     }
 
+    /* SERVICE TYPE SERIALIZER BEANS */
+
+    @Bean
+    @Qualifier(AppConfigConstants.BASIC_SERVICE_TYPE_SERIALIZER)
+    public ServiceTypeSerializer basicServiceTypeSerializer() {
+        return new ServiceTypeSerializer();
+    }
+
     /* ******************************
      * SERIALIZER MODULE BEANS
      * ****************************** */
@@ -519,6 +526,18 @@ public class AppConfig implements WebMvcConfigurer {
         List<JsonSerializer<?>> serializers = new ArrayList<>();
         serializers.add(registryErrorSerializer);
         return new RegistrySerializerModule("I", new Version(1,0,0,"release", "org.ga4gh", "organization"), serializers);
+    }
+
+    /* SERVICE TYPE SERIALIZER MODULE BEANS */
+    
+    @Bean
+    @Qualifier(AppConfigConstants.BASIC_SERVICE_TYPE_SERIALIZER_MODULE)
+    public RegistrySerializerModule basicServiceTypeSerializierModule(
+        @Qualifier(AppConfigConstants.BASIC_SERVICE_TYPE_SERIALIZER) ServiceTypeSerializer serviceTypeSerializer
+    ) {
+        List<JsonSerializer<?>> serializers = new ArrayList<>();
+        serializers.add(serviceTypeSerializer);
+        return new RegistrySerializerModule("J", new Version(1,0,0,"release", "org.ga4gh", "organization"), serializers);
     }
 
     /* ******************************

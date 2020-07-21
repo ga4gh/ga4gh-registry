@@ -71,7 +71,7 @@ public class RequestHandler<T extends RegistryModel> implements RequestHandlerI<
         }
     }
 
-    public String serializeObject(T object) {
+    public String serializeObject(Object object) {
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(getSerializerModule());
         String serialized = null;
