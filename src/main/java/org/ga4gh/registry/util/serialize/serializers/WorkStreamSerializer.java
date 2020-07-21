@@ -1,7 +1,7 @@
+/*
 package org.ga4gh.registry.util.serialize.serializers;
 
 import java.io.IOException;
-import java.util.Map;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import org.ga4gh.registry.model.WorkStream;
@@ -12,8 +12,8 @@ public class WorkStreamSerializer extends VariableDepthSerializer<WorkStream> {
         super();
     }
 
-    public WorkStreamSerializer(Map<String, Boolean> serializeMappedAttrs) {
-        super(serializeMappedAttrs);
+    public WorkStreamSerializer(String[] serializedRelationalAttributes) {
+        super(serializedRelationalAttributes);
     }
 
     @Override
@@ -27,3 +27,4 @@ public class WorkStreamSerializer extends VariableDepthSerializer<WorkStream> {
         gen.writeEndObject();
     }
 }
+*/

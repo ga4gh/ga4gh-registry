@@ -1,7 +1,6 @@
 package org.ga4gh.registry.util.serialize.serializers;
 
 import java.io.IOException;
-import java.util.Map;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import org.ga4gh.registry.model.Standard;
@@ -9,11 +8,11 @@ import org.ga4gh.registry.model.Standard;
 public class StandardSerializer extends VariableDepthSerializer<Standard> {
 
     public StandardSerializer() {
-        super();
+        super(Standard.class);
     }
 
-    public StandardSerializer(Map<String, Boolean> serializeMappedAttrs) {
-        super(serializeMappedAttrs);
+    public StandardSerializer(String[] serializedRelationalAttributes) {
+        super(Standard.class, serializedRelationalAttributes);
     }
 
     @Override

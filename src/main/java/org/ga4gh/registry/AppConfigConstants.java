@@ -65,16 +65,46 @@ public class AppConfigConstants {
     public static final String SHOW_SERVICE_INFO_HANDLER_FACTORY = "showServiceInfoHandlerFactory";
 
     /* ******************************
-     * SERIALIZER MODULE SETS
+     * SERIALIZERS
      * ****************************** */
-    public static final String SHALLOW_STANDARD_SERIALIZER_SET = "shallowStandardSerializerSet";
-    public static final String DEEP_STANDARD_SERIALIZER_SET = "deepStandardSerializerSet";
-    public static final String SHALLOW_ORGANIZATION_SERIALIZER_SET = "shallowOrganizationSerializerSet";
-    public static final String DEEP_ORGANIZATION_SERIALIZER_SET = "deepOrganizationSerializerSet";
-    public static final String DEEP_IMPLEMENTATION_SERIALIZER_SET = "deepImplementationSerializerSet";
-    public static final String SERVICE_TYPE_SERIALIZER_SET = "serviceTypeSerializerSet";
-    public static final String REGISTRY_ERROR_SERIALIZER_SET = "registryErrorSerializerSet";
+    // STANDARD
+    public static final String BASIC_STANDARD_SERIALIZER = "basicStandardSerializer";
+    public static final String RELATIONAL_STANDARD_SERIALIZER = "relationalStandardSerializer";
+    // STANDARD CATEGORY
+    public static final String BASIC_STANDARD_CATEGORY_SERIALIZER = "basicStandardCategorySerializer";
+    // RELEASE STATUS
+    public static final String BASIC_RELEASE_STATUS_SERIALIZER = "basicReleaseStatusSerializer";
+    // STANDARD VERSION
+    public static final String BASIC_STANDARD_VERSION_SERIALIZER = "basicStandardVersionSerializer";
+    // ORGANIZATION
+    public static final String BASIC_ORGANIZATION_SERIALIZER = "basicOrganizationSerializer";
+    public static final String RELATIONAL_ORGANIZATION_SERIALIZER = "relationalOrganizationSerializer";
+    // IMPLEMENTATION
+    public static final String BASIC_IMPLEMENTATION_SERIALIZER = "basicImplementationSerializer";
+    public static final String RELATIONAL_IMPLEMENTATION_SERIALIZER = "relationalImplementationSerializer";
+    // REGISTRY ERROR
+    public static final String BASIC_REGISTRY_ERROR_SERIALIZER = "basicRegistryErrorSerializer";
 
+    /* ******************************
+     * SERIALIZER MODULES
+     * ****************************** */
+    // STANDARD
+    public static final String BASIC_STANDARD_SERIALIZER_MODULE = "basicStandardSerializerModule";
+    public static final String RELATIONAL_STANDARD_SERIALIZER_MODULE = "relationalStandardSerializerModule";
+    // STANDARD CATEGORY
+    public static final String BASIC_STANDARD_CATEGORY_SERIALIZER_MODULE = "basicStandardCategorySerializerModule";
+    // RELEASE STATUS
+    public static final String BASIC_RELEASE_STATUS_SERIALIZER_MODULE = "basicReleaseStatusSerializerModule";
+    // STANDARD VERSION
+    public static final String BASIC_STANDARD_VERSION_SERIALIZER_MODULE = "basicStandardVersionSerializerModule";
+    // ORGANIZATION
+    public static final String BASIC_ORGANIZATION_SERIALIZER_MODULE = "basicOrganizationSerializerModule";
+    public static final String RELATIONAL_ORGANIZATION_SERIALIZER_MODULE = "relationalOrganizationSerializerModule";
+    // IMPLEMENTATION
+    public static final String BASIC_IMPLEMENTATION_SERIALIZER_MODULE = "basicImplementationSerializerModule";
+    public static final String RELATIONAL_IMPLEMENTATION_SERIALIZER_MODULE = "relationalImplementationSerializerModule";
+    // REGISTRY ERROR
+    public static final String BASIC_REGISTRY_ERROR_SERIALIZER_MODULE = "basicRegistryErrorSerializerModule";
 
     /* ******************************
      * MISCELLANEOUS

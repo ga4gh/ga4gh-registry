@@ -1,25 +1,30 @@
 package org.ga4gh.registry.util.serialize.serializers;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.io.IOException;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
+import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 
-public abstract class VariableDepthSerializer<T> extends JsonSerializer<T> {
+// public abstract class VariableDepthSerializer<T> extends JsonSerializer<T> {
+public abstract class VariableDepthSerializer<T> extends StdSerializer<T> {
 
-    // private boolean deep;
+    private Set<String> serializedRelationalAttributes;
 
-    Map<String, Boolean> serializeMappedAttrs;
-
-    public VariableDepthSerializer() {
-        super();
-        serializeMappedAttrs = new HashMap<>();
+    public VariableDepthSerializer(Class<T> t) {
+        super(t);
+        setSerializedRelationalAttributes(new HashSet<>());
     }
 
-    public VariableDepthSerializer(Map<String, Boolean> serializeMappedAttrs) {
-        super();
-        this.serializeMappedAttrs = serializeMappedAttrs;
+    public VariableDepthSerializer(Class<T> t, String[] serializedRelationalAttributes) {
+        super(t);
+        setSerializedRelationalAttributes(new HashSet<>());
+        for (String s : serializedRelationalAttributes) {
+            this.serializedRelationalAttributes.add(s);
+        }
     }
 
     public void writeStringIfExists(JsonGenerator gen, String property, String value)
@@ -39,20 +44,26 @@ public abstract class VariableDepthSerializer<T> extends JsonSerializer<T> {
     public void writeStringIfSelected(JsonGenerator gen, String property, String value)
         throws IOException {
 
-        if (serializeMappedAttrs.containsKey(property)) {
-            if (serializeMappedAttrs.get(property)) {
-                writeStringIfExists(gen, property, value);
-            }
+        if (serializedRelationalAttributes.contains(property)) {
+            writeStringIfExists(gen, property, value);
         }
     }
 
     public void writeObjectIfSelected(JsonGenerator gen, String property, Object value)
         throws IOException {
-        
-        if (serializeMappedAttrs.containsKey(property)) {
-            if (serializeMappedAttrs.get(property)) {
-                writeObjectIfExists(gen, property, value);
-            }
+
+        if (serializedRelationalAttributes.contains(property)) {
+            writeObjectIfExists(gen, property, value);
         }
+    }
+
+    /* Setters and Getters */
+
+    public void setSerializedRelationalAttributes(Set<String> serializedRelationalAttributes) {
+        this.serializedRelationalAttributes = serializedRelationalAttributes;
+    }
+
+    public Set<String> getSerializedRelationalAttributes() {
+        return serializedRelationalAttributes;
     }
 }

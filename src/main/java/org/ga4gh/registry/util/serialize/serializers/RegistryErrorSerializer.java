@@ -1,7 +1,6 @@
 package org.ga4gh.registry.util.serialize.serializers;
 
 import java.io.IOException;
-import java.util.Map;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import org.ga4gh.registry.model.RegistryError;
@@ -9,11 +8,11 @@ import org.ga4gh.registry.model.RegistryError;
 public class RegistryErrorSerializer extends VariableDepthSerializer<RegistryError> {
 
     public RegistryErrorSerializer() {
-        super();
+        super(RegistryError.class);
     }
 
-    public RegistryErrorSerializer(Map<String, Boolean> serializeMappedAttrs) {
-        super(serializeMappedAttrs);
+    public RegistryErrorSerializer(String[] serializedRelationalAttributes) {
+        super(RegistryError.class, serializedRelationalAttributes);
     }
 
     @Override

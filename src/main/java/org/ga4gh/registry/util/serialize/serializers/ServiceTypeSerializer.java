@@ -1,3 +1,4 @@
+/*
 package org.ga4gh.registry.util.serialize.serializers;
 
 import java.io.IOException;
@@ -14,8 +15,8 @@ public class ServiceTypeSerializer extends VariableDepthSerializer<ServiceType> 
         super();
     }
 
-    public ServiceTypeSerializer(Map<String, Boolean> serializeMappedAttrs) {
-        super(serializeMappedAttrs);
+    public ServiceTypeSerializer(String[] serializedRelationalAttributes) {
+        super(serializedRelationalAttributes);
     }
 
     @Override
@@ -29,3 +30,4 @@ public class ServiceTypeSerializer extends VariableDepthSerializer<ServiceType> 
     }
 
 }
+*/

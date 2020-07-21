@@ -12,6 +12,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import org.ga4gh.registry.constant.Ids;
+import org.hibernate.Hibernate;
 import org.hibernate.annotations.GenericGenerator;
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -22,12 +23,12 @@ import io.swagger.v3.oas.annotations.media.Schema;
 public class Organization implements RegistryModel {
 
     @Id
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(name = "UUID",
-                      strategy = "org.hibernate.id.UUIDGenerator")
+    // @GeneratedValue(generator = "UUID")
+    // @GenericGenerator(name = "UUID",
+    //                   strategy = "org.hibernate.id.UUIDGenerator")
     @Column(name = "id", nullable = false)
     @Schema(example = Ids.SELF_UUID)
-    // @NotNull
+    @NotNull
     private UUID id;
 
     @Column(name = "name")
@@ -58,6 +59,10 @@ public class Organization implements RegistryModel {
         this.name = name;
         this.shortName = shortName;
         this.url = url;
+    }
+
+    public void lazyLoad() {
+        Hibernate.initialize(getImplementations());
     }
 
     /* getters and setters */

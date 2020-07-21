@@ -14,7 +14,7 @@ import org.hibernate.annotations.GenericGenerator;
 
 @Entity
 @Table(name = "standard_category")
-public class StandardCategory {
+public class StandardCategory implements RegistryModel {
 
     @Id
     @GeneratedValue(generator = "UUID")
@@ -40,6 +40,10 @@ public class StandardCategory {
 
     public StandardCategory(String category) {
         this.category = category;
+    }
+
+    public void lazyLoad() {
+        
     }
 
     /* getters and setters */

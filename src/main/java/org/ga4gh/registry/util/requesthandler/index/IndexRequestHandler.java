@@ -5,7 +5,7 @@ import org.ga4gh.registry.model.RegistryModel;
 import org.ga4gh.registry.util.requesthandler.RequestHandler;
 import org.ga4gh.registry.util.hibernate.HibernateQuerier;
 import org.ga4gh.registry.util.hibernate.HibernateQueryBuilder;
-import org.ga4gh.registry.util.serialize.sets.SerializerModuleSet;
+import org.ga4gh.registry.util.serialize.RegistrySerializerModule;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 
@@ -17,8 +17,8 @@ public class IndexRequestHandler<T extends RegistryModel> extends RequestHandler
     HibernateQueryBuilder queryBuilder;
 
     @Autowired
-    public IndexRequestHandler(Class<T> responseClass, SerializerModuleSet serializerModuleSet, HibernateQuerier<T> querier) {
-        super(responseClass, serializerModuleSet);
+    public IndexRequestHandler(Class<T> responseClass, RegistrySerializerModule serializerModule, HibernateQuerier<T> querier) {
+        super(responseClass, serializerModule);
         setQuerier(querier);
     }
 
@@ -28,13 +28,12 @@ public class IndexRequestHandler<T extends RegistryModel> extends RequestHandler
         qb.setResponseClass(q.getTypeClass());
         q.setQueryString(qb.build());
         return q.getResults();
-    } 
+    }
 
     public ResponseEntity<String> createResponseEntity() {
         ResponseEntity<String> responseEntity = null;
         List<T> object = getResultsFromDb();
-        String serialized = getSerializerModuleSet().serializeObject(object);
-        responseEntity = ResponseEntity.ok().body(serialized);
+        responseEntity = ResponseEntity.ok().body(serializeObject(object));
         return responseEntity;
     }
 

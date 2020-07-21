@@ -44,7 +44,7 @@ public class Implementation implements RegistryModel {
     @Column(name = "description")
     private String description;
 
-    @ManyToOne(fetch = FetchType.LAZY,
+    @ManyToOne(fetch = FetchType.EAGER,
                // cascade = CascadeType.ALL)
                cascade = {CascadeType.PERSIST, CascadeType.MERGE,
                           CascadeType.DETACH, CascadeType.REFRESH})
@@ -92,6 +92,10 @@ public class Implementation implements RegistryModel {
         this.environment = environment;
         this.version = version;
         this.url = url;
+    }
+
+    public void lazyLoad() {
+        
     }
 
     public Date parseDate(String dateString) {

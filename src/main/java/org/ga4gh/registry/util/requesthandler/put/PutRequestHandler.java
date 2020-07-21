@@ -1,59 +1,44 @@
 package org.ga4gh.registry.util.requesthandler.put;
 
-import java.util.Map;
 import java.util.UUID;
 import org.ga4gh.registry.model.RegistryModel;
 import org.ga4gh.registry.util.requesthandler.RequestHandler;
-import org.ga4gh.registry.util.serialize.sets.SerializerModuleSet;
+import org.ga4gh.registry.util.serialize.RegistrySerializerModule;
+// import org.ga4gh.registry.util.serialize.sets.SerializerModuleSet;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.http.ResponseEntity;
 
 public class PutRequestHandler<T extends RegistryModel> extends RequestHandler<T> {
 
-    private String idPathParameterName;
-
-    public PutRequestHandler(Class<T> responseClass, SerializerModuleSet serializerModuleSet, String idPathParameterName) {
-        super(responseClass, serializerModuleSet);
-        setIdPathParameterName(idPathParameterName);
+    public PutRequestHandler(Class<T> responseClass, RegistrySerializerModule serializerModule, String idPathParameterName) {
+        super(responseClass, serializerModule, idPathParameterName);
     }
 
     public ResponseEntity<String> createResponseEntity() {
+        System.out.println("***\n***");
+        System.out.println("Creating PUT response entity");
 
-        // initial setup
-        Map<String, String> pathVariables = getRequestVariablesA();
-        T requestBody = getRequestBody();
-        SerializerModuleSet serializerModuleSet = getSerializerModuleSet();
-
-        // preprocess request
-        requestBody = preProcessRequestBody(requestBody);
-
-        // set id passed on path to the request body object        
-        UUID id = UUID.fromString(pathVariables.get(getIdPathParameterName()));
-        requestBody.setId(id);
-
-        // first hibernate operation, update the passed object
-        SessionFactory sessionFactory = getHibernateUtil().getSessionFactory();
-        Session session = sessionFactory.getCurrentSession();
-        session.beginTransaction();
-        session.update(requestBody);
-        session.getTransaction().commit();
+        T newObject = getRequestBody();
+        newObject = preProcessRequestBody(newObject);
+        // get the old object: the object located at the requested id
+        UUID oldUUID = getUUID();
+        UUID newUUID = newObject.getId();
+        System.out.println(oldUUID);
+        System.out.println(newUUID);
+        T oldObject = getObjectById();
+        System.out.println(oldObject);
+        System.out.println(newObject);
+        // merge the transient passed object with the object in db
+        getHibernateUtil().mergeObject(oldUUID.toString(), newObject);
 
         // second hibernate operation, get updated db object to pass to client
-        session = sessionFactory.getCurrentSession();
+        Session session = getHibernateUtil().getSessionFactory().getCurrentSession();
         session.beginTransaction();
-        T object = session.get(getResponseClass(), id);
+        T finalObject = session.get(getResponseClass(), newUUID);
+        finalObject.lazyLoad();
         session.getTransaction().commit();
-
-        String serialized = serializerModuleSet.serializeObject(object);
+        String serialized = serializeObject(finalObject);
         return ResponseEntity.ok().body(serialized);
-    }
-
-    public void setIdPathParameterName(String idPathParameterName) {
-        this.idPathParameterName = idPathParameterName;
-    }
-
-    public String getIdPathParameterName() {
-        return idPathParameterName;
     }
 }

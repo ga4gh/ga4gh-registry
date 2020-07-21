@@ -12,6 +12,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import org.hibernate.Hibernate;
 import org.hibernate.annotations.GenericGenerator;
 
 @Entity
@@ -76,6 +78,10 @@ public class Standard implements RegistryModel {
             this.description = description;
             this.documentationUrl = documentationUrl;
         }
+
+    public void lazyLoad() {
+        Hibernate.initialize(getStandardVersions());
+    }
 
     /* getters and setters */
 

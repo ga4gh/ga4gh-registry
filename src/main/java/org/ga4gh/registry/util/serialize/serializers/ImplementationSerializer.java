@@ -1,19 +1,20 @@
 package org.ga4gh.registry.util.serialize.serializers;
 
 import java.io.IOException;
-import java.util.Map;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import org.ga4gh.registry.model.Implementation;
 
 public class ImplementationSerializer extends VariableDepthSerializer<Implementation> {
 
+    private static final long serialVersionUID = 1L;
+
     public ImplementationSerializer() {
-        super();
+        super(Implementation.class);
     }
 
-    public ImplementationSerializer(Map<String, Boolean> serializeMappedAttrs) {
-        super(serializeMappedAttrs);
+    public ImplementationSerializer(String[] serializedRelationalAttributes) {
+        super(Implementation.class, serializedRelationalAttributes);
     }
 
     @Override
@@ -26,12 +27,12 @@ public class ImplementationSerializer extends VariableDepthSerializer<Implementa
         writeObjectIfSelected(gen, "organization", value.getOrganization());
         writeStringIfExists(gen, "version", value.getVersion());
         writeStringIfExists(gen, "url", value.getUrl());
-        writeStringIfSelected(gen, "description", value.getDescription());
-        writeStringIfSelected(gen, "contactUrl", value.getContactUrl());
+        //writeStringIfSelected(gen, "description", value.getDescription());
+        //writeStringIfSelected(gen, "contactUrl", value.getContactUrl());
         writeStringIfExists(gen, "documentationUrl", value.getDocumentationUrl());
         // writeStringIfSelected(gen, "createdAt", value.getCreatedAt().toString());
         // writeStringIfSelected(gen, "updatedAt", value.getUpdatedAt().toString());
-        writeStringIfSelected(gen, "environment", value.getEnvironment());
+        //writeStringIfSelected(gen, "environment", value.getEnvironment());
         gen.writeEndObject();
 
     }

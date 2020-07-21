@@ -1,10 +1,19 @@
 package org.ga4gh.registry.util.requesthandler;
 
+import java.util.List;
 import java.util.Map;
+import java.util.UUID;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.ga4gh.registry.exception.BadRequestException;
+import org.ga4gh.registry.exception.InternalServerError;
 import org.ga4gh.registry.exception.ResourceNotFoundException;
 import org.ga4gh.registry.model.RegistryModel;
 import org.ga4gh.registry.util.hibernate.HibernateUtil;
-import org.ga4gh.registry.util.serialize.sets.SerializerModuleSet;
+import org.ga4gh.registry.util.serialize.RegistrySerializerModule;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 
@@ -15,7 +24,8 @@ public class RequestHandler<T extends RegistryModel> implements RequestHandlerI<
     private Map<String, String> requestVariablesB; // path, query, or header
     private Map<String, String> requestVariablesC; // path, query, or header
     private T requestBody;
-    private SerializerModuleSet serializerModuleSet;
+    private RegistrySerializerModule serializerModule;
+    private String idPathParameterName;
 
     @Autowired
     private HibernateUtil hibernateUtil;
@@ -23,12 +33,70 @@ public class RequestHandler<T extends RegistryModel> implements RequestHandlerI<
     /* Constructor */
 
     @Autowired
-    public RequestHandler(Class<T> responseClass, SerializerModuleSet serializerModuleSet) {
+    public RequestHandler(Class<T> responseClass, RegistrySerializerModule serializerModule) {
         setResponseClass(responseClass);
-        setSerializerModuleSet(serializerModuleSet);
+        setSerializerModule(serializerModule);
+    }
+
+    @Autowired
+    public RequestHandler(Class<T> responseClass, RegistrySerializerModule serializerModule, String idPathParameterName) {
+        setResponseClass(responseClass);
+        setSerializerModule(serializerModule);
+        setIdPathParameterName(idPathParameterName);
     }
 
     /* Custom Methods */
+
+    public UUID getUUID() throws BadRequestException {
+        UUID id = null;
+        try {
+            Map<String, String> pathVariables = getRequestVariablesA();
+            id = UUID.fromString(pathVariables.get(getIdPathParameterName()));
+        } catch (IllegalArgumentException e) {
+            throw new BadRequestException("requested id does not conform to UUID format");
+        }
+        return id;
+    }
+
+    @SuppressWarnings("unchecked")
+    public T getObjectById() throws BadRequestException, ResourceNotFoundException {
+        T object = null;
+        object = (T) getHibernateUtil().readEntityObject(getResponseClass(), getUUID());
+        if (object == null) {
+            throw new ResourceNotFoundException("no object by id: " + getUUID().toString());
+        }
+        return object;
+    }
+
+    public String serializeObject(T object) {
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(getSerializerModule());
+        String serialized = null;
+        try {
+            serialized = mapper.writeValueAsString(object);
+        } catch (JsonProcessingException e) {
+            throw new InternalServerError("Internal server error: could not serialize object as JSON " + e.getMessage());
+        }
+        return serialized;
+    }
+
+    public String serializeObject(List<T> object) {
+
+        System.out.println("***");
+        System.out.println("SERIALIZING LIST");
+        System.out.println(getSerializerModule());
+        System.out.println(getSerializerModule().toString());
+
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(getSerializerModule());
+        String serialized = null;
+        try {
+            serialized = mapper.writeValueAsString(object);
+        } catch (JsonProcessingException e) {
+            throw new InternalServerError("Internal server error: could not serialize object as JSON " + e.getMessage());
+        }
+        return serialized;
+    }
 
     public T preProcessRequestBody(T requestBody) throws ResourceNotFoundException {
         return requestBody;
@@ -89,11 +157,19 @@ public class RequestHandler<T extends RegistryModel> implements RequestHandlerI<
         return hibernateUtil;
     }
 
-    public void setSerializerModuleSet(SerializerModuleSet serializerModuleSet) {
-        this.serializerModuleSet = serializerModuleSet;
+    public void setSerializerModule(RegistrySerializerModule serializerModule) {
+        this.serializerModule = serializerModule;
     }
 
-    public SerializerModuleSet getSerializerModuleSet() {
-        return serializerModuleSet;
+    public RegistrySerializerModule getSerializerModule() {
+        return serializerModule;
+    }
+
+    public void setIdPathParameterName(String idPathParameterName) {
+        this.idPathParameterName = idPathParameterName;
+    }
+
+    public String getIdPathParameterName() {
+        return idPathParameterName;
     }
 }

@@ -98,12 +98,4 @@ public class RequestHandlerFactory<T extends RegistryModel> implements RequestHa
     public String getRequestHandlerBeanName() {
         return requestHandlerBeanName;
     }
-
-    //public void setSerializerModuleSet(SerializerModuleSet serializerModuleSet) {
-        //this.serializerModuleSet = serializerModuleSet;
-    //}
-
-    //public SerializerModuleSet getSerializerModuleSet() {
-        //return serializerModuleSet;
-    //}
 }

@@ -15,7 +15,7 @@ import org.hibernate.annotations.GenericGenerator;
 
 @Entity
 @Table(name = "release_status")
-public class ReleaseStatus {
+public class ReleaseStatus implements RegistryModel {
 
     @Id
     @GeneratedValue(generator = "UUID")
@@ -47,6 +47,10 @@ public class ReleaseStatus {
 
     public ReleaseStatus(String status) {
         this.status = status;
+    }
+
+    public void lazyLoad() {
+        
     }
 
     /* getters and setters */

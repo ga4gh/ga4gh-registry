@@ -52,6 +52,10 @@ public class StandardVersion implements RegistryModel {
         this.documentationUrl = documentationUrl;
     }
 
+    public void lazyLoad() {
+        
+    }
+
     /* getters and setters */
 
     public UUID getId() {

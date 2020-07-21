@@ -1,19 +1,20 @@
 package org.ga4gh.registry.util.serialize.serializers;
 
 import java.io.IOException;
-import java.util.Map;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import org.ga4gh.registry.model.Organization;
 
 public class OrganizationSerializer extends VariableDepthSerializer<Organization> {
 
+    private static final long serialVersionUID = 1L;
+
     public OrganizationSerializer() {
-        super();
+        super(Organization.class);
     }
 
-    public OrganizationSerializer(Map<String, Boolean> serializeMappedAttrs) {
-        super(serializeMappedAttrs);
+    public OrganizationSerializer(String[] serializedRelationalAttributes) {
+        super(Organization.class, serializedRelationalAttributes);
     }
 
     @Override

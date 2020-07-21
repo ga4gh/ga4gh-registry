@@ -6,12 +6,12 @@ import org.ga4gh.registry.model.Implementation;
 import org.ga4gh.registry.model.ServiceType;
 import org.ga4gh.registry.util.hibernate.HibernateQuerier;
 import org.ga4gh.registry.util.hibernate.HibernateQueryBuilder;
-import org.ga4gh.registry.util.serialize.sets.SerializerModuleSet;
+import org.ga4gh.registry.util.serialize.RegistrySerializerModule;
 
 public class IndexServicesHandler extends IndexRequestHandler<Implementation> {
 
-    public IndexServicesHandler(Class<Implementation> responseClass, SerializerModuleSet serializerModuleSet, HibernateQuerier<Implementation> querier) {
-        super(responseClass, serializerModuleSet, querier);
+    public IndexServicesHandler(Class<Implementation> responseClass, RegistrySerializerModule serializerModule, HibernateQuerier<Implementation> querier) {
+        super(responseClass, serializerModule, querier);
     }
 
     public List<Implementation> getResultsFromDb() {

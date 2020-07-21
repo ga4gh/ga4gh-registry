@@ -5,5 +5,6 @@ import java.util.UUID;
 public interface RegistryModel {
 
     public void setId(UUID id);
-    
+    public UUID getId();
+    public void lazyLoad();
 }

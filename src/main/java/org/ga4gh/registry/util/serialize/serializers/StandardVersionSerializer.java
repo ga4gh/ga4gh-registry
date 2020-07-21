@@ -10,11 +10,11 @@ import org.ga4gh.registry.model.StandardVersion;
 public class StandardVersionSerializer extends VariableDepthSerializer<StandardVersion> {
     
     public StandardVersionSerializer() {
-        super();
+        super(StandardVersion.class);
     }
 
-    public StandardVersionSerializer(Map<String, Boolean> serializeMappedAttrs) {
-        super(serializeMappedAttrs);
+    public StandardVersionSerializer(String[] serializedRelationalAttributes) {
+        super(StandardVersion.class, serializedRelationalAttributes);
     }
 
     @Override

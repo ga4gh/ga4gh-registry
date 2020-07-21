@@ -1,9 +1,17 @@
 package org.ga4gh.registry;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.fasterxml.jackson.core.Version;
+import com.fasterxml.jackson.databind.JsonSerializer;
+
 import org.ga4gh.registry.middleware.AuthorizationInterceptor;
 import org.ga4gh.registry.model.Implementation;
 import org.ga4gh.registry.model.Organization;
+import org.ga4gh.registry.model.ReleaseStatus;
 import org.ga4gh.registry.model.Standard;
+import org.ga4gh.registry.model.StandardCategory;
 import org.ga4gh.registry.model.StandardVersion;
 import org.ga4gh.registry.util.auth.PlaceholderAuth;
 import org.ga4gh.registry.util.hibernate.HibernateConfig;
@@ -22,15 +30,20 @@ import org.ga4gh.registry.util.requesthandler.show.ShowRequestHandler;
 import org.ga4gh.registry.util.requesthandler.show.ShowServiceInfoHandler;
 import org.ga4gh.registry.util.hibernate.HibernateQuerier;
 import org.ga4gh.registry.util.hibernate.HibernateQueryBuilder;
-import org.ga4gh.registry.util.serialize.modules.ImplementationSerializerModule;
-import org.ga4gh.registry.util.serialize.modules.OrganizationSerializerModule;
-import org.ga4gh.registry.util.serialize.modules.RegistryErrorSerializerModule;
-import org.ga4gh.registry.util.serialize.modules.ReleaseStatusSerializerModule;
-import org.ga4gh.registry.util.serialize.modules.ServiceTypeSerializerModule;
-import org.ga4gh.registry.util.serialize.modules.StandardCategorySerializerModule;
-import org.ga4gh.registry.util.serialize.modules.StandardSerializerModule;
-import org.ga4gh.registry.util.serialize.modules.StandardVersionSerializerModule;
-import org.ga4gh.registry.util.serialize.sets.SerializerModuleSet;
+import org.ga4gh.registry.util.serialize.RegistrySerializerModule;
+import org.ga4gh.registry.util.serialize.serializers.ImplementationSerializer;
+//import org.ga4gh.registry.util.serialize.serializers.ImplementationSerializer;
+import org.ga4gh.registry.util.serialize.serializers.OrganizationSerializer;
+import org.ga4gh.registry.util.serialize.serializers.RegistryErrorSerializer;
+import org.ga4gh.registry.util.serialize.serializers.ReleaseStatusSerializer;
+import org.ga4gh.registry.util.serialize.serializers.StandardCategorySerializer;
+import org.ga4gh.registry.util.serialize.serializers.StandardSerializer;
+import org.ga4gh.registry.util.serialize.serializers.StandardVersionSerializer;
+//import org.ga4gh.registry.util.serialize.serializers.ReleaseStatusSerializer;
+//import org.ga4gh.registry.util.serialize.serializers.StandardCategorySerializer;
+//import org.ga4gh.registry.util.serialize.serializers.StandardSerializer;
+import org.ga4gh.registry.util.serialize.serializers.VariableDepthSerializer;
+//import org.ga4gh.registry.util.serialize.sets.SerializerModuleSet;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -104,18 +117,18 @@ public class AppConfig implements WebMvcConfigurer {
     @Bean(name = AppConfigConstants.INDEX_STANDARD_HANDLER)
     @Scope(AppConfigConstants.PROTOTYPE)
     public IndexRequestHandler<Standard> standardIndexRequestHandler(
-        @Qualifier (AppConfigConstants.SHALLOW_STANDARD_SERIALIZER_SET) SerializerModuleSet serializerModuleSet,
+        @Qualifier (AppConfigConstants.BASIC_STANDARD_SERIALIZER_MODULE) RegistrySerializerModule serializerModule,
         @Qualifier (AppConfigConstants.STANDARD_HIBERNATE_QUERIER) HibernateQuerier<Standard> querier
     ) {
-        return new IndexRequestHandler<>(Standard.class, serializerModuleSet, querier);
+        return new IndexRequestHandler<>(Standard.class, serializerModule, querier);
     }
 
     @Bean(name = AppConfigConstants.SHOW_STANDARD_HANDLER)
     @Scope(AppConfigConstants.PROTOTYPE)
     public ShowRequestHandler<Standard> standardShowRequestHandler(
-        @Qualifier (AppConfigConstants.DEEP_STANDARD_SERIALIZER_SET) SerializerModuleSet serializerModuleSet
+        @Qualifier (AppConfigConstants.RELATIONAL_STANDARD_SERIALIZER_MODULE) RegistrySerializerModule serializerModule
     ) {
-        return new ShowRequestHandler<>(Standard.class, serializerModuleSet, AppConfigConstants.STANDARD_ID);
+        return new ShowRequestHandler<>(Standard.class, serializerModule, AppConfigConstants.STANDARD_ID);
     }
 
     /* STANDARD VERSION REQUEST HANDLER BEANS */
@@ -125,42 +138,42 @@ public class AppConfig implements WebMvcConfigurer {
     @Bean(name = AppConfigConstants.INDEX_ORGANIZATION_HANDLER)
     @Scope(AppConfigConstants.PROTOTYPE)
     public IndexRequestHandler<Organization> organizationIndexRequestHandler(
-        @Qualifier (AppConfigConstants.SHALLOW_ORGANIZATION_SERIALIZER_SET) SerializerModuleSet serializerModuleSet,
+        @Qualifier (AppConfigConstants.BASIC_ORGANIZATION_SERIALIZER_MODULE) RegistrySerializerModule serializerModule,
         @Qualifier (AppConfigConstants.ORGANIZATION_HIBERNATE_QUERIER) HibernateQuerier<Organization> querier
     ) {
-        return new IndexRequestHandler<>(Organization.class, serializerModuleSet, querier);
+        return new IndexRequestHandler<>(Organization.class, serializerModule, querier);
     }
 
     @Bean(name = AppConfigConstants.SHOW_ORGANIZATION_HANDLER)
     @Scope(AppConfigConstants.PROTOTYPE)
     public ShowRequestHandler<Organization> organizationShowRequestHandler(
-        @Qualifier (AppConfigConstants.SHALLOW_ORGANIZATION_SERIALIZER_SET) SerializerModuleSet serializerModuleSet
+        @Qualifier (AppConfigConstants.RELATIONAL_ORGANIZATION_SERIALIZER_MODULE) RegistrySerializerModule serializerModule
     ) {
-        return new ShowRequestHandler<>(Organization.class, serializerModuleSet, AppConfigConstants.ORGANIZATION_ID);
+        return new ShowRequestHandler<>(Organization.class, serializerModule, AppConfigConstants.ORGANIZATION_ID);
     }
 
     @Bean(name = AppConfigConstants.POST_ORGANIZATION_HANDLER)
     @Scope(AppConfigConstants.PROTOTYPE)
     public PostRequestHandler<Organization> organizationPostRequestHandler(
-        @Qualifier (AppConfigConstants.DEEP_ORGANIZATION_SERIALIZER_SET) SerializerModuleSet serializerModuleSet
+        @Qualifier (AppConfigConstants.RELATIONAL_ORGANIZATION_SERIALIZER_MODULE) RegistrySerializerModule serializerModule
     ) {
-        return new PostRequestHandler<>(Organization.class, serializerModuleSet);
+        return new PostRequestHandler<>(Organization.class, serializerModule);
     }
 
     @Bean(name = AppConfigConstants.PUT_ORGANIZATION_HANDLER)
     @Scope(AppConfigConstants.PROTOTYPE)
     public PutRequestHandler<Organization> organizationPutRequestHandler(
-        @Qualifier (AppConfigConstants.DEEP_ORGANIZATION_SERIALIZER_SET) SerializerModuleSet serializerModuleSet
+        @Qualifier (AppConfigConstants.RELATIONAL_ORGANIZATION_SERIALIZER_MODULE) RegistrySerializerModule serializerModule
     ) {
-        return new PutRequestHandler<>(Organization.class, serializerModuleSet, AppConfigConstants.ORGANIZATION_ID);
+        return new PutRequestHandler<>(Organization.class, serializerModule, AppConfigConstants.ORGANIZATION_ID);
     }
 
     @Bean(name = AppConfigConstants.DELETE_ORGANIZATION_HANDLER)
     @Scope(AppConfigConstants.PROTOTYPE)
     public DeleteRequestHandler<Organization> organizationDeleteRequestHandler(
-        @Qualifier(AppConfigConstants.DEEP_ORGANIZATION_SERIALIZER_SET) SerializerModuleSet serializerModuleSet
+        @Qualifier(AppConfigConstants.RELATIONAL_ORGANIZATION_SERIALIZER_MODULE) RegistrySerializerModule serializerModule
     ) {
-        return new DeleteRequestHandler<>(Organization.class, serializerModuleSet, AppConfigConstants.ORGANIZATION_ID);
+        return new DeleteRequestHandler<>(Organization.class, serializerModule, AppConfigConstants.ORGANIZATION_ID);
     }
 
     /* IMPLEMENTATION REQUEST HANDLER BEANS */
@@ -170,20 +183,21 @@ public class AppConfig implements WebMvcConfigurer {
     @Bean(name = AppConfigConstants.INDEX_SERVICE_HANDLER)
     @Scope(AppConfigConstants.PROTOTYPE)
     public IndexServicesHandler serviceIndexRequestHandler(
-        @Qualifier(AppConfigConstants.DEEP_IMPLEMENTATION_SERIALIZER_SET) SerializerModuleSet serializerModuleSet,
+        @Qualifier(AppConfigConstants.RELATIONAL_IMPLEMENTATION_SERIALIZER_MODULE) RegistrySerializerModule serializerModule,
         @Qualifier(AppConfigConstants.IMPLEMENTATION_HIBERNATE_QUERIER) HibernateQuerier<Implementation> querier
     ) {
-        return new IndexServicesHandler(Implementation.class, serializerModuleSet, querier);
+        return new IndexServicesHandler(Implementation.class, serializerModule, querier);
     }
 
     @Bean(name = AppConfigConstants.SHOW_SERVICE_HANDLER)
     @Scope(AppConfigConstants.PROTOTYPE)
     public ShowRequestHandler<Implementation> serviceShowRequestHandler(
-        @Qualifier(AppConfigConstants.DEEP_IMPLEMENTATION_SERIALIZER_SET) SerializerModuleSet serializerModuleSet
+        @Qualifier(AppConfigConstants.RELATIONAL_IMPLEMENTATION_SERIALIZER_MODULE) RegistrySerializerModule serializerModule
     ) {
-        return new ShowRequestHandler<>(Implementation.class, serializerModuleSet, AppConfigConstants.SERVICE_ID);
+        return new ShowRequestHandler<>(Implementation.class, serializerModule, AppConfigConstants.SERVICE_ID);
     }
 
+    /*
     @Bean(name = AppConfigConstants.POST_SERVICE_HANDLER)
     @Scope(AppConfigConstants.PROTOTYPE)
     public PostServiceHandler servicePostRequestHandler(
@@ -191,7 +205,9 @@ public class AppConfig implements WebMvcConfigurer {
     ) {
         return new PostServiceHandler(Implementation.class, serializerModuleSet);
     }
+    */
 
+    /*
     @Bean(name = AppConfigConstants.PUT_SERVICE_HANDLER)
     @Scope(AppConfigConstants.PROTOTYPE)
     public PutServiceHandler servicePutRequestHandler(
@@ -199,7 +215,9 @@ public class AppConfig implements WebMvcConfigurer {
     ) {
         return new PutServiceHandler(Implementation.class, serializerModuleSet, AppConfigConstants.SERVICE_ID);
     }
+    */
 
+    /*
     @Bean(name = AppConfigConstants.DELETE_SERVICE_HANDLER)
     @Scope(AppConfigConstants.PROTOTYPE)
     public DeleteRequestHandler<Implementation> serviceDeleteRequestHandler(
@@ -207,7 +225,9 @@ public class AppConfig implements WebMvcConfigurer {
     ) {
         return new DeleteRequestHandler<>(Implementation.class, serializerModuleSet, AppConfigConstants.SERVICE_ID);
     }
+    */
 
+    /*
     @Bean(name = AppConfigConstants.INDEX_SERVICE_TYPES_HANDLER)
     @Scope(AppConfigConstants.PROTOTYPE)
     public IndexServiceTypesHandler serviceTypesHandler(
@@ -216,15 +236,16 @@ public class AppConfig implements WebMvcConfigurer {
     ) {
         return new IndexServiceTypesHandler(Implementation.class, serializerModuleSet, querier);
     }
+    */
 
     /* SERVICE-INFO REQUEST HANDLER BEANS */
 
     @Bean(name = AppConfigConstants.SHOW_SERVICE_INFO_HANDLER)
     @Scope(AppConfigConstants.PROTOTYPE)
     public ShowServiceInfoHandler showServiceInfoRequestHandler(
-        @Qualifier(AppConfigConstants.DEEP_IMPLEMENTATION_SERIALIZER_SET) SerializerModuleSet serializerModuleSet
+        @Qualifier(AppConfigConstants.RELATIONAL_IMPLEMENTATION_SERIALIZER_MODULE) RegistrySerializerModule serializerModule
     ) {
-        return new ShowServiceInfoHandler(Implementation.class, serializerModuleSet, AppConfigConstants.SERVICE_ID);
+        return new ShowServiceInfoHandler(Implementation.class, serializerModule, AppConfigConstants.SERVICE_ID);
     }
 
     /* ******************************
@@ -322,79 +343,182 @@ public class AppConfig implements WebMvcConfigurer {
     public RequestHandlerFactory<Implementation> showServiceInfoHandlerFactory() {
         return new RequestHandlerFactory<>(Implementation.class, AppConfigConstants.SHOW_SERVICE_INFO_HANDLER);
     }
-    
+
     /* ******************************
-     * SERIALIZER MODULE SET BEANS
+     * SERIALIZER BEANS
      * ****************************** */
 
+    /* STANDARD SERIALIZER BEANS */
+
     @Bean
-    @Qualifier(AppConfigConstants.SHALLOW_STANDARD_SERIALIZER_SET)
-    public SerializerModuleSet shallowStandardSerializerSet() {
-        SerializerModuleSet set = new SerializerModuleSet();
-        set.addModule(new StandardSerializerModule());
-        set.addModule(new StandardCategorySerializerModule());
-        set.addModule(new ReleaseStatusSerializerModule());
-        set.registerModules();
-        return set;
+    @Qualifier(AppConfigConstants.BASIC_STANDARD_SERIALIZER)
+    public StandardSerializer basicStandardSerializer() {
+        return new StandardSerializer();
     }
 
     @Bean
-    @Qualifier(AppConfigConstants.DEEP_STANDARD_SERIALIZER_SET)
-    public SerializerModuleSet deepStandardSerializerSet() {
-        SerializerModuleSet set = new SerializerModuleSet();
-        set.addModule(new StandardSerializerModule());
-        set.addModule(new StandardCategorySerializerModule());
-        set.addModule(new ReleaseStatusSerializerModule());
-        set.addModule(new StandardVersionSerializerModule());
-        set.registerModules();
-        return set;
+    @Qualifier(AppConfigConstants.RELATIONAL_STANDARD_SERIALIZER)
+    public StandardSerializer relationalStandardSerializer() {
+        String[] relationalAttributes = {"description", "versions"};
+        return new StandardSerializer(relationalAttributes);
+    }
+
+    /* STANDARD CATEGORY SERIALIZER BEANS */
+
+    @Bean
+    @Qualifier(AppConfigConstants.BASIC_STANDARD_CATEGORY_SERIALIZER)
+    public StandardCategorySerializer basicStandardCategorySerializer() {
+        return new StandardCategorySerializer();
+    }
+
+    /* RELEASE STATUS SERIALIZER BEANS */
+
+    @Bean
+    @Qualifier(AppConfigConstants.BASIC_RELEASE_STATUS_SERIALIZER)
+    public ReleaseStatusSerializer basicReleaseStatusSerializer() {
+        return new ReleaseStatusSerializer();
+    }
+
+    /* STANDARD VERSION SERIALIZER BEANS */
+
+    @Bean
+    @Qualifier(AppConfigConstants.BASIC_STANDARD_VERSION_SERIALIZER)
+    public StandardVersionSerializer basicStandardVersionSerializer() {
+        return new StandardVersionSerializer();
+    }
+
+    /* ORGANIZATION SERIALIZER BEANS */
+
+    @Bean
+    @Qualifier(AppConfigConstants.BASIC_ORGANIZATION_SERIALIZER)
+    public OrganizationSerializer basicOrganizationSerializer() {
+        return new OrganizationSerializer();
     }
 
     @Bean
-    @Qualifier(AppConfigConstants.SHALLOW_ORGANIZATION_SERIALIZER_SET)
-    public SerializerModuleSet shallowOrganizationSerializerSet() {
-        SerializerModuleSet set = new SerializerModuleSet();
-        set.addModule(new OrganizationSerializerModule());
-        set.registerModules();
-        return set;
+    @Qualifier(AppConfigConstants.RELATIONAL_ORGANIZATION_SERIALIZER)
+    public OrganizationSerializer relationalOrganizationSerializer() {
+        String[] relationalAttributes = {"implementations"};
+        return new OrganizationSerializer(relationalAttributes);
+    }
+
+    /* IMPLEMENTATION SERIALIZER BEANS */
+
+    @Bean
+    @Qualifier(AppConfigConstants.BASIC_IMPLEMENTATION_SERIALIZER)
+    public ImplementationSerializer basicImplementationSerializer() {
+        return new ImplementationSerializer();
     }
 
     @Bean
-    @Qualifier(AppConfigConstants.DEEP_ORGANIZATION_SERIALIZER_SET)
-    public SerializerModuleSet deepOrganizationSerializerSet() {
-        SerializerModuleSet set = new SerializerModuleSet();
-        set.addModule(new OrganizationSerializerModule());
-        set.addModule(new ImplementationSerializerModule());
-        set.registerModules();
-        return set;
+    @Qualifier(AppConfigConstants.RELATIONAL_IMPLEMENTATION_SERIALIZER)
+    public ImplementationSerializer relationalImplementationSerializer() {
+        String[] relationalAttributes = {"organization", "description", "contactUrl", "environment"};
+        return new ImplementationSerializer(relationalAttributes);
+    }
+
+    /* REGISTRY ERROR SERIALIZER BEANS */
+
+    @Bean
+    @Qualifier(AppConfigConstants.BASIC_REGISTRY_ERROR_SERIALIZER)
+    public RegistryErrorSerializer basicRegistryErrorSerializer() {
+        return new RegistryErrorSerializer();
+    }
+
+    /* ******************************
+     * SERIALIZER MODULE BEANS
+     * ****************************** */
+
+    /* STANDARD SERIALIZER MODULE BEANS */
+
+    @Bean
+    @Qualifier(AppConfigConstants.BASIC_STANDARD_SERIALIZER_MODULE)
+    public RegistrySerializerModule basicStandardSerializerModule(
+        @Qualifier(AppConfigConstants.BASIC_STANDARD_SERIALIZER) StandardSerializer standardSerializer,
+        @Qualifier(AppConfigConstants.BASIC_STANDARD_CATEGORY_SERIALIZER) StandardCategorySerializer standardCategorySerializer,
+        @Qualifier(AppConfigConstants.BASIC_RELEASE_STATUS_SERIALIZER) ReleaseStatusSerializer releaseStatusSerializer
+    ) {
+        List<JsonSerializer<?>> serializers = new ArrayList<>();
+        serializers.add(standardSerializer);
+        serializers.add(standardCategorySerializer);
+        serializers.add(releaseStatusSerializer);
+        return new RegistrySerializerModule("A", new Version(1,0,0,"release", "org.ga4gh", "organization"), serializers);
     }
 
     @Bean
-    @Qualifier(AppConfigConstants.DEEP_IMPLEMENTATION_SERIALIZER_SET)
-    public SerializerModuleSet deepImplementationSerializerSet() {
-        SerializerModuleSet set = new SerializerModuleSet();
-        set.addModule(new ImplementationSerializerModule());
-        set.addModule(new OrganizationSerializerModule());
-        set.registerModules();
-        return set;
+    @Qualifier(AppConfigConstants.RELATIONAL_STANDARD_SERIALIZER_MODULE)
+    public RegistrySerializerModule relationalStandardSerializerModule(
+        @Qualifier(AppConfigConstants.RELATIONAL_STANDARD_SERIALIZER) StandardSerializer standardSerializer,
+        @Qualifier(AppConfigConstants.BASIC_STANDARD_VERSION_SERIALIZER) StandardVersionSerializer standardVersionSerializer,
+        @Qualifier(AppConfigConstants.BASIC_STANDARD_CATEGORY_SERIALIZER) StandardCategorySerializer standardCategorySerializer,
+        @Qualifier(AppConfigConstants.BASIC_RELEASE_STATUS_SERIALIZER) ReleaseStatusSerializer releaseStatusSerializer
+    ) {
+        List<JsonSerializer<?>> serializers = new ArrayList<>();
+        serializers.add(standardSerializer);
+        serializers.add(standardVersionSerializer);
+        serializers.add(standardCategorySerializer);
+        serializers.add(releaseStatusSerializer);
+        return new RegistrySerializerModule("B", new Version(1,0,0,"release", "org.ga4gh", "organization"), serializers);
+    }
+
+    /* ORGANIZATION SERIALIZER MODULE BEANS */
+
+    @Bean
+    @Qualifier(AppConfigConstants.BASIC_ORGANIZATION_SERIALIZER_MODULE)
+    public RegistrySerializerModule basicOrganizationSerializerModule(
+        @Qualifier(AppConfigConstants.BASIC_ORGANIZATION_SERIALIZER) OrganizationSerializer organizationSerializer
+    ) {
+        List<JsonSerializer<?>> serializers = new ArrayList<>();
+        serializers.add(organizationSerializer);
+        return new RegistrySerializerModule("E", new Version(1,0,0,"release", "org.ga4gh", "organization"), serializers);
     }
 
     @Bean
-    @Qualifier(AppConfigConstants.SERVICE_TYPE_SERIALIZER_SET)
-    public SerializerModuleSet serviceTypeSerializerSet() {
-        SerializerModuleSet set = new SerializerModuleSet();
-        set.addModule(new ServiceTypeSerializerModule());
-        set.registerModules();
-        return set;
+    @Qualifier(AppConfigConstants.RELATIONAL_ORGANIZATION_SERIALIZER_MODULE)
+    public RegistrySerializerModule relationalOrganizationSerializerModule(
+        @Qualifier(AppConfigConstants.RELATIONAL_ORGANIZATION_SERIALIZER) OrganizationSerializer organizationSerializer,
+        @Qualifier(AppConfigConstants.BASIC_IMPLEMENTATION_SERIALIZER) ImplementationSerializer implementationSerializer
+    ) {
+        List<JsonSerializer<?>> serializers = new ArrayList<>();
+        serializers.add(organizationSerializer);
+        serializers.add(implementationSerializer);
+        return new RegistrySerializerModule("F", new Version(1,0,0,"release", "org.ga4gh", "organization"), serializers);
+    }
+
+    /* IMPLEMENTATION SERIALIZER MODULE BEANS */
+
+    @Bean
+    @Qualifier(AppConfigConstants.BASIC_IMPLEMENTATION_SERIALIZER_MODULE)
+    public RegistrySerializerModule basicImplementationSerializerModule(
+        @Qualifier(AppConfigConstants.BASIC_IMPLEMENTATION_SERIALIZER) ImplementationSerializer implementationSerializer
+    ) {
+        List<JsonSerializer<?>> serializers = new ArrayList<>();
+        serializers.add(implementationSerializer);
+        return new RegistrySerializerModule("G", new Version(1,0,0,"release", "org.ga4gh", "organization"), serializers);
     }
 
     @Bean
-    @Qualifier(AppConfigConstants.REGISTRY_ERROR_SERIALIZER_SET)
-    public SerializerModuleSet registryErrorSerializerSet() {
-        SerializerModuleSet set = new SerializerModuleSet();
-        set.addModule(new RegistryErrorSerializerModule());
-        set.registerModules();
-        return set;
+    @Qualifier(AppConfigConstants.RELATIONAL_IMPLEMENTATION_SERIALIZER_MODULE)
+    public RegistrySerializerModule relationalImplementationSerializerModule(
+        @Qualifier(AppConfigConstants.RELATIONAL_IMPLEMENTATION_SERIALIZER) ImplementationSerializer implementationSerializer,
+        @Qualifier(AppConfigConstants.BASIC_ORGANIZATION_SERIALIZER) OrganizationSerializer organizationSerializer
+    ) {
+        List<JsonSerializer<?>> serializers = new ArrayList<>();
+        serializers.add(implementationSerializer);
+        serializers.add(organizationSerializer);
+        return new RegistrySerializerModule("H", new Version(1,0,0,"release", "org.ga4gh", "organization"), serializers);
+    }
+
+    /* REGISTRY ERROR SERIALIZER MODULE BEANS */
+
+    @Bean
+    @Qualifier(AppConfigConstants.BASIC_REGISTRY_ERROR_SERIALIZER_MODULE)
+    public RegistrySerializerModule basicRegistryErrorSerializerModule(
+        @Qualifier(AppConfigConstants.BASIC_REGISTRY_ERROR_SERIALIZER) RegistryErrorSerializer registryErrorSerializer
+    ) {
+        List<JsonSerializer<?>> serializers = new ArrayList<>();
+        serializers.add(registryErrorSerializer);
+        return new RegistrySerializerModule("I", new Version(1,0,0,"release", "org.ga4gh", "organization"), serializers);
     }
 
     /* ******************************
