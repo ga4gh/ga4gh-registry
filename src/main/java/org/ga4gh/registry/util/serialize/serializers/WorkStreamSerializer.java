@@ -1,4 +1,3 @@
-/*
 package org.ga4gh.registry.util.serialize.serializers;
 
 import java.io.IOException;
@@ -9,11 +8,11 @@ import org.ga4gh.registry.model.WorkStream;
 public class WorkStreamSerializer extends VariableDepthSerializer<WorkStream> {
 
     public WorkStreamSerializer() {
-        super();
+        super(WorkStream.class);
     }
 
     public WorkStreamSerializer(String[] serializedRelationalAttributes) {
-        super(serializedRelationalAttributes);
+        super(WorkStream.class, serializedRelationalAttributes);
     }
 
     @Override
@@ -27,4 +26,3 @@ public class WorkStreamSerializer extends VariableDepthSerializer<WorkStream> {
         gen.writeEndObject();
     }
 }
-*/

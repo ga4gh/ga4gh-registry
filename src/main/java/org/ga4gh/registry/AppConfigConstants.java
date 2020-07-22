@@ -82,10 +82,14 @@ public class AppConfigConstants {
     // IMPLEMENTATION
     public static final String BASIC_IMPLEMENTATION_SERIALIZER = "basicImplementationSerializer";
     public static final String RELATIONAL_IMPLEMENTATION_SERIALIZER = "relationalImplementationSerializer";
+    // WORK STREAM
+    public static final String BASIC_WORK_STREAM_SERIALIZER = "basicWorkStreamSerializer";
     // REGISTRY ERROR
     public static final String BASIC_REGISTRY_ERROR_SERIALIZER = "basicRegistryErrorSerializer";
     // SERVICE TYPE
     public static final String BASIC_SERVICE_TYPE_SERIALIZER = "basicServiceTypeSerializer";
+    // DATE
+    public static final String BASIC_DATE_SERIALIZER = "basicDateSerializer";
 
     /* ******************************
      * SERIALIZER MODULES

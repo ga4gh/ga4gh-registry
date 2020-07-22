@@ -20,6 +20,7 @@ public class ImplementationSerializer extends VariableDepthSerializer<Implementa
     @Override
     public void serialize(Implementation value, JsonGenerator gen, SerializerProvider serializers)
             throws IOException {
+        
         gen.writeStartObject();
         writeStringIfExists(gen, "id", value.getId().toString());
         writeStringIfExists(gen, "name", value.getName());
@@ -27,12 +28,12 @@ public class ImplementationSerializer extends VariableDepthSerializer<Implementa
         writeObjectIfSelected(gen, "organization", value.getOrganization());
         writeStringIfExists(gen, "version", value.getVersion());
         writeStringIfExists(gen, "url", value.getUrl());
-        //writeStringIfSelected(gen, "description", value.getDescription());
-        //writeStringIfSelected(gen, "contactUrl", value.getContactUrl());
+        writeStringIfSelected(gen, "description", value.getDescription());
+        writeStringIfSelected(gen, "contactUrl", value.getContactUrl());
         writeStringIfExists(gen, "documentationUrl", value.getDocumentationUrl());
-        // writeStringIfSelected(gen, "createdAt", value.getCreatedAt().toString());
-        // writeStringIfSelected(gen, "updatedAt", value.getUpdatedAt().toString());
-        //writeStringIfSelected(gen, "environment", value.getEnvironment());
+        writeObjectIfExists(gen, "createdAt", value.getCreatedAt());
+        writeObjectIfExists(gen, "updatedAt", value.getUpdatedAt());
+        writeStringIfSelected(gen, "environment", value.getEnvironment());
         gen.writeEndObject();
 
     }

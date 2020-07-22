@@ -31,6 +31,7 @@ import org.ga4gh.registry.util.requesthandler.show.ShowServiceInfoHandler;
 import org.ga4gh.registry.util.hibernate.HibernateQuerier;
 import org.ga4gh.registry.util.hibernate.HibernateQueryBuilder;
 import org.ga4gh.registry.util.serialize.RegistrySerializerModule;
+import org.ga4gh.registry.util.serialize.serializers.DateSerializer;
 import org.ga4gh.registry.util.serialize.serializers.ImplementationSerializer;
 //import org.ga4gh.registry.util.serialize.serializers.ImplementationSerializer;
 import org.ga4gh.registry.util.serialize.serializers.OrganizationSerializer;
@@ -44,6 +45,7 @@ import org.ga4gh.registry.util.serialize.serializers.StandardVersionSerializer;
 //import org.ga4gh.registry.util.serialize.serializers.StandardCategorySerializer;
 //import org.ga4gh.registry.util.serialize.serializers.StandardSerializer;
 import org.ga4gh.registry.util.serialize.serializers.VariableDepthSerializer;
+import org.ga4gh.registry.util.serialize.serializers.WorkStreamSerializer;
 //import org.ga4gh.registry.util.serialize.sets.SerializerModuleSet;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -358,7 +360,7 @@ public class AppConfig implements WebMvcConfigurer {
     @Bean
     @Qualifier(AppConfigConstants.RELATIONAL_STANDARD_SERIALIZER)
     public StandardSerializer relationalStandardSerializer() {
-        String[] relationalAttributes = {"description", "versions"};
+        String[] relationalAttributes = {"description", "versions", "workStream"};
         return new StandardSerializer(relationalAttributes);
     }
 
@@ -416,6 +418,14 @@ public class AppConfig implements WebMvcConfigurer {
         return new ImplementationSerializer(relationalAttributes);
     }
 
+    /* WORK STREAM SERIALIZER BEANS */
+
+    @Bean
+    @Qualifier(AppConfigConstants.BASIC_WORK_STREAM_SERIALIZER)
+    public WorkStreamSerializer basicWorkStreamSerializer() {
+        return new WorkStreamSerializer();
+    }
+
     /* REGISTRY ERROR SERIALIZER BEANS */
 
     @Bean
@@ -430,6 +440,14 @@ public class AppConfig implements WebMvcConfigurer {
     @Qualifier(AppConfigConstants.BASIC_SERVICE_TYPE_SERIALIZER)
     public ServiceTypeSerializer basicServiceTypeSerializer() {
         return new ServiceTypeSerializer();
+    }
+
+    /* DATE SERIALIZER BEANS */
+
+    @Bean
+    @Qualifier(AppConfigConstants.BASIC_DATE_SERIALIZER)
+    public DateSerializer basicDateSerializer() {
+        return new DateSerializer();
     }
 
     /* ******************************
@@ -458,13 +476,15 @@ public class AppConfig implements WebMvcConfigurer {
         @Qualifier(AppConfigConstants.RELATIONAL_STANDARD_SERIALIZER) StandardSerializer standardSerializer,
         @Qualifier(AppConfigConstants.BASIC_STANDARD_VERSION_SERIALIZER) StandardVersionSerializer standardVersionSerializer,
         @Qualifier(AppConfigConstants.BASIC_STANDARD_CATEGORY_SERIALIZER) StandardCategorySerializer standardCategorySerializer,
-        @Qualifier(AppConfigConstants.BASIC_RELEASE_STATUS_SERIALIZER) ReleaseStatusSerializer releaseStatusSerializer
+        @Qualifier(AppConfigConstants.BASIC_RELEASE_STATUS_SERIALIZER) ReleaseStatusSerializer releaseStatusSerializer,
+        @Qualifier(AppConfigConstants.BASIC_WORK_STREAM_SERIALIZER) WorkStreamSerializer workStreamSerializer
     ) {
         List<JsonSerializer<?>> serializers = new ArrayList<>();
         serializers.add(standardSerializer);
         serializers.add(standardVersionSerializer);
         serializers.add(standardCategorySerializer);
         serializers.add(releaseStatusSerializer);
+        serializers.add(workStreamSerializer);
         return new RegistrySerializerModule("B", new Version(1,0,0,"release", "org.ga4gh", "organization"), serializers);
     }
 
@@ -508,10 +528,12 @@ public class AppConfig implements WebMvcConfigurer {
     @Qualifier(AppConfigConstants.RELATIONAL_IMPLEMENTATION_SERIALIZER_MODULE)
     public RegistrySerializerModule relationalImplementationSerializerModule(
         @Qualifier(AppConfigConstants.RELATIONAL_IMPLEMENTATION_SERIALIZER) ImplementationSerializer implementationSerializer,
+        @Qualifier(AppConfigConstants.BASIC_DATE_SERIALIZER) DateSerializer dateSerializer,
         @Qualifier(AppConfigConstants.BASIC_ORGANIZATION_SERIALIZER) OrganizationSerializer organizationSerializer
     ) {
         List<JsonSerializer<?>> serializers = new ArrayList<>();
         serializers.add(implementationSerializer);
+        serializers.add(dateSerializer);
         serializers.add(organizationSerializer);
         return new RegistrySerializerModule("H", new Version(1,0,0,"release", "org.ga4gh", "organization"), serializers);
     }
