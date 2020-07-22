@@ -8,6 +8,8 @@ import org.ga4gh.registry.model.ServiceType;
 
 public class ServiceTypeSerializer extends VariableDepthSerializer<ServiceType> {
 
+    private static final long serialVersionUID = 1L;
+
     public ServiceTypeSerializer() {
         super(ServiceType.class);
     }

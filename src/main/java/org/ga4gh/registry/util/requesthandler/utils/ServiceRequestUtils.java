@@ -1,8 +1,8 @@
 package org.ga4gh.registry.util.requesthandler.utils;
 
-import java.util.UUID;
-
+import org.ga4gh.registry.AppConfigConstants;
 import org.ga4gh.registry.constant.Ids;
+import org.ga4gh.registry.exception.BadRequestException;
 import org.ga4gh.registry.exception.ResourceNotFoundException;
 import org.ga4gh.registry.model.Implementation;
 import org.ga4gh.registry.model.ImplementationCategory;
@@ -12,8 +12,6 @@ import org.ga4gh.registry.model.StandardVersion;
 import org.ga4gh.registry.util.hibernate.HibernateUtil;
 import org.ga4gh.registry.util.hibernate.HibernateQuerier;
 import org.ga4gh.registry.util.hibernate.HibernateQueryBuilder;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
@@ -23,14 +21,14 @@ public class ServiceRequestUtils {
     private HibernateUtil hibernateUtil;
 
     @Autowired
-    @Qualifier("standardVersionsHibernateQuerier")
+    @Qualifier(AppConfigConstants.STANDARD_VERSION_HIBERNATE_QUERIER)
     private HibernateQuerier<StandardVersion> svQuerier;
 
     @Autowired
     private HibernateQueryBuilder svQueryBuilder;
 
     @Autowired
-    @Qualifier("organizationsHibernateQuerier")
+    @Qualifier(AppConfigConstants.ORGANIZATION_HIBERNATE_QUERIER)
     private HibernateQuerier<Organization> orgQuerier;
 
     @Autowired
@@ -57,13 +55,8 @@ public class ServiceRequestUtils {
      * @param requestBody Implementation object passed in request
      */
     private void setImplementationCategoryApiService(Implementation requestBody) {
-
-        SessionFactory sessionFactory = getHibernateUtil().getSessionFactory();
-        Session session = sessionFactory.getCurrentSession();
-        session.beginTransaction();
-        UUID uuid = UUID.fromString(Ids.IMPLEMENTATION_CATEGORY_API_SERVICE_UUID);
-        ImplementationCategory category = session.get(ImplementationCategory.class, uuid);
-        session.getTransaction().commit();
+        String id = Ids.IMPLEMENTATION_CATEGORY_API_SERVICE_ID;
+        ImplementationCategory category = (ImplementationCategory) getHibernateUtil().readEntityObject(ImplementationCategory.class, id);
         requestBody.setImplementationCategory(category);
     }
 
@@ -78,6 +71,9 @@ public class ServiceRequestUtils {
         HibernateQueryBuilder qb = getSvQueryBuilder();
         HibernateQuerier<StandardVersion> querier = getSvQuerier();
         ServiceType type = requestBody.getType();
+        if (type == null) {
+            throw new BadRequestException("no service type provided");
+        }
         qb.setResponseClass(StandardVersion.class);
         qb.join("standard");
         qb.filter("standard.artifact", type.getArtifact());
@@ -98,21 +94,21 @@ public class ServiceRequestUtils {
      * @param requestBody Implementation object passed in request
      */
     private void setOrganizationIfExists(Implementation requestBody) {
+        Organization requestBodyOrg = requestBody.getOrganization();
+        if (requestBodyOrg == null) {
+            throw new BadRequestException("Service does not specify an organization");
+        }
         HibernateQueryBuilder qb = getOrgQueryBuilder();
         HibernateQuerier<Organization> querier = getOrgQuerier();
         qb.setResponseClass(Organization.class);
         qb.filter("name", requestBody.getOrganization().getName());
         qb.filter("url", requestBody.getOrganization().getUrl());
         querier.setQueryString(qb.build());
-        Organization result = querier.getSingleResult();
-        if (result != null) { // found an existing org, set it to request Body
-            requestBody.setOrganization(result);
+        Organization dbOrganization = querier.getSingleResult();
+        if (dbOrganization != null) { // found an existing org, set it to request Body
+            requestBody.setOrganization(dbOrganization);
         } else { // org doesn't exist, save transient org first
-            SessionFactory sessionFactory = getHibernateUtil().getSessionFactory();
-            Session session = sessionFactory.getCurrentSession();
-            session.beginTransaction();
-            session.save(requestBody.getOrganization());
-            session.getTransaction().commit();
+            getHibernateUtil().createEntityObject(Organization.class, requestBodyOrg);
         }
     }
 

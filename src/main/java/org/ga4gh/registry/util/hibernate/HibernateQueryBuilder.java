@@ -17,7 +17,6 @@ public class HibernateQueryBuilder {
     }
 
     public void join(String property) {
-        // joinBuffer.append("JOIN FETCH a." + property + " ");
         joinBuffer.append("LEFT JOIN FETCH a." + property + " ");
     }
 

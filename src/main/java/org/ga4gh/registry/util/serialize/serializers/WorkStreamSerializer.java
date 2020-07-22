@@ -7,6 +7,8 @@ import org.ga4gh.registry.model.WorkStream;
 
 public class WorkStreamSerializer extends VariableDepthSerializer<WorkStream> {
 
+    private static final long serialVersionUID = 1L;
+
     public WorkStreamSerializer() {
         super(WorkStream.class);
     }

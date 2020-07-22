@@ -7,6 +7,8 @@ import org.ga4gh.registry.model.ReleaseStatus;
 
 public class ReleaseStatusSerializer extends VariableDepthSerializer<ReleaseStatus> {
 
+    private static final long serialVersionUID = 1L;
+
     public ReleaseStatusSerializer() {
         super(ReleaseStatus.class);
     }

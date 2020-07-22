@@ -1,7 +1,6 @@
 package org.ga4gh.registry.controller;
 
 import java.util.Map;
-
 import org.ga4gh.registry.AppConfigConstants;
 import org.ga4gh.registry.model.Implementation;
 import org.ga4gh.registry.util.requesthandler.RequestHandlerFactory;

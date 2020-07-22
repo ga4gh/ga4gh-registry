@@ -30,7 +30,6 @@ public class IndexServicesHandler extends IndexRequestHandler<Implementation> {
             }
         }
         qb.setResponseClass(q.getTypeClass());
-        System.out.println(qb.build());
         q.setQueryString(qb.build());
         return q.getResults();
     }

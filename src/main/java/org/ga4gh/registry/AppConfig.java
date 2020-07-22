@@ -2,16 +2,12 @@ package org.ga4gh.registry;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import com.fasterxml.jackson.core.Version;
 import com.fasterxml.jackson.databind.JsonSerializer;
-
 import org.ga4gh.registry.middleware.AuthorizationInterceptor;
 import org.ga4gh.registry.model.Implementation;
 import org.ga4gh.registry.model.Organization;
-import org.ga4gh.registry.model.ReleaseStatus;
 import org.ga4gh.registry.model.Standard;
-import org.ga4gh.registry.model.StandardCategory;
 import org.ga4gh.registry.model.StandardVersion;
 import org.ga4gh.registry.util.auth.PlaceholderAuth;
 import org.ga4gh.registry.util.hibernate.HibernateConfig;
@@ -31,9 +27,9 @@ import org.ga4gh.registry.util.requesthandler.show.ShowServiceInfoHandler;
 import org.ga4gh.registry.util.hibernate.HibernateQuerier;
 import org.ga4gh.registry.util.hibernate.HibernateQueryBuilder;
 import org.ga4gh.registry.util.serialize.RegistrySerializerModule;
+import org.ga4gh.registry.util.serialize.RegistrySerializerModuleHelper;
 import org.ga4gh.registry.util.serialize.serializers.DateSerializer;
 import org.ga4gh.registry.util.serialize.serializers.ImplementationSerializer;
-//import org.ga4gh.registry.util.serialize.serializers.ImplementationSerializer;
 import org.ga4gh.registry.util.serialize.serializers.OrganizationSerializer;
 import org.ga4gh.registry.util.serialize.serializers.RegistryErrorSerializer;
 import org.ga4gh.registry.util.serialize.serializers.ReleaseStatusSerializer;
@@ -41,12 +37,7 @@ import org.ga4gh.registry.util.serialize.serializers.ServiceTypeSerializer;
 import org.ga4gh.registry.util.serialize.serializers.StandardCategorySerializer;
 import org.ga4gh.registry.util.serialize.serializers.StandardSerializer;
 import org.ga4gh.registry.util.serialize.serializers.StandardVersionSerializer;
-//import org.ga4gh.registry.util.serialize.serializers.ReleaseStatusSerializer;
-//import org.ga4gh.registry.util.serialize.serializers.StandardCategorySerializer;
-//import org.ga4gh.registry.util.serialize.serializers.StandardSerializer;
-import org.ga4gh.registry.util.serialize.serializers.VariableDepthSerializer;
 import org.ga4gh.registry.util.serialize.serializers.WorkStreamSerializer;
-//import org.ga4gh.registry.util.serialize.sets.SerializerModuleSet;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -200,35 +191,29 @@ public class AppConfig implements WebMvcConfigurer {
         return new ShowRequestHandler<>(Implementation.class, serializerModule, AppConfigConstants.SERVICE_ID);
     }
 
-    /*
     @Bean(name = AppConfigConstants.POST_SERVICE_HANDLER)
     @Scope(AppConfigConstants.PROTOTYPE)
     public PostServiceHandler servicePostRequestHandler(
-        @Qualifier(AppConfigConstants.DEEP_IMPLEMENTATION_SERIALIZER_SET) SerializerModuleSet serializerModuleSet
+        @Qualifier(AppConfigConstants.RELATIONAL_IMPLEMENTATION_SERIALIZER_MODULE) RegistrySerializerModule serializerModule
     ) {
-        return new PostServiceHandler(Implementation.class, serializerModuleSet);
+        return new PostServiceHandler(Implementation.class, serializerModule);
     }
-    */
 
-    /*
     @Bean(name = AppConfigConstants.PUT_SERVICE_HANDLER)
     @Scope(AppConfigConstants.PROTOTYPE)
     public PutServiceHandler servicePutRequestHandler(
-        @Qualifier(AppConfigConstants.DEEP_IMPLEMENTATION_SERIALIZER_SET) SerializerModuleSet serializerModuleSet
+        @Qualifier(AppConfigConstants.RELATIONAL_IMPLEMENTATION_SERIALIZER_MODULE) RegistrySerializerModule serializerModule
     ) {
-        return new PutServiceHandler(Implementation.class, serializerModuleSet, AppConfigConstants.SERVICE_ID);
+        return new PutServiceHandler(Implementation.class, serializerModule, AppConfigConstants.SERVICE_ID);
     }
-    */
 
-    /*
     @Bean(name = AppConfigConstants.DELETE_SERVICE_HANDLER)
     @Scope(AppConfigConstants.PROTOTYPE)
     public DeleteRequestHandler<Implementation> serviceDeleteRequestHandler(
-        @Qualifier(AppConfigConstants.DEEP_IMPLEMENTATION_SERIALIZER_SET) SerializerModuleSet serializerModuleSet
+        @Qualifier(AppConfigConstants.RELATIONAL_IMPLEMENTATION_SERIALIZER_MODULE) RegistrySerializerModule serializerModule
     ) {
-        return new DeleteRequestHandler<>(Implementation.class, serializerModuleSet, AppConfigConstants.SERVICE_ID);
+        return new DeleteRequestHandler<>(Implementation.class, serializerModule, AppConfigConstants.SERVICE_ID);
     }
-    */
 
     @Bean(name = AppConfigConstants.INDEX_SERVICE_TYPES_HANDLER)
     @Scope(AppConfigConstants.PROTOTYPE)
@@ -463,11 +448,11 @@ public class AppConfig implements WebMvcConfigurer {
         @Qualifier(AppConfigConstants.BASIC_STANDARD_CATEGORY_SERIALIZER) StandardCategorySerializer standardCategorySerializer,
         @Qualifier(AppConfigConstants.BASIC_RELEASE_STATUS_SERIALIZER) ReleaseStatusSerializer releaseStatusSerializer
     ) {
-        List<JsonSerializer<?>> serializers = new ArrayList<>();
-        serializers.add(standardSerializer);
-        serializers.add(standardCategorySerializer);
-        serializers.add(releaseStatusSerializer);
-        return new RegistrySerializerModule("A", new Version(1,0,0,"release", "org.ga4gh", "organization"), serializers);
+        return new RegistrySerializerModule(
+            AppConfigConstants.BASIC_STANDARD_SERIALIZER_MODULE,
+            RegistrySerializerModuleHelper.newVersion("organization"),
+            RegistrySerializerModuleHelper.newSerializers(new JsonSerializer<?>[] {standardSerializer, standardCategorySerializer, releaseStatusSerializer})
+        );
     }
 
     @Bean
@@ -479,13 +464,11 @@ public class AppConfig implements WebMvcConfigurer {
         @Qualifier(AppConfigConstants.BASIC_RELEASE_STATUS_SERIALIZER) ReleaseStatusSerializer releaseStatusSerializer,
         @Qualifier(AppConfigConstants.BASIC_WORK_STREAM_SERIALIZER) WorkStreamSerializer workStreamSerializer
     ) {
-        List<JsonSerializer<?>> serializers = new ArrayList<>();
-        serializers.add(standardSerializer);
-        serializers.add(standardVersionSerializer);
-        serializers.add(standardCategorySerializer);
-        serializers.add(releaseStatusSerializer);
-        serializers.add(workStreamSerializer);
-        return new RegistrySerializerModule("B", new Version(1,0,0,"release", "org.ga4gh", "organization"), serializers);
+        return new RegistrySerializerModule(
+            AppConfigConstants.RELATIONAL_STANDARD_SERIALIZER_MODULE,
+            RegistrySerializerModuleHelper.newVersion("organization"),
+            RegistrySerializerModuleHelper.newSerializers(new JsonSerializer<?>[] {standardSerializer, standardVersionSerializer, standardCategorySerializer, releaseStatusSerializer, workStreamSerializer})
+        );
     }
 
     /* ORGANIZATION SERIALIZER MODULE BEANS */

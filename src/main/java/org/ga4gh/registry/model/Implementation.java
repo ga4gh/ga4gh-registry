@@ -1,6 +1,5 @@
 package org.ga4gh.registry.model;
 
-import java.text.ParseException;
 import java.util.Date;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -12,8 +11,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
-import org.ga4gh.registry.constant.RegistryConstants;
-import org.ga4gh.registry.exception.BadRequestException;
 
 @Entity
 @Table(name = "implementation")
@@ -78,15 +75,15 @@ public class Implementation implements RegistryModel {
     }
 
     public Implementation(String name, String description, String contactUrl,
-        String documentationUrl, String createdAt, String updatedAt,
+        String documentationUrl, Date createdAt, Date updatedAt,
         String environment, String version, String url) {
 
         this.name = name;
         this.description = description;
         this.contactUrl = contactUrl;
         this.documentationUrl = documentationUrl;
-        this.createdAt = parseDate(createdAt);
-        this.updatedAt = parseDate(updatedAt);
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
         this.environment = environment;
         this.version = version;
         this.url = url;
@@ -98,14 +95,6 @@ public class Implementation implements RegistryModel {
 
     public String getTableName() {
         return tableName;
-    }
-
-    public Date parseDate(String dateString) {
-        try {
-            return RegistryConstants.DATE_TIME_FORMAT.parse(dateString);
-        } catch (ParseException e) {
-            throw new BadRequestException("invalid date string format");
-        }
     }
 
     public String getId() {

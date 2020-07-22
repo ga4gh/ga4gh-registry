@@ -7,6 +7,8 @@ import org.ga4gh.registry.model.Standard;
 
 public class StandardSerializer extends VariableDepthSerializer<Standard> {
 
+    private static final long serialVersionUID = 1L;
+
     public StandardSerializer() {
         super(Standard.class);
     }

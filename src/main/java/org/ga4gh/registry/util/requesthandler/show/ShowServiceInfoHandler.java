@@ -11,6 +11,6 @@ public class ShowServiceInfoHandler extends ShowRequestHandler<Implementation> {
     public ShowServiceInfoHandler(Class<Implementation> responseClass, RegistrySerializerModule serializerModule, String idPathParameterName) {
         super(responseClass, serializerModule, idPathParameterName);
         setRequestVariablesA(new HashMap<String, String>());
-        getRequestVariablesA().put(idPathParameterName, Ids.SELF_UUID);
+        getRequestVariablesA().put(idPathParameterName, Ids.SERVICE_ID);
     }
 }

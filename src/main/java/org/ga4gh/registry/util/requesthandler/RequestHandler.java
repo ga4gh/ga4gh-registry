@@ -50,7 +50,6 @@ public class RequestHandler<T extends RegistryModel> implements RequestHandlerI<
 
     @SuppressWarnings("unchecked")
     public T getObjectById(String id) throws BadRequestException, ResourceNotFoundException {
-        System.out.println("CAA");
         return (T) getHibernateUtil().readEntityObject(getResponseClass(), id);
     }
 
@@ -62,11 +61,8 @@ public class RequestHandler<T extends RegistryModel> implements RequestHandlerI<
     }
 
     public void validateObjectByIdDoesNotExist(String id) {
-        System.out.println("CA");
         T object = getObjectById(id);
-        System.out.println("CB");
         if (object != null) {
-            System.out.println("CC");
             throw new BadRequestException("another " + getEntityClassName() + " already exists by id: " + id.toString());
         }
     }
@@ -84,11 +80,6 @@ public class RequestHandler<T extends RegistryModel> implements RequestHandlerI<
     }
 
     public String serializeObject(List<T> object) {
-
-        System.out.println("***");
-        System.out.println("SERIALIZING LIST");
-        System.out.println(getSerializerModule());
-        System.out.println(getSerializerModule().toString());
 
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(getSerializerModule());

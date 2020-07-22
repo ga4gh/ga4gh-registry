@@ -7,6 +7,8 @@ import org.ga4gh.registry.model.RegistryError;
 
 public class RegistryErrorSerializer extends VariableDepthSerializer<RegistryError> {
 
+    private static final long serialVersionUID = 1L;
+
     public RegistryErrorSerializer() {
         super(RegistryError.class);
     }

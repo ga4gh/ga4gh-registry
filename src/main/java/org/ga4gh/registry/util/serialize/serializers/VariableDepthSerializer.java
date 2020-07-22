@@ -8,6 +8,8 @@ import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 
 public abstract class VariableDepthSerializer<T> extends StdSerializer<T> {
 
+    private static final long serialVersionUID = 1L;
+
     private Set<String> serializedRelationalAttributes;
 
     public VariableDepthSerializer(Class<T> t) {
