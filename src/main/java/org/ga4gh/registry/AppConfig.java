@@ -1,8 +1,5 @@
 package org.ga4gh.registry;
 
-import java.util.ArrayList;
-import java.util.List;
-import com.fasterxml.jackson.core.Version;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import org.ga4gh.registry.middleware.AuthorizationInterceptor;
 import org.ga4gh.registry.model.Implementation;
@@ -450,7 +447,7 @@ public class AppConfig implements WebMvcConfigurer {
     ) {
         return new RegistrySerializerModule(
             AppConfigConstants.BASIC_STANDARD_SERIALIZER_MODULE,
-            RegistrySerializerModuleHelper.newVersion("organization"),
+            RegistrySerializerModuleHelper.newVersion("standard"),
             RegistrySerializerModuleHelper.newSerializers(new JsonSerializer<?>[] {standardSerializer, standardCategorySerializer, releaseStatusSerializer})
         );
     }
@@ -466,7 +463,7 @@ public class AppConfig implements WebMvcConfigurer {
     ) {
         return new RegistrySerializerModule(
             AppConfigConstants.RELATIONAL_STANDARD_SERIALIZER_MODULE,
-            RegistrySerializerModuleHelper.newVersion("organization"),
+            RegistrySerializerModuleHelper.newVersion("standard"),
             RegistrySerializerModuleHelper.newSerializers(new JsonSerializer<?>[] {standardSerializer, standardVersionSerializer, standardCategorySerializer, releaseStatusSerializer, workStreamSerializer})
         );
     }
@@ -478,9 +475,11 @@ public class AppConfig implements WebMvcConfigurer {
     public RegistrySerializerModule basicOrganizationSerializerModule(
         @Qualifier(AppConfigConstants.BASIC_ORGANIZATION_SERIALIZER) OrganizationSerializer organizationSerializer
     ) {
-        List<JsonSerializer<?>> serializers = new ArrayList<>();
-        serializers.add(organizationSerializer);
-        return new RegistrySerializerModule("E", new Version(1,0,0,"release", "org.ga4gh", "organization"), serializers);
+        return new RegistrySerializerModule(
+            AppConfigConstants.BASIC_ORGANIZATION_SERIALIZER_MODULE,
+            RegistrySerializerModuleHelper.newVersion("organization"),
+            RegistrySerializerModuleHelper.newSerializers(new JsonSerializer<?>[] {organizationSerializer})
+        );
     }
 
     @Bean
@@ -489,10 +488,11 @@ public class AppConfig implements WebMvcConfigurer {
         @Qualifier(AppConfigConstants.RELATIONAL_ORGANIZATION_SERIALIZER) OrganizationSerializer organizationSerializer,
         @Qualifier(AppConfigConstants.BASIC_IMPLEMENTATION_SERIALIZER) ImplementationSerializer implementationSerializer
     ) {
-        List<JsonSerializer<?>> serializers = new ArrayList<>();
-        serializers.add(organizationSerializer);
-        serializers.add(implementationSerializer);
-        return new RegistrySerializerModule("F", new Version(1,0,0,"release", "org.ga4gh", "organization"), serializers);
+        return new RegistrySerializerModule(
+            AppConfigConstants.RELATIONAL_ORGANIZATION_SERIALIZER_MODULE,
+            RegistrySerializerModuleHelper.newVersion("organization"),
+            RegistrySerializerModuleHelper.newSerializers(new JsonSerializer<?>[] {organizationSerializer, implementationSerializer})
+        );
     }
 
     /* IMPLEMENTATION SERIALIZER MODULE BEANS */
@@ -502,9 +502,11 @@ public class AppConfig implements WebMvcConfigurer {
     public RegistrySerializerModule basicImplementationSerializerModule(
         @Qualifier(AppConfigConstants.BASIC_IMPLEMENTATION_SERIALIZER) ImplementationSerializer implementationSerializer
     ) {
-        List<JsonSerializer<?>> serializers = new ArrayList<>();
-        serializers.add(implementationSerializer);
-        return new RegistrySerializerModule("G", new Version(1,0,0,"release", "org.ga4gh", "organization"), serializers);
+        return new RegistrySerializerModule(
+            AppConfigConstants.BASIC_IMPLEMENTATION_SERIALIZER_MODULE,
+            RegistrySerializerModuleHelper.newVersion("implementation"),
+            RegistrySerializerModuleHelper.newSerializers(new JsonSerializer<?>[] {implementationSerializer})
+        );
     }
 
     @Bean
@@ -514,11 +516,11 @@ public class AppConfig implements WebMvcConfigurer {
         @Qualifier(AppConfigConstants.BASIC_DATE_SERIALIZER) DateSerializer dateSerializer,
         @Qualifier(AppConfigConstants.BASIC_ORGANIZATION_SERIALIZER) OrganizationSerializer organizationSerializer
     ) {
-        List<JsonSerializer<?>> serializers = new ArrayList<>();
-        serializers.add(implementationSerializer);
-        serializers.add(dateSerializer);
-        serializers.add(organizationSerializer);
-        return new RegistrySerializerModule("H", new Version(1,0,0,"release", "org.ga4gh", "organization"), serializers);
+        return new RegistrySerializerModule(
+            AppConfigConstants.RELATIONAL_IMPLEMENTATION_SERIALIZER_MODULE,
+            RegistrySerializerModuleHelper.newVersion("implementation"),
+            RegistrySerializerModuleHelper.newSerializers(new JsonSerializer<?>[] {implementationSerializer, dateSerializer, organizationSerializer})
+        );
     }
 
     /* REGISTRY ERROR SERIALIZER MODULE BEANS */
@@ -528,9 +530,11 @@ public class AppConfig implements WebMvcConfigurer {
     public RegistrySerializerModule basicRegistryErrorSerializerModule(
         @Qualifier(AppConfigConstants.BASIC_REGISTRY_ERROR_SERIALIZER) RegistryErrorSerializer registryErrorSerializer
     ) {
-        List<JsonSerializer<?>> serializers = new ArrayList<>();
-        serializers.add(registryErrorSerializer);
-        return new RegistrySerializerModule("I", new Version(1,0,0,"release", "org.ga4gh", "organization"), serializers);
+        return new RegistrySerializerModule(
+            AppConfigConstants.BASIC_REGISTRY_ERROR_SERIALIZER_MODULE,
+            RegistrySerializerModuleHelper.newVersion("registryError"),
+            RegistrySerializerModuleHelper.newSerializers(new JsonSerializer<?>[] {registryErrorSerializer})
+        );
     }
 
     /* SERVICE TYPE SERIALIZER MODULE BEANS */
@@ -540,9 +544,11 @@ public class AppConfig implements WebMvcConfigurer {
     public RegistrySerializerModule basicServiceTypeSerializierModule(
         @Qualifier(AppConfigConstants.BASIC_SERVICE_TYPE_SERIALIZER) ServiceTypeSerializer serviceTypeSerializer
     ) {
-        List<JsonSerializer<?>> serializers = new ArrayList<>();
-        serializers.add(serviceTypeSerializer);
-        return new RegistrySerializerModule("J", new Version(1,0,0,"release", "org.ga4gh", "organization"), serializers);
+        return new RegistrySerializerModule(
+            AppConfigConstants.BASIC_SERVICE_TYPE_SERIALIZER_MODULE,
+            RegistrySerializerModuleHelper.newVersion("serviceType"),
+            RegistrySerializerModuleHelper.newSerializers(new JsonSerializer<?>[] {serviceTypeSerializer})
+        );
     }
 
     /* ******************************
