@@ -9,6 +9,7 @@ if [ -z "${DBSCHEMA}" ]; then echo "DBSCHEMA not set"; exit 1; fi;
 if [ -z "${DBUSER}" ]; then echo "DBUSER not set"; exit 1; fi;
 if [ -z "${DBPASSWORD}" ]; then echo "DBPASSWORD not set"; exit 1; fi;
 if [ -z "${USESSL}" ]; then echo "USESSL not set"; exit 1; fi;
+if [ -z "${AUTHSECRET}" ]; then echo "AUTHSECRET not set"; exit 1; fi;
 
 python config/docker/configure.py
 
