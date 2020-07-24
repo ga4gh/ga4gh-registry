@@ -230,8 +230,6 @@ public class Implementation implements RegistryModel {
                + "description=" + description + ", "
                + "contactUrl=" + contactUrl + ", "
                + "documentationUrl=" + documentationUrl + ", "
-               + "createdAt=" + createdAt + ", "
-               + "updatedAt=" + updatedAt + ", "
                + "environment=" + environment + ", "
                + "version=" + version + ", "
                + "url=" + url + "]";

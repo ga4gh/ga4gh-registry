@@ -1,7 +1,6 @@
 package org.ga4gh.registry.controller;
 
 import java.util.Map;
-
 import org.ga4gh.registry.AppConfigConstants;
 import org.ga4gh.registry.model.Organization;
 import org.ga4gh.registry.util.requesthandler.RequestHandlerFactory;
@@ -47,7 +46,7 @@ public class Organizations {
         return indexOrganization.handleRequest();
     }
 
-    @GetMapping(path = "/{organizationId}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @GetMapping(path = "/{organizationId:.+}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<String> getOrganizationById(@PathVariable Map<String, String> pathVariables) {
         return showOrganization.handleRequest(pathVariables);
     }
@@ -57,12 +56,12 @@ public class Organizations {
         return postOrganization.handleRequest(organization);
     }
 
-    @PutMapping(path = "/{organizationId}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @PutMapping(path = "/{organizationId:.+}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<String> updateOrganizationById(@PathVariable Map<String, String> pathVariables, @RequestBody Organization organization) {
         return putOrganization.handleRequest(pathVariables, organization);        
     }
 
-    @DeleteMapping(path = "/{organizationId}")
+    @DeleteMapping(path = "/{organizationId:.+}")
     public ResponseEntity<String> deleteOrganizationById(@PathVariable Map<String, String> pathVariables) {
         return deleteOrganization.handleRequest(pathVariables);
     }   

@@ -51,7 +51,7 @@ public class Services {
         return indexService.handleRequest(queryVariables);
     }
 
-    @GetMapping(path = "/{serviceId}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @GetMapping(path = "/{serviceId:.+}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<String> getServiceById(@PathVariable Map<String, String> pathVariables) {
         return showService.handleRequest(pathVariables);
     }
@@ -61,12 +61,12 @@ public class Services {
         return postService.handleRequest(implementation);
     }
 
-    @PutMapping(path = "/{serviceId}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @PutMapping(path = "/{serviceId:.+}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<String> updateServiceById(@PathVariable Map<String, String> pathVariables, @RequestBody Implementation implementation) {
         return putService.handleRequest(pathVariables, implementation);
     }
 
-    @DeleteMapping(path = "/{serviceId}")
+    @DeleteMapping(path = "/{serviceId:.+}")
     public ResponseEntity<String> deleteServiceById(@PathVariable Map<String, String> pathVariables) {
         return deleteService.handleRequest(pathVariables);
     }
