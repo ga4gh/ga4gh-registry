@@ -9,7 +9,8 @@ ENV_VARS = [
     "DBSCHEMA",
     "DBUSER",
     "DBPASSWORD",
-    "USESSL"
+    "USESSL",
+    "AUTHSECRET"
 ]
 
 DIR = "./config/docker/"

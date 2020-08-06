@@ -1,28 +1,25 @@
 package org.ga4gh.registry.model;
 
 import java.util.List;
-import java.util.UUID;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-
-import org.hibernate.annotations.GenericGenerator;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "release_status")
-public class ReleaseStatus {
+public class ReleaseStatus implements RegistryModel {
+
+    public static final String tableName = "release_status";
 
     @Id
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(name = "UUID",
-                      strategy = "org.hibernate.id.UUIDGenerator")
     @Column(name = "id")
-    private UUID id;
+    @NotNull
+    private String id;
 
     @Column(name = "status")
     private String status;
@@ -49,13 +46,21 @@ public class ReleaseStatus {
         this.status = status;
     }
 
+    public void lazyLoad() {
+        
+    }
+
+    public String getTableName() {
+        return tableName;
+    }
+
     /* getters and setters */
 
-    public UUID getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(UUID id) {
+    public void setId(String id) {
         this.id = id;
     }
 

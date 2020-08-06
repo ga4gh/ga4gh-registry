@@ -56,6 +56,10 @@ public class ServiceType {
         this.version = version;
     }
 
+    public String signature() {
+        return getGroup() + ":" + getArtifact() + ":" + getVersion();
+    }
+
     public String toString() {
         return "ServiceType ["
                + "group=" + group + ", "

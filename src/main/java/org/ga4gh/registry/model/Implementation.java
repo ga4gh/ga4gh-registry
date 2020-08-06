@@ -1,27 +1,27 @@
 package org.ga4gh.registry.model;
 
-import java.util.UUID;
+import java.util.Date;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import org.hibernate.annotations.GenericGenerator;
+import javax.persistence.Transient;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "implementation")
-public class Implementation implements Queryable {
+public class Implementation implements RegistryModel {
+
+    private static final String tableName = "implementation";
 
     @Id
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(name = "UUID",
-                      strategy = "org.hibernate.id.UUIDGenerator")
     @Column(name = "id")
-    private UUID id;
+    @NotNull
+    private String id;
 
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE,
                           CascadeType.DETACH, CascadeType.REFRESH})
@@ -39,7 +39,8 @@ public class Implementation implements Queryable {
     @Column(name = "description")
     private String description;
 
-    @ManyToOne(fetch = FetchType.LAZY,
+    @ManyToOne(fetch = FetchType.EAGER,
+               // cascade = CascadeType.ALL)
                cascade = {CascadeType.PERSIST, CascadeType.MERGE,
                           CascadeType.DETACH, CascadeType.REFRESH})
     @JoinColumn(name = "organization_id")
@@ -52,10 +53,10 @@ public class Implementation implements Queryable {
     private String documentationUrl;
 
     @Column(name = "created_at")
-    private String createdAt;
+    private Date createdAt;
 
     @Column(name = "updated_at")
-    private String updatedAt;
+    private Date updatedAt;
 
     @Column(name = "environment")
     private String environment;
@@ -66,12 +67,15 @@ public class Implementation implements Queryable {
     @Column(name = "url")
     private String url;
 
+    @Transient
+    private ServiceType type;
+
     public Implementation() {
 
     }
 
     public Implementation(String name, String description, String contactUrl,
-        String documentationUrl, String createdAt, String updatedAt,
+        String documentationUrl, Date createdAt, Date updatedAt,
         String environment, String version, String url) {
 
         this.name = name;
@@ -85,11 +89,19 @@ public class Implementation implements Queryable {
         this.url = url;
     }
 
-    public UUID getId() {
+    public void lazyLoad() {
+        
+    }
+
+    public String getTableName() {
+        return tableName;
+    }
+
+    public String getId() {
         return id;
     }
 
-    public void setId(UUID id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -149,19 +161,19 @@ public class Implementation implements Queryable {
         this.documentationUrl = documentationUrl;
     }
 
-    public String getCreatedAt() {
+    public Date getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(String createdAt) {
+    public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
     }
 
-    public String getUpdatedAt() {
+    public Date getUpdatedAt() {
         return updatedAt;
     }
 
-    public void setUpdatedAt(String updatedAt) {
+    public void setUpdatedAt(Date updatedAt) {
         this.updatedAt = updatedAt;
     }
 
@@ -189,6 +201,14 @@ public class Implementation implements Queryable {
         this.url = url;
     }
 
+    public void setType(ServiceType type) {
+        this.type = type;
+    }
+
+    public ServiceType getType() {
+        return type;
+    }
+
     public ServiceType getServiceType() {
         ServiceType serviceType = new ServiceType();
         if (getStandardVersion() != null) {
@@ -210,8 +230,6 @@ public class Implementation implements Queryable {
                + "description=" + description + ", "
                + "contactUrl=" + contactUrl + ", "
                + "documentationUrl=" + documentationUrl + ", "
-               + "createdAt=" + createdAt + ", "
-               + "updatedAt=" + updatedAt + ", "
                + "environment=" + environment + ", "
                + "version=" + version + ", "
                + "url=" + url + "]";
