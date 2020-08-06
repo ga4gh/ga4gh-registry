@@ -1,6 +1,5 @@
 package org.ga4gh.registry.constant;
 
-import org.ga4gh.registry.constant.Ids;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 

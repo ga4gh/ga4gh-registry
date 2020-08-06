@@ -18,8 +18,6 @@ import org.testng.annotations.Test;
 import org.ga4gh.registry.testutils.JsonResponseLoader;
 import org.ga4gh.registry.testutils.annotations.RegistryTestProperties;
 import org.ga4gh.registry.testutils.deserializer.StandardDeserializer;
-
-import java.net.URL;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -73,14 +71,9 @@ public class StandardsTest extends AbstractTestNGSpringContextTests {
     }
 
     @Test
-    public void anyFooTest() throws Exception {
-        System.out.println("HOOHOOHOO");
-        String filename = JsonResponseLoader.load("standards", "index", "00");
-        System.out.println("***\n" + filename + "\n***");
-        // String data = fileUrl.openStream().readAllBytes().toString();
-        // System.out.println("data is:");
-        // System.out.println(data);
-        // System.out.println("Done My Foo Test");
+    public void getStandardsE2E() throws Exception {
+        String filename = JsonResponseLoader.load(Standard.class, "index", "00");
+        System.out.println(filename);
     }
 
     @Test

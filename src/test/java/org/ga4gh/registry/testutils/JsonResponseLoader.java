@@ -44,20 +44,11 @@ public class JsonResponseLoader {
         byte[] bytes = fs.readAllBytes();
         String json = new String(bytes, "UTF-8");
         fs.close();
+        return json;
 
-        ObjectMapper mapper = new ObjectMapper();
-        SimpleModule module = new SimpleModule();
+        // ObjectMapper mapper = new ObjectMapper();
+        // SimpleModule module = new SimpleModule();
         // module.addDeserializer(modelClass, deserializers.get(modelClass).getDeclaredConstructor().newInstance());
         // module.addSerializer(modelClass, s)
-        
-        /*
-        FileInputStream fs = new FileInputStream(filename);
-        byte[] bytes = fs.readAllBytes();
-        String data = new String(bytes, "UTF-8");
-        data = data.replaceAll("\n", "");
-        fs.close();
-        return data;
-        */
-    }
-    
+    }   
 }
