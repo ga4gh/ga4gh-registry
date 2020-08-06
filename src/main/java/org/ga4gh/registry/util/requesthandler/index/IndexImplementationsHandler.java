@@ -9,9 +9,9 @@ import org.ga4gh.registry.util.hibernate.HibernateQueryBuilder;
 import org.ga4gh.registry.util.requesthandler.utils.TypeFilter;
 import org.ga4gh.registry.util.serialize.RegistrySerializerModule;
 
-public class IndexServicesHandler extends IndexRequestHandler<Implementation> {
+public class IndexImplementationsHandler extends IndexRequestHandler<Implementation> {
 
-    public IndexServicesHandler(Class<Implementation> responseClass, RegistrySerializerModule serializerModule, HibernateQuerier<Implementation> querier) {
+    public IndexImplementationsHandler(Class<Implementation> responseClass, RegistrySerializerModule serializerModule, HibernateQuerier<Implementation> querier) {
         super(responseClass, serializerModule, querier);
     }
 
@@ -19,7 +19,7 @@ public class IndexServicesHandler extends IndexRequestHandler<Implementation> {
         HibernateQuerier<Implementation> q = getQuerier();
         HibernateQueryBuilder qb = getQueryBuilder();
         Map<String, String> queryVars = getRequestVariablesA();
-        qb.filter("category", ImplementationCategory.deployment.toString());
+        qb.filter("category", ImplementationCategory.implementation.toString());
         TypeFilter.filter(queryVars.get("type"), qb);
         qb.setResponseClass(q.getTypeClass());
         q.setQueryString(qb.build());

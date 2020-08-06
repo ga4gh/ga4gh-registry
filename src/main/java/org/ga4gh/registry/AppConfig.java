@@ -11,14 +11,16 @@ import org.ga4gh.registry.util.hibernate.HibernateConfig;
 import org.ga4gh.registry.util.hibernate.HibernateUtil;
 import org.ga4gh.registry.util.requesthandler.RequestHandlerFactory;
 import org.ga4gh.registry.util.requesthandler.delete.DeleteRequestHandler;
+import org.ga4gh.registry.util.requesthandler.index.IndexImplementationsHandler;
 import org.ga4gh.registry.util.requesthandler.index.IndexRequestHandler;
 import org.ga4gh.registry.util.requesthandler.index.IndexServiceTypesHandler;
 import org.ga4gh.registry.util.requesthandler.index.IndexServicesHandler;
+import org.ga4gh.registry.util.requesthandler.post.PostImplementationHandler;
 import org.ga4gh.registry.util.requesthandler.post.PostRequestHandler;
 import org.ga4gh.registry.util.requesthandler.post.PostServiceHandler;
 import org.ga4gh.registry.util.requesthandler.put.PutRequestHandler;
 import org.ga4gh.registry.util.requesthandler.put.PutServiceHandler;
-import org.ga4gh.registry.util.requesthandler.utils.ServiceRequestUtils;
+import org.ga4gh.registry.util.requesthandler.utils.ImplementationRequestUtils;
 import org.ga4gh.registry.util.requesthandler.show.ShowRequestHandler;
 import org.ga4gh.registry.util.requesthandler.show.ShowServiceInfoHandler;
 import org.ga4gh.registry.util.hibernate.HibernateQuerier;
@@ -48,7 +50,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class AppConfig implements WebMvcConfigurer {
 
     /* ******************************
-     * HIGH-LEVEL HIBERNATE-RELATED BEANS
+     * LOW-LEVEL HIBERNATE-RELATED BEANS
      * ****************************** */
 
     @Bean
@@ -122,7 +124,29 @@ public class AppConfig implements WebMvcConfigurer {
         return new ShowRequestHandler<>(Standard.class, serializerModule, AppConfigConstants.STANDARD_ID);
     }
 
-    /* STANDARD VERSION REQUEST HANDLER BEANS */
+    @Bean(name = AppConfigConstants.POST_STANDARD_HANDLER)
+    @Scope(AppConfigConstants.PROTOTYPE)
+    public PostRequestHandler<Standard> standardPostRequestHandler(
+        @Qualifier (AppConfigConstants.RELATIONAL_STANDARD_SERIALIZER_MODULE) RegistrySerializerModule serializerModule
+    ) {
+        return new PostRequestHandler<>(Standard.class, serializerModule);
+    }
+
+    @Bean(name = AppConfigConstants.PUT_STANDARD_HANDLER)
+    @Scope(AppConfigConstants.PROTOTYPE)
+    public PutRequestHandler<Standard> standardPutRequestHandler(
+        @Qualifier (AppConfigConstants.RELATIONAL_STANDARD_SERIALIZER_MODULE) RegistrySerializerModule serializerModule
+    ) {
+        return new PutRequestHandler<>(Standard.class, serializerModule, AppConfigConstants.STANDARD_ID);
+    }
+
+    @Bean(name = AppConfigConstants.DELETE_STANDARD_HANDLER)
+    @Scope(AppConfigConstants.PROTOTYPE)
+    public DeleteRequestHandler<Standard> standardDeleteRequestHandler(
+        @Qualifier (AppConfigConstants.RELATIONAL_STANDARD_SERIALIZER_MODULE) RegistrySerializerModule serializerModule
+    ) {
+        return new DeleteRequestHandler<>(Standard.class, serializerModule, AppConfigConstants.STANDARD_ID);
+    }
 
     /* ORGANIZATION REQUEST HANDLER BEANS */
 
@@ -168,6 +192,47 @@ public class AppConfig implements WebMvcConfigurer {
     }
 
     /* IMPLEMENTATION REQUEST HANDLER BEANS */
+
+    @Bean(name = AppConfigConstants.INDEX_IMPLEMENTATION_HANDLER)
+    @Scope(AppConfigConstants.PROTOTYPE)
+    public IndexImplementationsHandler implementationIndexRequestHandler(
+        @Qualifier(AppConfigConstants.RELATIONAL_IMPLEMENTATION_SERIALIZER_MODULE) RegistrySerializerModule serializerModule,
+        @Qualifier(AppConfigConstants.IMPLEMENTATION_HIBERNATE_QUERIER) HibernateQuerier<Implementation> querier
+    ) {
+        return new IndexImplementationsHandler(Implementation.class, serializerModule, querier);
+    }
+
+    @Bean(name = AppConfigConstants.SHOW_IMPLEMENTATION_HANDLER)
+    @Scope(AppConfigConstants.PROTOTYPE)
+    public ShowRequestHandler<Implementation> implementationShowRequestHandler(
+        @Qualifier(AppConfigConstants.RELATIONAL_IMPLEMENTATION_SERIALIZER_MODULE) RegistrySerializerModule serializerModule
+    ) {
+        return new ShowRequestHandler<>(Implementation.class, serializerModule, AppConfigConstants.IMPLEMENTATION_ID);
+    }
+
+    @Bean(name = AppConfigConstants.POST_IMPLEMENTATION_HANDLER)
+    @Scope(AppConfigConstants.PROTOTYPE)
+    public PostRequestHandler<Implementation> implementationPostRequestHandler(
+        @Qualifier(AppConfigConstants.RELATIONAL_IMPLEMENTATION_SERIALIZER_MODULE) RegistrySerializerModule serializerModule
+    ) {
+        return new PostImplementationHandler(Implementation.class, serializerModule);
+    }
+
+    @Bean(name = AppConfigConstants.PUT_IMPLEMENTATION_HANDLER)
+    @Scope(AppConfigConstants.PROTOTYPE)
+    public PutRequestHandler<Implementation> implementationPutRequestHandler(
+        @Qualifier(AppConfigConstants.RELATIONAL_IMPLEMENTATION_SERIALIZER_MODULE) RegistrySerializerModule serializerModule
+    ) {
+        return new PutRequestHandler<>(Implementation.class, serializerModule, AppConfigConstants.IMPLEMENTATION_ID);
+    }
+
+    @Bean(name = AppConfigConstants.DELETE_IMPLEMENTATION_HANDLER)
+    @Scope(AppConfigConstants.PROTOTYPE)
+    public DeleteRequestHandler<Implementation> implementationDeleteRequestHandler(
+        @Qualifier(AppConfigConstants.RELATIONAL_IMPLEMENTATION_SERIALIZER_MODULE) RegistrySerializerModule serializerModule
+    ) {
+        return new DeleteRequestHandler<>(Implementation.class, serializerModule, AppConfigConstants.IMPLEMENTATION_ID);
+    }
 
     /* SERVICE REQUEST HANDLER BEANS */
 
@@ -249,6 +314,24 @@ public class AppConfig implements WebMvcConfigurer {
         return new RequestHandlerFactory<>(Standard.class, AppConfigConstants.SHOW_STANDARD_HANDLER);
     }
 
+    @Bean
+    @Qualifier(AppConfigConstants.POST_STANDARD_HANDLER_FACTORY)
+    public RequestHandlerFactory<Standard> postStandardHandlerFactory() {
+        return new RequestHandlerFactory<>(Standard.class, AppConfigConstants.POST_STANDARD_HANDLER);
+    }
+
+    @Bean
+    @Qualifier(AppConfigConstants.PUT_STANDARD_HANDLER_FACTORY)
+    public RequestHandlerFactory<Standard> putStandardHandlerFactory() {
+        return new RequestHandlerFactory<>(Standard.class, AppConfigConstants.PUT_STANDARD_HANDLER);
+    }
+
+    @Bean
+    @Qualifier(AppConfigConstants.DELETE_STANDARD_HANDLER_FACTORY)
+    public RequestHandlerFactory<Standard> deleteStandardHandlerFactory() {
+        return new RequestHandlerFactory<>(Standard.class, AppConfigConstants.DELETE_STANDARD_HANDLER);
+    }
+
     /* ORGANIZATION REQUEST HANDLER FACTORY BEANS */
 
     @Bean
@@ -279,6 +362,38 @@ public class AppConfig implements WebMvcConfigurer {
     @Qualifier(AppConfigConstants.DELETE_ORGANIZATION_HANDLER_FACTORY)
     public RequestHandlerFactory<Organization> deleteOrganizationHandlerFactory() {
         return new RequestHandlerFactory<>(Organization.class, AppConfigConstants.DELETE_ORGANIZATION_HANDLER);
+    }
+
+    /* IMPLEMENTATION REQUEST HANDLER FACTORY BEANS */
+
+    @Bean
+    @Qualifier(AppConfigConstants.INDEX_IMPLEMENTATION_HANDLER_FACTORY)
+    public RequestHandlerFactory<Implementation> indexImplementationHandlerFactory() {
+        return new RequestHandlerFactory<>(Implementation.class, AppConfigConstants.INDEX_IMPLEMENTATION_HANDLER);
+    }
+
+    @Bean
+    @Qualifier(AppConfigConstants.SHOW_IMPLEMENTATION_HANDLER_FACTORY)
+    public RequestHandlerFactory<Implementation> showImplementationHandlerFactory() {
+        return new RequestHandlerFactory<>(Implementation.class, AppConfigConstants.SHOW_IMPLEMENTATION_HANDLER);
+    }
+
+    @Bean
+    @Qualifier(AppConfigConstants.POST_IMPLEMENTATION_HANDLER_FACTORY)
+    public RequestHandlerFactory<Implementation> postImplementationHandlerFactory() {
+        return new RequestHandlerFactory<>(Implementation.class, AppConfigConstants.POST_IMPLEMENTATION_HANDLER);
+    }
+
+    @Bean
+    @Qualifier(AppConfigConstants.PUT_IMPLEMENTATION_HANDLER_FACTORY)
+    public RequestHandlerFactory<Implementation> putImplementationHandlerFactory() {
+        return new RequestHandlerFactory<>(Implementation.class, AppConfigConstants.PUT_IMPLEMENTATION_HANDLER);
+    }
+
+    @Bean
+    @Qualifier(AppConfigConstants.DELETE_IMPLEMENTATION_HANDLER_FACTORY)
+    public RequestHandlerFactory<Implementation> deleteImplementationHandlerFactory() {
+        return new RequestHandlerFactory<>(Implementation.class, AppConfigConstants.DELETE_IMPLEMENTATION_HANDLER);
     }
 
     /* SERVICE REQUEST HANDLER FACTORY BEANS */
@@ -557,8 +672,8 @@ public class AppConfig implements WebMvcConfigurer {
 
     @Bean
     @Scope(AppConfigConstants.PROTOTYPE)
-    public ServiceRequestUtils getServiceRequestUtils() {
-        return new ServiceRequestUtils();
+    public ImplementationRequestUtils getServiceRequestUtils() {
+        return new ImplementationRequestUtils();
     }
 
     /* ******************************

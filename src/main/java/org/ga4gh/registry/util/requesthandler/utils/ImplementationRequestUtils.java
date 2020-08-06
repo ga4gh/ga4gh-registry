@@ -1,7 +1,6 @@
 package org.ga4gh.registry.util.requesthandler.utils;
 
 import org.ga4gh.registry.AppConfigConstants;
-import org.ga4gh.registry.constant.Ids;
 import org.ga4gh.registry.exception.BadRequestException;
 import org.ga4gh.registry.exception.ResourceNotFoundException;
 import org.ga4gh.registry.model.Implementation;
@@ -15,7 +14,7 @@ import org.ga4gh.registry.util.hibernate.HibernateQueryBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
-public class ServiceRequestUtils {
+public class ImplementationRequestUtils {
 
     @Autowired
     private HibernateUtil hibernateUtil;
@@ -36,28 +35,37 @@ public class ServiceRequestUtils {
 
     /* Constructor */
 
-    public ServiceRequestUtils() {
+    public ImplementationRequestUtils() {
         
     }
 
-    public Implementation preProcessRequestBody(Implementation requestBody) throws ResourceNotFoundException {
-        setImplementationCategoryApiService(requestBody);
+    public Implementation preProcessImplementation(Implementation requestBody) throws ResourceNotFoundException {
+        setCategoryImplementation(requestBody);
         setStandardVersionFromType(requestBody);
         setOrganizationIfExists(requestBody);
         return requestBody;
     }
 
+    public Implementation preProcessDeployment(Implementation requestBody) throws ResourceNotFoundException {
+        setCategoryDeployment(requestBody);
+        setStandardVersionFromType(requestBody);
+        setOrganizationIfExists(requestBody);
+        return requestBody;
+    }
+
+    private void setCategoryImplementation(Implementation requestBody) {
+        requestBody.setCategory(ImplementationCategory.implementation);
+    }
+
     /**
      * By definition, all Implementations created/updated via /services endpoints
-     * belong to the ImplementationCategory of 'APIService'. This method retrieves
+     * belong to the ImplementationCategory of 'deployment'. This method retrieves
      * the appropriate ImplementationCategory from the db, and assigns it to the
      * request Implementation
      * @param requestBody Implementation object passed in request
      */
-    private void setImplementationCategoryApiService(Implementation requestBody) {
-        String id = Ids.IMPLEMENTATION_CATEGORY_API_SERVICE_ID;
-        ImplementationCategory category = (ImplementationCategory) getHibernateUtil().readEntityObject(ImplementationCategory.class, id);
-        requestBody.setImplementationCategory(category);
+    private void setCategoryDeployment(Implementation requestBody) {
+        requestBody.setCategory(ImplementationCategory.deployment);
     }
 
     /**
