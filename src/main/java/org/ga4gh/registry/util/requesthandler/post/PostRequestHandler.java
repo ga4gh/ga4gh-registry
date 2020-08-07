@@ -25,7 +25,7 @@ public class PostRequestHandler<T extends RegistryModel> extends RequestHandler<
             responseEntity = ResponseEntity.ok().body(serializeObject(object));
         } catch (HibernateException e) {
             throw new BadRequestException("Could not create " + getResponseClass().getSimpleName() + ": " + e.getMessage());
-        }       
+        }
         return responseEntity;
     }
 }

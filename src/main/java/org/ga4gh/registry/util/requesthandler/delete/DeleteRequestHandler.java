@@ -13,6 +13,7 @@ public class DeleteRequestHandler<T extends RegistryModel> extends RequestHandle
 
     public ResponseEntity<String> createResponseEntity() {
         validateObjectByIdExists(getIdOnPath());
+        validateRequest();
         getHibernateUtil().deleteEntityObject(getResponseClass(), getIdOnPath());
         return ResponseEntity.ok().body("");
     }

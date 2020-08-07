@@ -10,7 +10,9 @@ import org.ga4gh.registry.util.auth.PlaceholderAuth;
 import org.ga4gh.registry.util.hibernate.HibernateConfig;
 import org.ga4gh.registry.util.hibernate.HibernateUtil;
 import org.ga4gh.registry.util.requesthandler.RequestHandlerFactory;
+import org.ga4gh.registry.util.requesthandler.delete.DeleteImplementationHandler;
 import org.ga4gh.registry.util.requesthandler.delete.DeleteRequestHandler;
+import org.ga4gh.registry.util.requesthandler.delete.DeleteServiceHandler;
 import org.ga4gh.registry.util.requesthandler.index.IndexImplementationsHandler;
 import org.ga4gh.registry.util.requesthandler.index.IndexRequestHandler;
 import org.ga4gh.registry.util.requesthandler.index.IndexServiceTypesHandler;
@@ -18,10 +20,13 @@ import org.ga4gh.registry.util.requesthandler.index.IndexServicesHandler;
 import org.ga4gh.registry.util.requesthandler.post.PostImplementationHandler;
 import org.ga4gh.registry.util.requesthandler.post.PostRequestHandler;
 import org.ga4gh.registry.util.requesthandler.post.PostServiceHandler;
+import org.ga4gh.registry.util.requesthandler.put.PutImplementationHandler;
 import org.ga4gh.registry.util.requesthandler.put.PutRequestHandler;
 import org.ga4gh.registry.util.requesthandler.put.PutServiceHandler;
 import org.ga4gh.registry.util.requesthandler.utils.ImplementationRequestUtils;
+import org.ga4gh.registry.util.requesthandler.show.ShowImplementationHandler;
 import org.ga4gh.registry.util.requesthandler.show.ShowRequestHandler;
+import org.ga4gh.registry.util.requesthandler.show.ShowServiceHandler;
 import org.ga4gh.registry.util.requesthandler.show.ShowServiceInfoHandler;
 import org.ga4gh.registry.util.hibernate.HibernateQuerier;
 import org.ga4gh.registry.util.hibernate.HibernateQueryBuilder;
@@ -207,7 +212,7 @@ public class AppConfig implements WebMvcConfigurer {
     public ShowRequestHandler<Implementation> implementationShowRequestHandler(
         @Qualifier(AppConfigConstants.RELATIONAL_IMPLEMENTATION_SERIALIZER_MODULE) RegistrySerializerModule serializerModule
     ) {
-        return new ShowRequestHandler<>(Implementation.class, serializerModule, AppConfigConstants.IMPLEMENTATION_ID);
+        return new ShowImplementationHandler(Implementation.class, serializerModule, AppConfigConstants.IMPLEMENTATION_ID);
     }
 
     @Bean(name = AppConfigConstants.POST_IMPLEMENTATION_HANDLER)
@@ -223,7 +228,7 @@ public class AppConfig implements WebMvcConfigurer {
     public PutRequestHandler<Implementation> implementationPutRequestHandler(
         @Qualifier(AppConfigConstants.RELATIONAL_IMPLEMENTATION_SERIALIZER_MODULE) RegistrySerializerModule serializerModule
     ) {
-        return new PutRequestHandler<>(Implementation.class, serializerModule, AppConfigConstants.IMPLEMENTATION_ID);
+        return new PutImplementationHandler(Implementation.class, serializerModule, AppConfigConstants.IMPLEMENTATION_ID);
     }
 
     @Bean(name = AppConfigConstants.DELETE_IMPLEMENTATION_HANDLER)
@@ -231,7 +236,7 @@ public class AppConfig implements WebMvcConfigurer {
     public DeleteRequestHandler<Implementation> implementationDeleteRequestHandler(
         @Qualifier(AppConfigConstants.RELATIONAL_IMPLEMENTATION_SERIALIZER_MODULE) RegistrySerializerModule serializerModule
     ) {
-        return new DeleteRequestHandler<>(Implementation.class, serializerModule, AppConfigConstants.IMPLEMENTATION_ID);
+        return new DeleteImplementationHandler(Implementation.class, serializerModule, AppConfigConstants.IMPLEMENTATION_ID);
     }
 
     /* SERVICE REQUEST HANDLER BEANS */
@@ -250,7 +255,7 @@ public class AppConfig implements WebMvcConfigurer {
     public ShowRequestHandler<Implementation> serviceShowRequestHandler(
         @Qualifier(AppConfigConstants.RELATIONAL_IMPLEMENTATION_SERIALIZER_MODULE) RegistrySerializerModule serializerModule
     ) {
-        return new ShowRequestHandler<>(Implementation.class, serializerModule, AppConfigConstants.SERVICE_ID);
+        return new ShowServiceHandler(Implementation.class, serializerModule, AppConfigConstants.SERVICE_ID);
     }
 
     @Bean(name = AppConfigConstants.POST_SERVICE_HANDLER)
@@ -274,7 +279,7 @@ public class AppConfig implements WebMvcConfigurer {
     public DeleteRequestHandler<Implementation> serviceDeleteRequestHandler(
         @Qualifier(AppConfigConstants.RELATIONAL_IMPLEMENTATION_SERIALIZER_MODULE) RegistrySerializerModule serializerModule
     ) {
-        return new DeleteRequestHandler<>(Implementation.class, serializerModule, AppConfigConstants.SERVICE_ID);
+        return new DeleteServiceHandler(Implementation.class, serializerModule, AppConfigConstants.SERVICE_ID);
     }
 
     @Bean(name = AppConfigConstants.INDEX_SERVICE_TYPES_HANDLER)
