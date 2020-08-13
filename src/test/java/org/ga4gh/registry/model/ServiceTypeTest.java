@@ -1,7 +1,6 @@
 package org.ga4gh.registry.model;
 
 import org.ga4gh.registry.exception.BadRequestException;
-import org.ga4gh.registry.model.ServiceType;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;

@@ -12,7 +12,7 @@ public class ImplementationTest {
 
         private String id;
         private StandardVersion standardVersion;
-        private ImplementationCategory implementationCategory;
+        private ImplementationCategory category;
         private String name;
         private String description;
         private Organization organization;
@@ -26,11 +26,11 @@ public class ImplementationTest {
         private String standardArtifact;
         private String expString;
 
-        public TestCase(String id, StandardVersion standardVersion, ImplementationCategory implementationCategory, String name, String description, Organization organization, String contactUrl, String documentationUrl, Date createdAt, Date updatedAt, String environment, String version, String url, String standardArtifact, String expString) {
+        public TestCase(String id, StandardVersion standardVersion, ImplementationCategory category, String name, String description, Organization organization, String contactUrl, String documentationUrl, Date createdAt, Date updatedAt, String environment, String version, String url, String standardArtifact, String expString) {
 
             this.id = id;
             this.standardVersion = standardVersion;
-            this.implementationCategory = implementationCategory;
+            this.category = category;
             this.name = name;
             this.description = description;
             this.organization = organization;
@@ -53,8 +53,8 @@ public class ImplementationTest {
             return standardVersion;
         }
 
-        public ImplementationCategory getImplementationCategory() {
-            return implementationCategory;
+        public ImplementationCategory getCategory() {
+            return category;
         }
 
         public String getName() {
@@ -118,7 +118,7 @@ public class ImplementationTest {
             {new TestCase(
                 "a95fcb4c-2754-4a7e-992f-751808bec425",
                 new StandardVersion("1.2.0", "https://htsget.org/v/1.2.0"),
-                new ImplementationCategory("APIService"),
+                ImplementationCategory.deployment,
                 "htsget reference implementation",
                 "description of this service",
                 new Organization("Global Alliance", "GA4GH", "https://ga4gh.org"),
@@ -138,7 +138,7 @@ public class ImplementationTest {
     public void assertions(Implementation implementation, TestCase testCase) {
         Assert.assertEquals(implementation.getId().toString(), testCase.getId().toString());
         Assert.assertEquals(implementation.getStandardVersion().getVersionNumber(), testCase.getStandardVersion().getVersionNumber());
-        Assert.assertEquals(implementation.getImplementationCategory().getCategory(), testCase.getImplementationCategory().getCategory());
+        Assert.assertEquals(implementation.getCategory(), testCase.getCategory());
         Assert.assertEquals(implementation.getName(), testCase.getName());
         Assert.assertEquals(implementation.getDescription(), testCase.getDescription());
         Assert.assertEquals(implementation.getOrganization().getName(), testCase.getOrganization().getName());
@@ -163,7 +163,7 @@ public class ImplementationTest {
         implementation.setStandardVersion(testCase.getStandardVersion());
         implementation.getStandardVersion().setStandard(new Standard());
         implementation.getStandardVersion().getStandard().setArtifact(testCase.getStandardArtifact());
-        implementation.setImplementationCategory(testCase.getImplementationCategory());
+        implementation.setCategory(testCase.getCategory());
         implementation.setName(testCase.getName());
         implementation.setDescription(testCase.getDescription());
         implementation.setOrganization(testCase.getOrganization());
@@ -185,7 +185,7 @@ public class ImplementationTest {
         implementation.setStandardVersion(testCase.getStandardVersion());
         implementation.getStandardVersion().setStandard(new Standard());
         implementation.getStandardVersion().getStandard().setArtifact(testCase.getStandardArtifact());
-        implementation.setImplementationCategory(testCase.getImplementationCategory());
+        implementation.setCategory(testCase.getCategory());
         implementation.setOrganization(testCase.getOrganization());
         assertions(implementation, testCase);
     }

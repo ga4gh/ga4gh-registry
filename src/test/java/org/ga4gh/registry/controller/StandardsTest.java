@@ -1,7 +1,6 @@
 package org.ga4gh.registry.controller;
 
 import org.ga4gh.registry.AppConfig;
-import org.ga4gh.registry.model.Standard;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
@@ -15,17 +14,10 @@ import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
-import org.ga4gh.registry.testutils.JsonResponseLoader;
+import org.ga4gh.registry.testutils.ResourceLoader;
 import org.ga4gh.registry.testutils.annotations.RegistryTestProperties;
-import org.ga4gh.registry.testutils.deserializer.StandardDeserializer;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-import com.fasterxml.jackson.core.type.TypeReference;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.module.SimpleModule;
 
 @Test
 @RegistryTestProperties
@@ -43,61 +35,30 @@ public class StandardsTest extends AbstractTestNGSpringContextTests {
         mockMvc = MockMvcBuilders.webAppContextSetup(webAppContext).build();
     }
 
-    @DataProvider(name = "cases")
+    private static final String standardsDir = "/responses/standards/";
+    private static final String indexDir = standardsDir + "index/";
+    private static final String showDir = standardsDir + "show/";
+
+    @DataProvider(name = "showStandardCases")
     public Object[][] getData() {
         return new Object[][] {
-            {
-                "refget",
-                status().isOk(),
-                true,
-                "refget",
-                "Get reference seqs"
-            },
-            {
-                "sam",
-                status().isOk(),
-                true,
-                "Sequence Alignment Map",
-                "Genomic reads file format"
-            },
-            {
-                "rnaget",
-                status().isOk(),
-                true,
-                "RNAget",
-                "Download RNAseq matrix"
-            }
+            { "refget", status().isOk(), true, showDir + "00.json" },
+            { "sam", status().isOk(), true, showDir + "01.json" },
+            { "rnaget", status().isOk(), true, showDir + "02.json" },
+            { "nonexistent", status().isNotFound(), false, null }
         };
     }
 
     @Test
-    public void getStandardsE2E() throws Exception {
-        String filename = JsonResponseLoader.load(Standard.class, "index", "00");
-        System.out.println(filename);
-    }
-
-    @Test
-    public void testGetStandards() throws Exception {
-        MvcResult result = mockMvc.perform(get("/standards"))
-            .andExpect(status().isOk())
-            .andReturn();
-        
+    public void testIndexStandards() throws Exception {
+        MvcResult result = mockMvc.perform(get("/standards")).andExpect(status().isOk()).andReturn();
         String responseBody = result.getResponse().getContentAsString();
-        ObjectMapper mapper = new ObjectMapper();
-        SimpleModule module = new SimpleModule();
-        module.addDeserializer(Standard.class, new StandardDeserializer());
-        mapper.registerModule(module);
-        List<Standard> stdList = mapper.readValue(responseBody, new TypeReference<List<Standard>>() {});
-        Map<String,Standard> stdMap = stdList.stream().collect(Collectors.toMap(Standard::getName, std -> std));
-
-        Standard std1 = stdMap.get("Phenopackets");
-        Assert.assertEquals(std1.getName(), "Phenopackets");
-        Assert.assertEquals(std1.getAbbreviation(), null);
-        Assert.assertEquals(std1.getSummary(), "Phenotypic data model");
+        String expResponseBody = ResourceLoader.load(indexDir + "00.json");
+        Assert.assertEquals(responseBody, expResponseBody);
     }
 
-    @Test(dataProvider = "cases")
-    public void testGetStandardById(String idString, ResultMatcher expStatus, boolean expSuccess, String expName, String expSummary) throws Exception {
+    @Test(dataProvider = "showStandardCases")
+    public void testShowStandard(String idString, ResultMatcher expStatus, boolean expSuccess, String expResultResourcePath ) throws Exception {
 
         MvcResult result = mockMvc.perform(get("/standards/" + idString))
             .andExpect(expStatus)
@@ -105,15 +66,8 @@ public class StandardsTest extends AbstractTestNGSpringContextTests {
 
         if (expSuccess) {
             String responseBody = result.getResponse().getContentAsString();
-            ObjectMapper mapper = new ObjectMapper();
-            SimpleModule module = new SimpleModule();
-            module.addDeserializer(Standard.class, new StandardDeserializer());
-            mapper.registerModule(module);
-            Standard std = mapper.readValue(responseBody, Standard.class);
-            
-            Assert.assertEquals(std.getId().toString(), idString);
-            Assert.assertEquals(std.getName(), expName);
-            Assert.assertEquals(std.getSummary(), expSummary);
+            String expResponseBody = ResourceLoader.load(expResultResourcePath);
+            Assert.assertEquals(responseBody, expResponseBody);
         }
     }
 }

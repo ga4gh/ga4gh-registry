@@ -1,7 +1,6 @@
 package org.ga4gh.registry.controller;
 
 import java.util.Map;
-
 import org.ga4gh.registry.AppConfigConstants;
 import org.ga4gh.registry.model.Implementation;
 import org.ga4gh.registry.util.requesthandler.RequestHandlerFactory;
@@ -13,7 +12,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
+@EnableWebMvc
 @RestController
 @RequestMapping("/service-info")
 public class ServiceInfo {

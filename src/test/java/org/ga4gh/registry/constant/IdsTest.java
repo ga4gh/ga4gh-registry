@@ -11,7 +11,6 @@ public class IdsTest {
         ids.getClass();
         Assert.assertEquals(Ids.SERVICE_ID, "org.ga4gh.registry");
         Assert.assertEquals(Ids.GA4GH_ORG_ID, "org.ga4gh");
-        Assert.assertEquals(Ids.IMPLEMENTATION_CATEGORY_API_SERVICE_ID, "org.ga4gh.implementation.category.apiservice");
     }
 
 }

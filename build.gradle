@@ -65,6 +65,7 @@ dependencies {
     compile 'com.fasterxml.jackson.core:jackson-databind:2.10.2'
     compile 'com.fasterxml.jackson.datatype:jackson-datatype-hibernate4:2.4.4'
     compile 'org.springdoc:springdoc-openapi-ui:1.2.33'
+    compile 'com.vladmihalcea:hibernate-types-52:2.3.5'
 
     testCompile 'org.springframework.boot:spring-boot-starter-test'
     testCompile("org.dbunit:dbunit:2.5.1")

@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import javax.annotation.PostConstruct;
 import javax.persistence.PersistenceException;
 import org.ga4gh.registry.model.Implementation;
-import org.ga4gh.registry.model.ImplementationCategory;
 import org.ga4gh.registry.model.Organization;
 import org.ga4gh.registry.model.RegistryModel;
 import org.ga4gh.registry.model.Standard;
@@ -36,7 +35,6 @@ public class HibernateUtil {
                 new Configuration()
                 .setProperties(hibernateConfig.getAllProperties())
                 .addAnnotatedClass(Implementation.class)
-                .addAnnotatedClass(ImplementationCategory.class)
                 .addAnnotatedClass(Organization.class)
                 .addAnnotatedClass(Standard.class)
                 .addAnnotatedClass(StandardCategory.class)
