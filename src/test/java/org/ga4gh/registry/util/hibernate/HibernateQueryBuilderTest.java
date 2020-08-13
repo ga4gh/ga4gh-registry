@@ -3,7 +3,6 @@ package org.ga4gh.registry.util.hibernate;
 import org.ga4gh.registry.model.Implementation;
 import org.ga4gh.registry.model.RegistryModel;
 import org.ga4gh.registry.model.Standard;
-import org.ga4gh.registry.util.hibernate.HibernateQueryBuilder;
 import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.Assert;

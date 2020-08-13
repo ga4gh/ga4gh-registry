@@ -1,7 +1,6 @@
 package org.ga4gh.registry.controller;
 
 import org.ga4gh.registry.AppConfig;
-import org.ga4gh.registry.model.Organization;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
@@ -17,14 +16,8 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.module.SimpleModule;
+import org.ga4gh.registry.testutils.ResourceLoader;
 import org.ga4gh.registry.testutils.annotations.RegistryTestProperties;
-import org.ga4gh.registry.testutils.deserializer.OrganizationDeserializer;
 
 @Test
 @RegistryTestProperties
@@ -42,86 +35,35 @@ public class OrganizationsTest extends AbstractTestNGSpringContextTests {
         mockMvc = MockMvcBuilders.webAppContextSetup(webAppContext).build();
     }
 
-    @DataProvider(name = "cases")
-    public Object[][] getData() {
+    private static final String organizationsDir = "/responses/organizations/";
+    private static final String indexDir = organizationsDir + "index/";
+    private static final String showDir = organizationsDir + "show/";
+
+    @DataProvider(name = "showOrganizationCases")
+    public Object[][] showOrganizationCases() {
         return new Object[][] {
-            {
-                "com.cge",
-                status().isOk(),
-                true,
-                "Canadian Genomics Engineering",
-                "CGE",
-                "http://cge.com"
-            },
-            {
-                "org.gdg",
-                status().isOk(),
-                true,
-                "Genomic Developers Group",
-                "GDG",
-                "http://gdg.org"
-            },
-            {
-                "org.notfound",
-                status().isNotFound(),
-                false,
-                null,
-                null,
-                null
-            }
+            { "org.ga4gh", status().isOk(), true, showDir + "00.json" },
+            { "org.broadinstitute", status().isOk(), true, showDir + "01.json" },
+            { "uk.ac.ebi", status().isOk(), true, showDir + "02.json" },
+            { "org.nonexistent", status().isNotFound(), false, null },
         };
     }
 
     @Test
-    public void testGetOrganizations() throws Exception {
-        MvcResult result = mockMvc.perform(get("/organizations"))
-            .andExpect(status().isOk())
-            .andReturn();
-        
+    public void testIndexOrganizations() throws Exception {
+        MvcResult result = mockMvc.perform(get("/organizations")).andExpect(status().isOk()).andReturn();
         String responseBody = result.getResponse().getContentAsString();
-        ObjectMapper mapper = new ObjectMapper();
-        SimpleModule module = new SimpleModule();
-        module.addDeserializer(Organization.class, new OrganizationDeserializer());
-        mapper.registerModule(module);
-        List<Organization> organizationsList = mapper.readValue(responseBody, new TypeReference<List<Organization>>() {});
-        Map<String,Organization> orgMap = organizationsList.stream().collect(Collectors.toMap(Organization::getId, organization -> organization));
-
-        Organization org1 = orgMap.get("org.ga4gh");
-        Assert.assertEquals(org1.getName(), "Global Alliance for Genomics and Health");
-        Assert.assertEquals(org1.getShortName(), "GA4GH");
-
-        Organization org2 = orgMap.get("com.cge");
-        Assert.assertEquals(org2.getName(), "Canadian Genomics Engineering");
-        Assert.assertEquals(org2.getShortName(), "CGE");
-
-        Organization org3 = orgMap.get("org.gdg");
-        Assert.assertEquals(org3.getName(), "Genomic Developers Group");
-        Assert.assertEquals(org3.getShortName(), "GDG");
+        String expResponseBody = ResourceLoader.load(indexDir + "00.json");
+        Assert.assertEquals(responseBody, expResponseBody);
     }
 
-    @Test(dataProvider = "cases")
-    public void testGetOrganizationById(String idString, ResultMatcher expStatus, boolean expSuccess, String expName, String expShortName, String expUrl) throws Exception {
-        System.out.println("ID IS: " + idString);
-
-        MvcResult result = mockMvc.perform(get("/organizations/" + idString))
-            .andExpect(expStatus)
-            .andReturn();
-
-        System.out.println("Response as string is: ");
-        System.out.println(result.getResponse().getContentAsString());
-
+    @Test(dataProvider = "showOrganizationCases")
+    public void testShowOrganization(String idString, ResultMatcher expStatus, boolean expSuccess, String expResultResourcePath) throws Exception {
+        MvcResult result = mockMvc.perform(get("/organizations/" + idString)).andExpect(expStatus).andReturn();
         if (expSuccess) {
             String responseBody = result.getResponse().getContentAsString();
-            ObjectMapper mapper = new ObjectMapper();
-            SimpleModule module = new SimpleModule();
-            module.addDeserializer(Organization.class, new OrganizationDeserializer());
-            mapper.registerModule(module);
-            Organization org = mapper.readValue(responseBody, Organization.class);
-            
-            Assert.assertEquals(org.getId().toString(), idString);
-            Assert.assertEquals(org.getName(), expName);
-            Assert.assertEquals(org.getShortName(), expShortName);
-            Assert.assertEquals(org.getUrl(), expUrl);
+            String expResponseBody = ResourceLoader.load(expResultResourcePath);
+            Assert.assertEquals(responseBody, expResponseBody);
         }
     }
 }
