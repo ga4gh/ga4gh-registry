@@ -30,13 +30,16 @@ public class HibernateQueryBuilder {
             queryString += "WHERE ";
             queryString += filterBuffer.toString();
         }
-        System.out.println("Building Query String");
-        System.out.println(queryString);
+        queryString += getOrderString();
         return queryString;
     }
 
     public String getStartString() {
         return "select distinct a from " + this.responseClass.getName() + " a ";
+    }
+
+    public String getOrderString() {
+        return " ORDER BY a.id ";
     }
 
     public void setResponseClass(Class<? extends RegistryModel> responseClass) {
