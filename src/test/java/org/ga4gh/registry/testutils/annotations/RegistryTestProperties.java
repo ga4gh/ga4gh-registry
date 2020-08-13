@@ -21,6 +21,7 @@ import org.springframework.test.context.TestPropertySource;
     "hibernate.connection.pool_size=1",
     "hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect",
     "hibernate.show_sql=true",
-    "hibernate.current_session_context_class=thread"
+    "hibernate.current_session_context_class=thread",
+    "registry.auth.secret=mysecret"
 })
 public @interface RegistryTestProperties {}
