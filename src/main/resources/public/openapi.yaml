@@ -1,10 +1,10 @@
 openapi: 3.0.3
 info:
-    title: GA4GH Standards and Implementations Registry
+    title: GA4GH Planet API
     description: Browse GA4GH standards and associated implementations
-    version: 1.0.0
+    version: 0.5.0
     contact:
-        name: GA4GH Dev Team
+        name: GA4GH Tech Team
         url: https://ga4gh.org
         email: jeremy.adams@ga4gh.org
     license:
