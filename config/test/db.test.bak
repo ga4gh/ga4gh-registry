@@ -39,6 +39,18 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp" WITH SCHEMA test_schema;
 COMMENT ON EXTENSION "uuid-ossp" IS 'generate universally unique identifiers (UUIDs)';
 
 
+--
+-- Name: implementation_category; Type: TYPE; Schema: test_schema; Owner: test_user
+--
+
+CREATE TYPE test_schema.implementation_category AS ENUM (
+    'implementation',
+    'deployment'
+);
+
+
+ALTER TYPE test_schema.implementation_category OWNER TO test_user;
+
 SET default_tablespace = '';
 
 SET default_with_oids = false;
@@ -48,42 +60,30 @@ SET default_with_oids = false;
 --
 
 CREATE TABLE test_schema.implementation (
-    id uuid DEFAULT test_schema.uuid_generate_v4() NOT NULL,
-    standard_version_id uuid NOT NULL,
-    implementation_category_id uuid NOT NULL,
+    id text NOT NULL,
+    standard_version_id text NOT NULL,
     name text NOT NULL,
     description text,
-    organization_id uuid NOT NULL,
+    organization_id text NOT NULL,
     contact_url text,
     documentation_url text,
-    created_at timestamp without time zone,
-    updated_at timestamp without time zone,
+    created_at timestamp with time zone,
+    updated_at timestamp with time zone,
     environment text,
     version text NOT NULL,
-    url text
+    url text,
+    category test_schema.implementation_category NOT NULL
 );
 
 
 ALTER TABLE test_schema.implementation OWNER TO test_user;
 
 --
--- Name: implementation_category; Type: TABLE; Schema: test_schema; Owner: test_user
---
-
-CREATE TABLE test_schema.implementation_category (
-    id uuid DEFAULT test_schema.uuid_generate_v4() NOT NULL,
-    category text NOT NULL
-);
-
-
-ALTER TABLE test_schema.implementation_category OWNER TO test_user;
-
---
 -- Name: organization; Type: TABLE; Schema: test_schema; Owner: test_user
 --
 
 CREATE TABLE test_schema.organization (
-    id uuid DEFAULT test_schema.uuid_generate_v4() NOT NULL,
+    id text NOT NULL,
     name text NOT NULL,
     short_name text,
     url text NOT NULL
@@ -97,7 +97,7 @@ ALTER TABLE test_schema.organization OWNER TO test_user;
 --
 
 CREATE TABLE test_schema.release_status (
-    id uuid DEFAULT test_schema.uuid_generate_v4() NOT NULL,
+    id text NOT NULL,
     status text NOT NULL
 );
 
@@ -109,16 +109,16 @@ ALTER TABLE test_schema.release_status OWNER TO test_user;
 --
 
 CREATE TABLE test_schema.standard (
-    id uuid DEFAULT test_schema.uuid_generate_v4() NOT NULL,
+    id text NOT NULL,
     name text NOT NULL,
-    standard_category_id uuid NOT NULL,
+    standard_category_id text NOT NULL,
     summary text NOT NULL,
     description text NOT NULL,
     documentation_url text NOT NULL,
-    release_status_id uuid NOT NULL,
-    artifact text DEFAULT 'standard'::text,
+    release_status_id text NOT NULL,
+    artifact text,
     abbreviation text,
-    work_stream_id uuid DEFAULT '91055363-6963-432b-912f-6071bb63b0c7'::uuid NOT NULL
+    work_stream_id text NOT NULL
 );
 
 
@@ -129,7 +129,7 @@ ALTER TABLE test_schema.standard OWNER TO test_user;
 --
 
 CREATE TABLE test_schema.standard_category (
-    id uuid DEFAULT test_schema.uuid_generate_v4() NOT NULL,
+    id text NOT NULL,
     category text NOT NULL
 );
 
@@ -141,11 +141,11 @@ ALTER TABLE test_schema.standard_category OWNER TO test_user;
 --
 
 CREATE TABLE test_schema.standard_version (
-    id uuid DEFAULT test_schema.uuid_generate_v4() NOT NULL,
-    standard_id uuid NOT NULL,
+    id text NOT NULL,
+    standard_id text NOT NULL,
     version_number text NOT NULL,
     documentation_url text NOT NULL,
-    release_status_id uuid DEFAULT '22e070a9-1381-4596-8134-02a7df419111'::uuid NOT NULL
+    release_status_id text NOT NULL
 );
 
 
@@ -156,7 +156,7 @@ ALTER TABLE test_schema.standard_version OWNER TO test_user;
 --
 
 CREATE TABLE test_schema.work_stream (
-    id uuid DEFAULT test_schema.uuid_generate_v4() NOT NULL,
+    id text NOT NULL,
     name text NOT NULL,
     abbreviation text
 );
@@ -168,23 +168,9 @@ ALTER TABLE test_schema.work_stream OWNER TO test_user;
 -- Data for Name: implementation; Type: TABLE DATA; Schema: test_schema; Owner: test_user
 --
 
-COPY test_schema.implementation (id, standard_version_id, implementation_category_id, name, description, organization_id, contact_url, documentation_url, created_at, updated_at, environment, version, url) FROM stdin;
-a25ff2a4-9233-4192-a029-1a6b69f6aff6	9da4ec68-19ca-4603-9d0c-ad62c8e56796	de7fe9c3-2a40-4dc8-bd58-fcda4b705b04	GA4GH htsget	ga4gh implementation of htsget	f3cfc0d2-e9bd-4b26-a856-0d2b2f47d1f4	mailto:nobody@ga4gh.org	https://example.org/doc/ga4gh/htsget	\N	\N	production	1.0.0	https://example.org/api/ga4gh/htsget
-7893404d-7b73-4983-9891-89023c8a34fa	20dc24de-86a5-4301-a9be-95211469dabd	de7fe9c3-2a40-4dc8-bd58-fcda4b705b04	GA4GH service registry	ga4gh implementation of service registry	f3cfc0d2-e9bd-4b26-a856-0d2b2f47d1f4	mailto:nobody@ga4gh.org	https://example.org/doc/ga4gh/registry	\N	\N	\N	1.0.0	https://example.org/api/ga4gh/registry
-\.
-
-
---
--- Data for Name: implementation_category; Type: TABLE DATA; Schema: test_schema; Owner: test_user
---
-
-COPY test_schema.implementation_category (id, category) FROM stdin;
-7c938056-ed89-4653-a873-0b2ea02d2837	APIClient
-05856f83-9416-4a9d-b3ac-fd9623db574b	APIServer
-de7fe9c3-2a40-4dc8-bd58-fcda4b705b04	APIService
-3ed79062-d8dd-4d5f-a023-2440f8240b3c	FileFormatLibrary
-a9d6094d-8b78-4468-b13e-b2573245f579	FileFormatTool
-51e22dd6-65b4-47d6-b4d9-de6c2a55dc74	SchemaLibrary
+COPY test_schema.implementation (id, standard_version_id, name, description, organization_id, contact_url, documentation_url, created_at, updated_at, environment, version, url, category) FROM stdin;
+org.ga4gh.htsgetreference	9da4ec68-19ca-4603-9d0c-ad62c8e56796	GA4GH htsget	ga4gh implementation of htsget	org.ga4gh	mailto:nobody@ga4gh.org	https://example.org/doc/ga4gh/htsget	\N	\N	production	1.0.0	https://example.org/api/ga4gh/htsget	deployment
+org.ga4gh.registry	20dc24de-86a5-4301-a9be-95211469dabd	GA4GH service registry	ga4gh implementation of service registry	org.ga4gh	mailto:nobody@ga4gh.org	https://example.org/doc/ga4gh/registry	2020-03-01 12:30:00-05	2020-07-22 09:26:00-04	\N	1.0.0	https://example.org/api/ga4gh/registry	deployment
 \.
 
 
@@ -193,9 +179,9 @@ a9d6094d-8b78-4468-b13e-b2573245f579	FileFormatTool
 --
 
 COPY test_schema.organization (id, name, short_name, url) FROM stdin;
-f3cfc0d2-e9bd-4b26-a856-0d2b2f47d1f4	Global Alliance for Genomics and Health	GA4GH	https://ga4gh.org
-87f27e7a-4e69-423e-b24b-44201e3c0799	Genomic Developers Group	GDG	https://example.org/gdg
-516c43fd-4b65-419b-b433-3461ddb5e301	Canadian Genomics Engineering	CGE	https://example.org/cge
+org.ga4gh	Global Alliance for Genomics and Health	GA4GH	https://ga4gh.org
+org.broadinstitute	Broad Institute	\N	https://www.broadinstitute.org
+uk.ac.ebi	European Bioinformatics Institute	EBI	https://www.ebi.ac.uk
 \.
 
 
@@ -204,9 +190,9 @@ f3cfc0d2-e9bd-4b26-a856-0d2b2f47d1f4	Global Alliance for Genomics and Health	GA4
 --
 
 COPY test_schema.release_status (id, status) FROM stdin;
-22e070a9-1381-4596-8134-02a7df419111	Proposed
-011e9615-cd2c-4f33-80d4-bbaedf351dcf	Approved
-a8bb9b01-ba2d-4074-acf0-6aeedd1ea3b3	Legacy
+0	Proposed
+1	Approved
+2	Legacy
 \.
 
 
@@ -215,18 +201,18 @@ a8bb9b01-ba2d-4074-acf0-6aeedd1ea3b3	Legacy
 --
 
 COPY test_schema.standard (id, name, standard_category_id, summary, description, documentation_url, release_status_id, artifact, abbreviation, work_stream_id) FROM stdin;
-3c57ebf6-a020-419f-b3e2-ddbc9ce5f417	RNAget	85d9b790-65be-4caa-8669-15fe04281090	Download RNAseq matrix	Long description of RNAget	https://rnaget.org	011e9615-cd2c-4f33-80d4-bbaedf351dcf	rnaget	\N	91055363-6963-432b-912f-6071bb63b0c7
-bffd4855-31c7-4c84-a8c8-b89c7036311c	htsget	85d9b790-65be-4caa-8669-15fe04281090	Download hts files	Long description of htsget	https://htsget.org	011e9615-cd2c-4f33-80d4-bbaedf351dcf	htsget	\N	91055363-6963-432b-912f-6071bb63b0c7
-95b20f57-9284-433f-a4d6-b9bdb60c6f97	CRAM	ef7084e9-d3b3-4ed3-bb26-236112a09798	Genomic compression	Longer desc of CRAM	https://cram.org	011e9615-cd2c-4f33-80d4-bbaedf351dcf	\N	\N	91055363-6963-432b-912f-6071bb63b0c7
-0980a95f-125a-4c4c-bc64-076aa437c083	refget	85d9b790-65be-4caa-8669-15fe04281090	Get reference seqs	Description of refget	https://refget.org	011e9615-cd2c-4f33-80d4-bbaedf351dcf	refget	\N	91055363-6963-432b-912f-6071bb63b0c7
-2ff1eb74-8319-4ac0-b57b-b56705ad156c	Sequence Alignment Map	ef7084e9-d3b3-4ed3-bb26-236112a09798	Genomic reads file format	Long desc of SAM and BAM	https://sam.org	011e9615-cd2c-4f33-80d4-bbaedf351dcf	\N	SAM/BAM	91055363-6963-432b-912f-6071bb63b0c7
-d37b54c1-e258-4828-a756-7b605afb626d	Service Registry	85d9b790-65be-4caa-8669-15fe04281090	Register services	Description of service registry	https://service-registry.org	011e9615-cd2c-4f33-80d4-bbaedf351dcf	service-registry	\N	fc3d69ac-59ba-4edb-8dfa-62353e4edf09
-8c8abbf0-a55d-41a4-93b2-68f046a16e0a	Service Info	85d9b790-65be-4caa-8669-15fe04281090	Info about service	Description of service info	https://service-info.org	011e9615-cd2c-4f33-80d4-bbaedf351dcf	\N	\N	fc3d69ac-59ba-4edb-8dfa-62353e4edf09
-e07ffb9d-db81-49f6-bf96-8be9b15e5277	Phenopackets	b36d84cf-7d81-4ed1-9ded-f3b30fadb3c7	Phenotypic data model	Longer desc of Phenopackets	https://phenopackets.org	011e9615-cd2c-4f33-80d4-bbaedf351dcf	\N	\N	33abf302-7007-441e-bae0-53e2a01dcd5d
-65c259b6-79dd-4f3d-b128-2583ce64edc8	Tool Registry Service	85d9b790-65be-4caa-8669-15fe04281090	Get Genomic workflows	Longer description of TRS	https://trs.org	011e9615-cd2c-4f33-80d4-bbaedf351dcf	trs	TRS	4f7094ad-8b0a-4b98-a711-c7b327709390
-41c15094-8129-4606-a563-7a3387c3ea4e	Data Repository Service	85d9b790-65be-4caa-8669-15fe04281090	Platform-agnostic data API	Long desc of DRS	https://drs.org	011e9615-cd2c-4f33-80d4-bbaedf351dcf	drs	DRS	4f7094ad-8b0a-4b98-a711-c7b327709390
-dbf21b8f-aded-4b7e-8680-b182f994a2bf	Workflow Execution Service	85d9b790-65be-4caa-8669-15fe04281090	Execute workflows	Long desc of WES	https://wes.org	011e9615-cd2c-4f33-80d4-bbaedf351dcf	wes	WES	4f7094ad-8b0a-4b98-a711-c7b327709390
-53cc3fa6-cb40-40b1-a614-a9e351c6d2d9	Variant Call Format	ef7084e9-d3b3-4ed3-bb26-236112a09798	Genomic variants format	Description of VCF	https://vcf.org	011e9615-cd2c-4f33-80d4-bbaedf351dcf	\N	VCF	91055363-6963-432b-912f-6071bb63b0c7
+htsget	htsget	1	Download hts files	Long description of htsget	https://htsget.org	1	htsget	\N	org.ga4gh.workstream.lsg
+cram	CRAM	0	Genomic compression	Longer desc of CRAM	https://cram.org	1	\N	\N	org.ga4gh.workstream.lsg
+service-registry	Service Registry	1	Register services	Description of service registry	https://service-registry.org	1	service-registry	\N	org.ga4gh.workstream.discovery
+sam	Sequence Alignment Map	0	Genomic reads file format	Long desc of SAM and BAM	https://sam.org	1	\N	SAM/BAM	org.ga4gh.workstream.lsg
+vcf	Variant Call Format	0	Genomic variants format	Description of VCF	https://vcf.org	1	\N	VCF	org.ga4gh.workstream.lsg
+rnaget	RNAget	1	Download RNAseq matrix	Long description of RNAget	https://rnaget.org	1	rnaget	\N	org.ga4gh.workstream.lsg
+refget	refget	1	Get reference seqs	Description of refget	https://refget.org	1	refget	\N	org.ga4gh.workstream.lsg
+service-info	Service Info	1	Info about service	Description of service info	https://service-info.org	1	\N	\N	org.ga4gh.workstream.discovery
+trs	Tool Registry Service	1	Get Genomic workflows	Longer description of TRS	https://trs.org	1	trs	TRS	org.ga4gh.workstream.cloud
+drs	Data Repository Service	1	Platform-agnostic data API	Long desc of DRS	https://drs.org	1	drs	DRS	org.ga4gh.workstream.cloud
+phenopackets	Phenopackets	2	Phenotypic data model	Longer desc of Phenopackets	https://phenopackets.org	1	\N	\N	org.ga4gh.workstream.clinpheno
+wes	Workflow Execution Service	1	Execute workflows	Long desc of WES	https://wes.org	1	wes	WES	org.ga4gh.workstream.cloud
 \.
 
 
@@ -235,10 +221,10 @@ dbf21b8f-aded-4b7e-8680-b182f994a2bf	Workflow Execution Service	85d9b790-65be-4c
 --
 
 COPY test_schema.standard_category (id, category) FROM stdin;
-85d9b790-65be-4caa-8669-15fe04281090	API
-ef7084e9-d3b3-4ed3-bb26-236112a09798	FileFormat
-b36d84cf-7d81-4ed1-9ded-f3b30fadb3c7	Schema
-3e2554ba-1eec-4a45-83b8-1f13ffb2ac30	Policy
+1	API
+0	FileFormat
+2	Schema
+3	Policy
 \.
 
 
@@ -247,21 +233,21 @@ b36d84cf-7d81-4ed1-9ded-f3b30fadb3c7	Schema
 --
 
 COPY test_schema.standard_version (id, standard_id, version_number, documentation_url, release_status_id) FROM stdin;
-efe59fb4-1522-4ddc-9a4e-f1e5dfb52189	3c57ebf6-a020-419f-b3e2-ddbc9ce5f417	1.0.0	https://ga4gh-rnaseq.github.io/schema/release/1.0.0/	011e9615-cd2c-4f33-80d4-bbaedf351dcf
-6b50a044-7056-44a7-aae2-327a210087ff	0980a95f-125a-4c4c-bc64-076aa437c083	1.0.0	https://github.com/samtools/hts-specs/blob/master/refget.md	011e9615-cd2c-4f33-80d4-bbaedf351dcf
-9da4ec68-19ca-4603-9d0c-ad62c8e56796	bffd4855-31c7-4c84-a8c8-b89c7036311c	1.2.0	https://github.com/samtools/hts-specs/blob/master/htsget.md	011e9615-cd2c-4f33-80d4-bbaedf351dcf
-9e8baf14-86b4-4105-a928-342ab1cfb4c7	53cc3fa6-cb40-40b1-a614-a9e351c6d2d9	4.1	https://samtools.github.io/hts-specs/VCFv4.1.pdf	011e9615-cd2c-4f33-80d4-bbaedf351dcf
-835be12f-cff5-4bce-a860-392bfefd3629	53cc3fa6-cb40-40b1-a614-a9e351c6d2d9	4.2	https://samtools.github.io/hts-specs/VCFv4.2.pdf	011e9615-cd2c-4f33-80d4-bbaedf351dcf
-ee37184f-82d6-49f6-a062-0e5cc391a4fb	53cc3fa6-cb40-40b1-a614-a9e351c6d2d9	4.3	https://samtools.github.io/hts-specs/VCFv4.3.pdf	011e9615-cd2c-4f33-80d4-bbaedf351dcf
-b3802c7b-2409-43f2-92e8-c01574a7d5cd	41c15094-8129-4606-a563-7a3387c3ea4e	1.0.0	https://ga4gh.github.io/data-repository-service-schemas/preview/release/drs-1.0.0/docs/	011e9615-cd2c-4f33-80d4-bbaedf351dcf
-a7b9af1d-926e-4b75-a6a9-c892578fce53	e07ffb9d-db81-49f6-bf96-8be9b15e5277	1.0.0	https://phenopackets-schema.readthedocs.io/en/1.0.0/index.html	011e9615-cd2c-4f33-80d4-bbaedf351dcf
-30325c92-b7fa-4cfe-b2de-26df8065f8f8	8c8abbf0-a55d-41a4-93b2-68f046a16e0a	1.0.0	https://github.com/ga4gh-discovery/ga4gh-service-info/blob/develop/service-info.yaml	011e9615-cd2c-4f33-80d4-bbaedf351dcf
-20dc24de-86a5-4301-a9be-95211469dabd	d37b54c1-e258-4828-a756-7b605afb626d	1.0.0	https://github.com/ga4gh-discovery/ga4gh-service-registry/blob/develop/service-registry.yaml	011e9615-cd2c-4f33-80d4-bbaedf351dcf
-a6a6f7f3-e546-4f26-90bc-70f9dd5dc98a	65c259b6-79dd-4f3d-b128-2583ce64edc8	2.0.0	https://ga4gh.github.io/tool-registry-service-schemas/preview/2.0.0/docs/pdf/index.pdf	011e9615-cd2c-4f33-80d4-bbaedf351dcf
-11b97c92-b4a0-48b0-9a8e-31fbc1e12fc2	95b20f57-9284-433f-a4d6-b9bdb60c6f97	2.1.0	https://samtools.github.io/hts-specs/CRAMv2.1.pdf	011e9615-cd2c-4f33-80d4-bbaedf351dcf
-1fd5101a-593c-495b-9642-bd8af41bb8eb	95b20f57-9284-433f-a4d6-b9bdb60c6f97	3.0.0	https://samtools.github.io/hts-specs/CRAMv3.pdf	011e9615-cd2c-4f33-80d4-bbaedf351dcf
-5e64a884-1839-4d10-b69b-4f9d84601a03	2ff1eb74-8319-4ac0-b57b-b56705ad156c	1.0.0	https://samtools.github.io/hts-specs/SAMv1.pdf	011e9615-cd2c-4f33-80d4-bbaedf351dcf
-8f09d364-b4ba-4cec-963a-55da7cad4d78	dbf21b8f-aded-4b7e-8680-b182f994a2bf	1.0.0	https://ga4gh.github.io/workflow-execution-service-schemas/openapi/workflow_execution_service.swagger.yaml	011e9615-cd2c-4f33-80d4-bbaedf351dcf
+b3802c7b-2409-43f2-92e8-c01574a7d5cd	drs	1.0.0	https://ga4gh.github.io/data-repository-service-schemas/preview/release/drs-1.0.0/docs/	1
+a7b9af1d-926e-4b75-a6a9-c892578fce53	phenopackets	1.0.0	https://phenopackets-schema.readthedocs.io/en/1.0.0/index.html	1
+8f09d364-b4ba-4cec-963a-55da7cad4d78	wes	1.0.0	https://ga4gh.github.io/workflow-execution-service-schemas/openapi/workflow_execution_service.swagger.yaml	1
+6b50a044-7056-44a7-aae2-327a210087ff	refget	1.0.0	https://github.com/samtools/hts-specs/blob/master/refget.md	1
+9da4ec68-19ca-4603-9d0c-ad62c8e56796	htsget	1.2.0	https://github.com/samtools/hts-specs/blob/master/htsget.md	1
+11b97c92-b4a0-48b0-9a8e-31fbc1e12fc2	cram	2.1.0	https://samtools.github.io/hts-specs/CRAMv2.1.pdf	1
+1fd5101a-593c-495b-9642-bd8af41bb8eb	cram	3.0.0	https://samtools.github.io/hts-specs/CRAMv3.pdf	1
+20dc24de-86a5-4301-a9be-95211469dabd	service-registry	1.0.0	https://github.com/ga4gh-discovery/ga4gh-service-registry/blob/develop/service-registry.yaml	1
+30325c92-b7fa-4cfe-b2de-26df8065f8f8	service-info	1.0.0	https://github.com/ga4gh-discovery/ga4gh-service-info/blob/develop/service-info.yaml	1
+5e64a884-1839-4d10-b69b-4f9d84601a03	sam	1.0.0	https://samtools.github.io/hts-specs/SAMv1.pdf	1
+9e8baf14-86b4-4105-a928-342ab1cfb4c7	vcf	4.1	https://samtools.github.io/hts-specs/VCFv4.1.pdf	1
+835be12f-cff5-4bce-a860-392bfefd3629	vcf	4.2	https://samtools.github.io/hts-specs/VCFv4.2.pdf	1
+ee37184f-82d6-49f6-a062-0e5cc391a4fb	vcf	4.3	https://samtools.github.io/hts-specs/VCFv4.3.pdf	1
+efe59fb4-1522-4ddc-9a4e-f1e5dfb52189	rnaget	1.0.0	https://ga4gh-rnaseq.github.io/schema/release/1.0.0/	1
+a6a6f7f3-e546-4f26-90bc-70f9dd5dc98a	trs	2.0.0	https://ga4gh.github.io/tool-registry-service-schemas/preview/2.0.0/docs/pdf/index.pdf	1
 \.
 
 
@@ -270,31 +256,15 @@ a6a6f7f3-e546-4f26-90bc-70f9dd5dc98a	65c259b6-79dd-4f3d-b128-2583ce64edc8	2.0.0	
 --
 
 COPY test_schema.work_stream (id, name, abbreviation) FROM stdin;
-91055363-6963-432b-912f-6071bb63b0c7	Large Scale Genomics	LSG
-fc3d69ac-59ba-4edb-8dfa-62353e4edf09	Discovery	\N
-4f7094ad-8b0a-4b98-a711-c7b327709390	Cloud	\N
-8e665e0f-2bda-4b15-b3ea-aa6736b263a8	Data Use and Researcher Identities	DURI
-546d8fbd-9ff2-49e3-93d5-7fc0d5c4100e	Genomic Knowledge Standards	GKS
-33abf302-7007-441e-bae0-53e2a01dcd5d	Clinical & Phenotypic Data Capture	Clin/Pheno
-6c6ec255-7419-4048-be89-9fe5689c6d5b	Data Security	\N
-6616c9a6-358d-47bf-a802-ff5a1e36c5e0	Regulatory & Ethics	REWS
+org.ga4gh.workstream.lsg	Large Scale Genomics	LSG
+org.ga4gh.workstream.discovery	Discovery	\N
+org.ga4gh.workstream.cloud	Cloud	\N
+org.ga4gh.workstream.duri	Data Use and Researcher Identities	DURI
+org.ga4gh.workstream.gks	Genomic Knowledge Standards	GKS
+org.ga4gh.workstream.clinpheno	Clinical & Phenotypic Data Capture	Clin/Pheno
+org.ga4gh.workstream.dsws	Data Security	\N
+org.ga4gh.workstream.rews	Regulatory & Ethics	REWS
 \.
-
-
---
--- Name: implementation_category implementation_category_category_key; Type: CONSTRAINT; Schema: test_schema; Owner: test_user
---
-
-ALTER TABLE ONLY test_schema.implementation_category
-    ADD CONSTRAINT implementation_category_category_key UNIQUE (category);
-
-
---
--- Name: implementation_category implementation_category_pkey; Type: CONSTRAINT; Schema: test_schema; Owner: test_user
---
-
-ALTER TABLE ONLY test_schema.implementation_category
-    ADD CONSTRAINT implementation_category_pkey PRIMARY KEY (id);
 
 
 --
@@ -410,19 +380,11 @@ ALTER TABLE ONLY test_schema.work_stream
 
 
 --
--- Name: implementation implementation_implementation_category_id_fkey; Type: FK CONSTRAINT; Schema: test_schema; Owner: test_user
---
-
-ALTER TABLE ONLY test_schema.implementation
-    ADD CONSTRAINT implementation_implementation_category_id_fkey FOREIGN KEY (implementation_category_id) REFERENCES test_schema.implementation_category(id);
-
-
---
 -- Name: implementation implementation_organization_id_fkey; Type: FK CONSTRAINT; Schema: test_schema; Owner: test_user
 --
 
 ALTER TABLE ONLY test_schema.implementation
-    ADD CONSTRAINT implementation_organization_id_fkey FOREIGN KEY (organization_id) REFERENCES test_schema.organization(id);
+    ADD CONSTRAINT implementation_organization_id_fkey FOREIGN KEY (organization_id) REFERENCES test_schema.organization(id) ON UPDATE CASCADE;
 
 
 --
@@ -434,19 +396,19 @@ ALTER TABLE ONLY test_schema.implementation
 
 
 --
+-- Name: standard standard_release_status_id_fkey; Type: FK CONSTRAINT; Schema: test_schema; Owner: test_user
+--
+
+ALTER TABLE ONLY test_schema.standard
+    ADD CONSTRAINT standard_release_status_id_fkey FOREIGN KEY (release_status_id) REFERENCES test_schema.release_status(id) ON UPDATE CASCADE;
+
+
+--
 -- Name: standard standard_standard_category_id_fkey; Type: FK CONSTRAINT; Schema: test_schema; Owner: test_user
 --
 
 ALTER TABLE ONLY test_schema.standard
-    ADD CONSTRAINT standard_standard_category_id_fkey FOREIGN KEY (standard_category_id) REFERENCES test_schema.standard_category(id);
-
-
---
--- Name: standard standard_standard_status_id_fkey; Type: FK CONSTRAINT; Schema: test_schema; Owner: test_user
---
-
-ALTER TABLE ONLY test_schema.standard
-    ADD CONSTRAINT standard_standard_status_id_fkey FOREIGN KEY (release_status_id) REFERENCES test_schema.release_status(id);
+    ADD CONSTRAINT standard_standard_category_id_fkey FOREIGN KEY (standard_category_id) REFERENCES test_schema.standard_category(id) ON UPDATE CASCADE;
 
 
 --
@@ -454,7 +416,7 @@ ALTER TABLE ONLY test_schema.standard
 --
 
 ALTER TABLE ONLY test_schema.standard_version
-    ADD CONSTRAINT standard_version_release_status_id_fkey FOREIGN KEY (release_status_id) REFERENCES test_schema.release_status(id);
+    ADD CONSTRAINT standard_version_release_status_id_fkey FOREIGN KEY (release_status_id) REFERENCES test_schema.release_status(id) ON UPDATE CASCADE;
 
 
 --
@@ -462,7 +424,7 @@ ALTER TABLE ONLY test_schema.standard_version
 --
 
 ALTER TABLE ONLY test_schema.standard_version
-    ADD CONSTRAINT standard_version_standard_id_fkey FOREIGN KEY (standard_id) REFERENCES test_schema.standard(id);
+    ADD CONSTRAINT standard_version_standard_id_fkey FOREIGN KEY (standard_id) REFERENCES test_schema.standard(id) ON UPDATE CASCADE;
 
 
 --
@@ -470,7 +432,7 @@ ALTER TABLE ONLY test_schema.standard_version
 --
 
 ALTER TABLE ONLY test_schema.standard
-    ADD CONSTRAINT standard_work_stream_id_fkey FOREIGN KEY (work_stream_id) REFERENCES test_schema.work_stream(id);
+    ADD CONSTRAINT standard_work_stream_id_fkey FOREIGN KEY (work_stream_id) REFERENCES test_schema.work_stream(id) ON UPDATE CASCADE;
 
 
 --
