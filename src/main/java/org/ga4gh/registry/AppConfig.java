@@ -648,12 +648,13 @@ public class AppConfig implements WebMvcConfigurer {
     @Bean
     @Qualifier(AppConfigConstants.BASIC_REGISTRY_ERROR_SERIALIZER_MODULE)
     public RegistrySerializerModule basicRegistryErrorSerializerModule(
-        @Qualifier(AppConfigConstants.BASIC_REGISTRY_ERROR_SERIALIZER) RegistryErrorSerializer registryErrorSerializer
+        @Qualifier(AppConfigConstants.BASIC_REGISTRY_ERROR_SERIALIZER) RegistryErrorSerializer registryErrorSerializer,
+        @Qualifier(AppConfigConstants.BASIC_DATE_SERIALIZER) DateSerializer dateSerializer
     ) {
         return new RegistrySerializerModule(
             AppConfigConstants.BASIC_REGISTRY_ERROR_SERIALIZER_MODULE,
             RegistrySerializerModuleHelper.newVersion("registryError"),
-            RegistrySerializerModuleHelper.newSerializers(new JsonSerializer<?>[] {registryErrorSerializer})
+            RegistrySerializerModuleHelper.newSerializers(new JsonSerializer<?>[] {registryErrorSerializer, dateSerializer})
         );
     }
 
