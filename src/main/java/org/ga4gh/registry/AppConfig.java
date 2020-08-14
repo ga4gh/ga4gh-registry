@@ -1,6 +1,8 @@
 package org.ga4gh.registry;
 
 import com.fasterxml.jackson.databind.JsonSerializer;
+
+import org.ga4gh.registry.exception.CustomErrorAttributes;
 import org.ga4gh.registry.middleware.AuthorizationInterceptor;
 import org.ga4gh.registry.model.Implementation;
 import org.ga4gh.registry.model.Organization;
@@ -680,6 +682,11 @@ public class AppConfig implements WebMvcConfigurer {
     @Scope(AppConfigConstants.PROTOTYPE)
     public ImplementationRequestUtils getServiceRequestUtils() {
         return new ImplementationRequestUtils();
+    }
+
+    @Bean
+    public CustomErrorAttributes customErrorAttributes() {
+        return new CustomErrorAttributes();
     }
 
     /* ******************************
