@@ -6,16 +6,49 @@
 [![Travis (.org) branch](https://img.shields.io/travis/ga4gh/ga4gh-registry/master.svg?style=flat-square)](https://travis-ci.org/ga4gh/ga4gh-registry)
 ![Codecov](https://img.shields.io/codecov/c/github/ga4gh/ga4gh-registry?style=flat-square)
 
-# GA4GH Standards and Implementations Registry
+# GA4GH Planet API
 
-## Usage
+## Using the API
+
+See the [GA4GH Planet OpenAPI Docs]() for full developer documentation on the production API.
+
+The production API is available at `https://registry.ga4gh.org/v1/`. Example HTTPS requests include:
+
+* https://registry.ga4gh.org/v1/standards (view GA4GH standards)
+* https://registry.ga4gh.org/v1/services (get registered web services based on canonical GA4GH service types)
+* https://registry.ga4gh.org/v1/organizations (view organizations with registered services or implementations)
+
+
+## Starting the test server
+
+### Usage
 
 Run Spring Boot application with externalized properies file:
 ```
 ./gradlew bootRun --args="--spring.config.location=file:./config/test/test.application.properties"
 ```
 
-Execute tests:
+### Testing
+
+To run all tests, execute:
 ```
 ./gradlew test
 ```
+
+The test report directory will be available at `./build/reports/tests/test`. A local server can be started in that directory to view the report.
+
+To generate the test coverage report, execute the following (after the above test report has been generated):
+
+```
+./gradlew jacocoTestReport
+```
+
+The coverage report directory will be available at `./build/reports/jacoco/test/html`. A local server can be started in the directory to view the report.
+
+## Maintainers
+
+* Jeremy Adams [jeremy.adams@ga4gh.org](mailto:jeremy.adams@ga4gh.org)
+
+## Issues
+
+Feature requests, issues, and bugs may be reported via the [Github issue tracker](https://github.com/ga4gh/ga4gh-registry/issues), or by emailing one of the above maintainers directly.

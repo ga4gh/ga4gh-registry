@@ -1,5 +1,7 @@
 package org.ga4gh.registry.middleware;
 
+import java.util.Date;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -10,7 +12,6 @@ import org.ga4gh.registry.constant.HttpStatusName;
 import org.ga4gh.registry.exception.ForbiddenException;
 import org.ga4gh.registry.model.RegistryError;
 import org.ga4gh.registry.util.auth.PlaceholderAuth;
-import org.ga4gh.registry.util.misc.RegistryDateTime;
 import org.ga4gh.registry.util.serialize.RegistrySerializerModule;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -27,7 +28,7 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
 
     public void setRegistryErrorResponseFromException(HttpServletRequest request, HttpServletResponse response, String code, Exception ex) throws Exception {
         RegistryError registryError = new RegistryError();
-        registryError.setTimestamp(RegistryDateTime.nowTimestamp());
+        registryError.setTimestamp(new Date());
         registryError.setStatus(Integer.parseInt(code));
         registryError.setError(HttpStatusName.get(code));
         registryError.setMessage(ex.getMessage());

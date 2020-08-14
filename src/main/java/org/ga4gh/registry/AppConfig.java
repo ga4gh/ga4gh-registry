@@ -1,6 +1,8 @@
 package org.ga4gh.registry;
 
 import com.fasterxml.jackson.databind.JsonSerializer;
+
+import org.ga4gh.registry.exception.CustomErrorAttributes;
 import org.ga4gh.registry.middleware.AuthorizationInterceptor;
 import org.ga4gh.registry.model.Implementation;
 import org.ga4gh.registry.model.Organization;
@@ -648,12 +650,13 @@ public class AppConfig implements WebMvcConfigurer {
     @Bean
     @Qualifier(AppConfigConstants.BASIC_REGISTRY_ERROR_SERIALIZER_MODULE)
     public RegistrySerializerModule basicRegistryErrorSerializerModule(
-        @Qualifier(AppConfigConstants.BASIC_REGISTRY_ERROR_SERIALIZER) RegistryErrorSerializer registryErrorSerializer
+        @Qualifier(AppConfigConstants.BASIC_REGISTRY_ERROR_SERIALIZER) RegistryErrorSerializer registryErrorSerializer,
+        @Qualifier(AppConfigConstants.BASIC_DATE_SERIALIZER) DateSerializer dateSerializer
     ) {
         return new RegistrySerializerModule(
             AppConfigConstants.BASIC_REGISTRY_ERROR_SERIALIZER_MODULE,
             RegistrySerializerModuleHelper.newVersion("registryError"),
-            RegistrySerializerModuleHelper.newSerializers(new JsonSerializer<?>[] {registryErrorSerializer})
+            RegistrySerializerModuleHelper.newSerializers(new JsonSerializer<?>[] {registryErrorSerializer, dateSerializer})
         );
     }
 
@@ -679,6 +682,11 @@ public class AppConfig implements WebMvcConfigurer {
     @Scope(AppConfigConstants.PROTOTYPE)
     public ImplementationRequestUtils getServiceRequestUtils() {
         return new ImplementationRequestUtils();
+    }
+
+    @Bean
+    public CustomErrorAttributes customErrorAttributes() {
+        return new CustomErrorAttributes();
     }
 
     /* ******************************
