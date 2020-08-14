@@ -1,7 +1,14 @@
 openapi: 3.0.3
 info:
     title: GA4GH Planet API
-    description: Browse GA4GH standards and associated implementations
+    description: |
+        The GA4GH Planet API
+
+        # Errors
+
+        
+
+     Browse GA4GH standards and associated implementations
     version: 0.5.0
     contact:
         name: GA4GH Tech Team
