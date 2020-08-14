@@ -49,4 +49,8 @@ public class HibernateQueryBuilder {
     public Class<? extends RegistryModel> getResponseClass() {
         return responseClass;
     }
+
+    public StringJoiner getFilterBuffer() {
+        return filterBuffer;
+    }
 }

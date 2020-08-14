@@ -15,5 +15,5 @@ public class TypeFilter {
                 qb.filter("standardVersion.versionNumber", serviceType.getVersion());
             }
         }
-    }   
+    }
 }
