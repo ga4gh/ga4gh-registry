@@ -29,4 +29,8 @@ public class DateSerializer extends VariableDepthSerializer<Date> {
       throws IOException, JsonProcessingException {
         gen.writeString(formatter.format(value));
     }
+
+    public SimpleDateFormat getFormatter() {
+        return formatter;
+    }
 }
