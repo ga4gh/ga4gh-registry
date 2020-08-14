@@ -2,13 +2,56 @@ openapi: 3.0.3
 info:
     title: GA4GH Planet API
     description: |
-        The GA4GH Planet API
+        # Introduction
+
+        The Planet API is an HTTP API served by the
+        [Global Alliance for Genomics and Health (GA4GH)](https://ga4gh.org).
+
+        The API contains metadata about GA4GH deliverables 
+        (ie. technical specifications, policy frameworks, ongoing data sharing initiatives),
+        including product review lifecycle status, released versions, 
+        and tools for working with the standards.
+
+        Planet API is also a **GA4GH Service Registry**, implementing the
+        [Service Registry Specification](https://github.com/ga4gh-discovery/ga4gh-service-registry).
+        As such, it is possible to search the registry for web services implementing
+        GA4GH API specifications (e.g. htsget, drs, beacon).
+        The registry is filterable based on service type.
+        At this time, only publicly accessible web services are listed.
+
+        ## Implementations vs. Services
+
+        The API distinguishes between **implementations** and **services**.
+
+        In this context, an **implementation** refers to any codebase that works
+        with one or more GA4GH standards. Examples include:
+        * client libraries for accessing data from GA4GH APIs
+        * command-line tools/executables for reading/writing GA4GH format files
+        * codebases that can be run to spin-up a GA4GH API server
+        * Other tools involving complex analyses that make use of GA4GH standards
+
+        A **service** refers to a running web server serving genomic data according
+        to a GA4GH API specification.  
+
+        Implementations and services can be accessed via the `/implementations` 
+        and `/services` routes, respectively.
+
+        ## Register an implementation or web service 
 
         # Errors
 
-        
-
-     Browse GA4GH standards and associated implementations
+        The API uses standard [rfc2616](https://tools.ietf.org/html/rfc2616)
+        HTTP status codes to indicate the success or failure of the API call.
+        The body of an error response will be in JSON in the following format:
+        ```
+        {
+            "timestamp": "2020-08-14T17:14:13Z",
+            "status": 404,
+            "error": "Not Found",
+            "message": "no Implementation by the id: example1",
+            "path": "/v1/services/example1"
+        }
+        ```
     version: 0.5.0
     contact:
         name: GA4GH Tech Team
@@ -17,6 +60,11 @@ info:
     license:
         name: Apache 2.0
         url: https://www.apache.org/licenses/LICENSE-2.0.html
+    x-logo:
+        url: https://www.ga4gh.org/wp-content/themes/ga4gh-theme/gfx/GA-logo-horizontal-tag-RGB.svg
+        backgroundColor: '#FFFFFF'
+        altText: Global Alliance for Genomics and Health
+        href: https://ga4gh.org
 servers:
     - url: https://registry.ga4gh.org
       description: Production API
@@ -26,7 +74,7 @@ paths:
             tags:
                 - standards
             summary: List standards
-            description: Get list of all GA4GH standards    
+            description: Get entire list of GA4GH standards. This endpoint shows only high-level info about each standard. For detailed information about a particular standard, see `Get standard by Id`
             responses:
                 200:
                     description: successful retrieval
@@ -35,7 +83,7 @@ paths:
                             schema:
                                 type: array
                                 items:
-                                    $ref: '#/components/schemas/Standard'
+                                    $ref: '#/components/schemas/StandardSummary'
                 5xx:
                     $ref: '#/components/responses/5xxServerError'
     /standards/{standardId}:
@@ -43,7 +91,7 @@ paths:
             tags:
                 - standards
             summary: Get standard by Id
-            description: Get all details about a single standard
+            description: Show detailed information about a single standard, including versions and work stream
             parameters:
                 - $ref: '#/components/parameters/StandardId'
             responses:
@@ -52,12 +100,31 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/Standard'
+                                $ref: '#/components/schemas/StandardFull'
                 404:
                     $ref: '#/components/responses/404NotFoundError'
                 5xx:
                     $ref: '#/components/responses/5xxServerError'
-    /service-info:
+        post:
+            tags:
+                - standards
+            summary: Create standard
+            description: Creates a new standard with the information specified in `requestBody`
+            requestBody:
+                description: new standard to create
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/StandardFull'
+            responses:
+                200:
+                    description: successfully created new standard
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/StandardFull'
+    /service-info: 
         get:
             tags:
                 - service info
@@ -164,31 +231,59 @@ paths:
                 404:
                     $ref: '#/components/responses/404NotFoundError'
                 5xx:
-                    $ref: '#/components/responses/5xxServerError'
+                    $ref: '#/components/responses/5xxServerError'                
 components:
     schemas:
-        Standard:
+        ApiError:
+            type: object
+            properties:
+                timestamp:
+                    type: string
+                    description: timestamp of when the error was encountered, according to RFC 3339 and in UTC
+                    example: '2020-08-14T19:56:46Z'
+                status:
+                    type: int
+                    description: HTTP status code describing the error 
+                    example: 500
+                error:
+                    type: string
+                    description: name of error associated with the status code
+                    example: Server Error
+                message:
+                    type: string
+                    description: message explaining why the request could not be completed
+                    example: an internal server error occurred
+                path:
+                    type: string
+                    description: the requested url that generated the error
+                    example: /v1/services
+        StandardSummary:
             type: object
             properties:
                 id:
                     type: string
                     description: unique identifier
-                    example: bffd4855-31c7-4c84-a8c8-b89c7036311c
+                    example: drs
                 name:
                     type: string
                     description: official name
-                    example: htsget
+                    example: Data Repository Service
+                abbreviation:
+                    type: string
+                    description: abbreviation/acronym
+                    example: DRS
                 artifact:
                     type: string
-                    description: short, unique name identifying this standard, and services of this type
-                oneliner:
+                    description: canonical `artifact` value for services adopting this specification. See `service-info` and the service-info type registry
+                    example: drs
+                summary:
                     type: string
-                    description: short, single-sentence description of standard
-                    example: Download high-throughput sequencing reads and variants
+                    description: single-sentence summary of standard
+                    example: Platform-agnostic data API
                 documentationUrl:
                     type: string
-                    description: url to standard homepage
-                    example: https://github.com/samtools/hts-specs/blob/master/htsget.md
+                    description: url to specification homepage
+                    example: https://github.com/ga4gh/data-repository-service-schemas
                 category:
                     type: string
                     description: broad classification of standard category
@@ -197,6 +292,7 @@ components:
                         - FileFormat
                         - Schema
                         - Policy
+                    example: API
                 status:
                     type: string
                     description: release status of standard
@@ -204,14 +300,81 @@ components:
                         - Proposed
                         - Approved
                         - Deprecated
-                description:
-                    type: string
-                    description: longer description of standard
-                    example: Download high-throughput sequencing reads and variants via flexible API
+                    example: Approved
             required:
                 - id
                 - name
-                - artifact
+                - summary
+                - documentationUrl
+                - category
+                - status
+        StandardFull:
+            allOf:
+                - $ref: '#/components/schemas/StandardSummary'
+                - type: object
+                  properties:
+                    description:
+                        type: string
+                        description: longer description of standard
+                        example: The Data Repository Service (DRS) API, a standard for building data repositories and adapting access tools to work with those repositories, works with other approved APIs from the GA4GH Cloud Work Stream to allow researchers to discover algorithms across different cloud environments and send them to datasets they wish to analyze.
+                    versions:
+                        type: array
+                        description: list of versioned releases associated with the specification
+                        items:
+                            $ref: '#/components/schemas/StandardVersion'
+                    workStream:
+                        $ref: '#/components/schemas/WorkStream'    
+                  required:
+                    - description
+                    - versions
+                    - workStream
+        StandardVersion:
+            type: object
+            description: A single GA4GH specification may have multiple versions. this object represents a single versioned release of a specification 
+            properties:
+                id:
+                    type: string
+                    description: unique identifier for a particular versioned release of a GA4GH standard
+                    example: 'drs:1.0.0'
+                versionNumber:
+                    type: string
+                    description: the version number of the release
+                    example: 1.0.0
+                documentationUrl:
+                    type: string
+                    description: url to documentation page for the release
+                    example: https://ga4gh.github.io/data-repository-service-schemas/preview/release/drs-1.0.0/docs/
+                status:
+                    type: string
+                    description: major version changes of GA4GH standards must also go through product review for approval. This attribute tracks the product review status of the version
+                    enum:
+                        - Proposed
+                        - Approved
+                        - Deprecated
+                    example: Approved
+            required:
+                - id
+                - versionNumber
+                - documentationUrl
+                - status
+        WorkStream:
+            type: object
+            description: represents a technical or foundational GA4GH Work Stream
+            properties:
+                id:
+                    type: string
+                    description: unique identifier for the work stream
+                    example: cloud
+                name:
+                    type: string
+                    description: work stream name/title
+                    example: Cloud
+                abbreviation:
+                    type: string
+                    description: work stream abbreviation/acronym
+            required:
+                - id
+                - name
         Service:
             allOf:
                 - $ref: 'https://raw.githubusercontent.com/ga4gh-discovery/ga4gh-service-registry/develop/service-registry.yaml#/components/schemas/ExternalService'
@@ -245,18 +408,18 @@ components:
         StandardId:
             in: path
             name: standardId
-            description: UUID for this standard
-            example: bffd4855-31c7-4c84-a8c8-b89c7036311c
+            description: unique identifier for the standard
+            example: drs
         ServiceId:
             in: path
             name: serviceId
-            description: UUID for this web service
-            example: 7893404d-7b73-4983-9891-89023c8a34fa
+            description: unique identifier for the web service
+            example: org.ga4gh.registry
         OrganizationId:
             in: path
             name: organizationId
-            description: UUID for this organization
-            example: f3cfc0d2-e9bd-4b26-a856-0d2b2f47d1f4
+            description: unique identifier for the organization
+            example: org.ga4gh
         Type:
             in: query
             name: type
@@ -267,5 +430,22 @@ components:
             description: The service could not complete your request. One or more request parameters were likely malformed
         404NotFoundError:
             description: The requested resource could not be located
+            content:
+                application/json:
+                    schema:
+                        allOf:
+                            - $ref: '#/components/schemas/ApiError'
+                            - type: object
+                              properties:
+                                status:
+                                    example: 404
+                                error:
+                                    example: Not Found
+                                message:
+                                    example: the requested resource could not be located
         5xxServerError:
             description: Unspecified server error encountered
+            content:
+                application/json:
+                    schema:
+                        $ref: '#/components/schemas/ApiError'
