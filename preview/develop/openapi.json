@@ -1,0 +1,538 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "GA4GH Planet API",
+    "description": "Browse GA4GH standards and associated implementations",
+    "version": "0.5.0",
+    "contact": {
+      "name": "GA4GH Tech Team",
+      "url": "https://ga4gh.org",
+      "email": "jeremy.adams@ga4gh.org"
+    },
+    "license": {
+      "name": "Apache 2.0",
+      "url": "https://www.apache.org/licenses/LICENSE-2.0.html"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://registry.ga4gh.org",
+      "description": "Production API"
+    }
+  ],
+  "paths": {
+    "/standards": {
+      "get": {
+        "tags": [
+          "standards"
+        ],
+        "summary": "List standards",
+        "description": "Get list of all GA4GH standards",
+        "responses": {
+          "200": {
+            "description": "successful retrieval",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Standard"
+                  }
+                }
+              }
+            }
+          },
+          "5xx": {
+            "$ref": "#/components/responses/5xxServerError"
+          }
+        }
+      }
+    },
+    "/standards/{standardId}": {
+      "get": {
+        "tags": [
+          "standards"
+        ],
+        "summary": "Get standard by Id",
+        "description": "Get all details about a single standard",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/StandardId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful retrieval",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Standard"
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/404NotFoundError"
+          },
+          "5xx": {
+            "$ref": "#/components/responses/5xxServerError"
+          }
+        }
+      }
+    },
+    "/service-info": {
+      "get": {
+        "tags": [
+          "service info"
+        ],
+        "summary": "Get service info",
+        "description": "Get all details about this service",
+        "responses": {
+          "200": {
+            "description": "successful retrieval",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Service"
+                }
+              }
+            }
+          },
+          "5xx": {
+            "$ref": "#/components/responses/5xxServerError"
+          }
+        }
+      }
+    },
+    "/services": {
+      "get": {
+        "tags": [
+          "services"
+        ],
+        "summary": "Get list of services",
+        "description": "List all known web services matching search criteria",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Type"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful retrieval",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Service"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400BadRequestError"
+          },
+          "5xx": {
+            "$ref": "#/components/responses/5xxServerError"
+          }
+        }
+      }
+    },
+    "/services/{serviceId}": {
+      "get": {
+        "tags": [
+          "services"
+        ],
+        "summary": "Get service by Id",
+        "description": "Get all details about a single service",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ServiceId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful retrieval",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Service"
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/404NotFoundError"
+          },
+          "5xx": {
+            "$ref": "#/components/responses/5xxServerError"
+          }
+        }
+      }
+    },
+    "/services/types": {
+      "get": {
+        "tags": [
+          "services"
+        ],
+        "summary": "List service types",
+        "description": "Get list of all implemented service types in the registry",
+        "responses": {
+          "200": {
+            "description": "successful retrieval",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ServiceType"
+                  }
+                }
+              }
+            }
+          },
+          "5xx": {
+            "$ref": "#/components/responses/5xxServerError"
+          }
+        }
+      }
+    },
+    "/organizations": {
+      "get": {
+        "tags": [
+          "organizations"
+        ],
+        "summary": "List organizations",
+        "description": "Get list of organizations implementing GA4GH standards",
+        "responses": {
+          "200": {
+            "description": "successful retrieval",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Organization"
+                  }
+                }
+              }
+            }
+          },
+          "5xx": {
+            "$ref": "#/components/responses/5xxServerError"
+          }
+        }
+      }
+    },
+    "/organizations/{organizationId}": {
+      "get": {
+        "tags": [
+          "organizations"
+        ],
+        "summary": "Get organization by Id",
+        "description": "Get all details about a single organization implementing GA4GH standards",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/OrganizationId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful retrieval",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Organization"
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/404NotFoundError"
+          },
+          "5xx": {
+            "$ref": "#/components/responses/5xxServerError"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Standard": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "unique identifier",
+            "example": "bffd4855-31c7-4c84-a8c8-b89c7036311c"
+          },
+          "name": {
+            "type": "string",
+            "description": "official name",
+            "example": "htsget"
+          },
+          "artifact": {
+            "type": "string",
+            "description": "short, unique name identifying this standard, and services of this type"
+          },
+          "oneliner": {
+            "type": "string",
+            "description": "short, single-sentence description of standard",
+            "example": "Download high-throughput sequencing reads and variants"
+          },
+          "documentationUrl": {
+            "type": "string",
+            "description": "url to standard homepage",
+            "example": "https://github.com/samtools/hts-specs/blob/master/htsget.md"
+          },
+          "category": {
+            "type": "string",
+            "description": "broad classification of standard category",
+            "enum": [
+              "API",
+              "FileFormat",
+              "Schema",
+              "Policy"
+            ]
+          },
+          "status": {
+            "type": "string",
+            "description": "release status of standard",
+            "enum": [
+              "Proposed",
+              "Approved",
+              "Deprecated"
+            ]
+          },
+          "description": {
+            "type": "string",
+            "description": "longer description of standard",
+            "example": "Download high-throughput sequencing reads and variants via flexible API"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "artifact"
+        ]
+      },
+      "Service": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ExternalService"
+          }
+        ]
+      },
+      "ServiceType": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/service-info_ServiceType"
+          }
+        ]
+      },
+      "Organization": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "unique identifier for this organization",
+            "example": "f3cfc0d2-e9bd-4b26-a856-0d2b2f47d1f4"
+          },
+          "name": {
+            "type": "string",
+            "description": "organization full name",
+            "example": "Global Alliance for Genomics and Health"
+          },
+          "shortName": {
+            "type": "string",
+            "description": "organization short name (abbreviation or acronym)",
+            "example": "GA4GH"
+          },
+          "url": {
+            "type": "string",
+            "description": "Organization's home page",
+            "example": "https://ga4gh.org"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "url"
+        ]
+      },
+      "service-info_ServiceType": {
+        "description": "Type of a GA4GH service",
+        "type": "object",
+        "required": [
+          "group",
+          "artifact",
+          "version"
+        ],
+        "properties": {
+          "group": {
+            "type": "string",
+            "description": "Namespace in reverse domain name format. Use `org.ga4gh` for implementations compliant with official GA4GH specifications. For services with custom APIs not standardized by GA4GH, or implementations diverging from official GA4GH specifications, use a different namespace (e.g. your organization's reverse domain name).",
+            "example": "org.ga4gh"
+          },
+          "artifact": {
+            "type": "string",
+            "description": "Name of the API or GA4GH specification implemented. Official GA4GH types should be assigned as part of standards approval process. Custom artifacts are supported.",
+            "example": "beacon"
+          },
+          "version": {
+            "type": "string",
+            "description": "Version of the API or specification. GA4GH specifications use semantic versioning.",
+            "example": "1.0.0"
+          }
+        }
+      },
+      "service-info_Service": {
+        "description": "GA4GH service",
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "type",
+          "organization",
+          "version"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique ID of this service. Reverse domain name notation is recommended, though not required. The identifier should attempt to be globally unique so it can be used in downstream aggregator services e.g. Service Registry.",
+            "example": "org.ga4gh.myservice"
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of this service. Should be human readable.",
+            "example": "My project"
+          },
+          "type": {
+            "$ref": "#/components/schemas/service-info_ServiceType"
+          },
+          "description": {
+            "type": "string",
+            "description": "Description of the service. Should be human readable and provide information about the service.",
+            "example": "This service provides..."
+          },
+          "organization": {
+            "type": "object",
+            "description": "Organization providing the service",
+            "required": [
+              "name",
+              "url"
+            ],
+            "properties": {
+              "name": {
+                "type": "string",
+                "description": "Name of the organization responsible for the service",
+                "example": "My organization"
+              },
+              "url": {
+                "type": "string",
+                "format": "uri",
+                "description": "URL of the website of the organization (RFC 3986 format)",
+                "example": "https://example.com"
+              }
+            }
+          },
+          "contactUrl": {
+            "type": "string",
+            "format": "uri",
+            "description": "URL of the contact for the provider of this service, e.g. a link to a contact form (RFC 3986 format), or an email (RFC 2368 format).",
+            "example": "mailto:support@example.com"
+          },
+          "documentationUrl": {
+            "type": "string",
+            "format": "uri",
+            "description": "URL of the documentation of this service (RFC 3986 format). This should help someone learn how to use your service, including any specifics required to access data, e.g. authentication.",
+            "example": "https://docs.myservice.example.com"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Timestamp describing when the service was first deployed and available (RFC 3339 format)",
+            "example": "2019-06-04T12:58:19Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Timestamp describing when the service was last updated (RFC 3339 format)",
+            "example": "2019-06-04T12:58:19Z"
+          },
+          "environment": {
+            "type": "string",
+            "description": "Environment the service is running in. Use this to distinguish between production, development and testing/staging deployments. Suggested values are prod, test, dev, staging. However this is advised and not enforced.",
+            "example": "test"
+          },
+          "version": {
+            "type": "string",
+            "description": "Version of the service being described. Semantic versioning is recommended, but other identifiers, such as dates or commit hashes, are also allowed. The version should be changed whenever the service is updated.",
+            "example": "1.0.0"
+          }
+        }
+      },
+      "ExternalService": {
+        "description": "GA4GH service with a URL",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/service-info_Service"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "url": {
+                "type": "string",
+                "format": "uri",
+                "description": "Base URL of the service ([RFC 3986](https://tools.ietf.org/html/rfc3986) format).\n\nFor REST API services, this is the URL to which all endpoints should be relative. In particular, services implementing GA4GH specifications defined in OAS format (as per the `type` field) should respond to requests constructed by appending relative paths from the specification to this base URL (e.g. `{url}/service-info`). See [API Server and Base URL](https://swagger.io/docs/specification/api-host-and-base-path/) for more information on specifying base URLs in OAS 3.\n",
+                "example": "https://api.example.com/v1"
+              }
+            },
+            "required": [
+              "url"
+            ]
+          }
+        ]
+      }
+    },
+    "parameters": {
+      "StandardId": {
+        "in": "path",
+        "name": "standardId",
+        "description": "UUID for this standard",
+        "example": "bffd4855-31c7-4c84-a8c8-b89c7036311c"
+      },
+      "ServiceId": {
+        "in": "path",
+        "name": "serviceId",
+        "description": "UUID for this web service",
+        "example": "7893404d-7b73-4983-9891-89023c8a34fa"
+      },
+      "OrganizationId": {
+        "in": "path",
+        "name": "organizationId",
+        "description": "UUID for this organization",
+        "example": "f3cfc0d2-e9bd-4b26-a856-0d2b2f47d1f4"
+      },
+      "Type": {
+        "in": "query",
+        "name": "type",
+        "description": "Filter services/implementations by ServiceType (the standard they implement). Serialized as 'GROUP:ARTIFACT:VERSION'",
+        "example": "org.ga4gh:beacon:1.0.0"
+      }
+    },
+    "responses": {
+      "400BadRequestError": {
+        "description": "The service could not complete your request. One or more request parameters were likely malformed"
+      },
+      "404NotFoundError": {
+        "description": "The requested resource could not be located"
+      },
+      "5xxServerError": {
+        "description": "Unspecified server error encountered"
+      }
+    }
+  }
+}
