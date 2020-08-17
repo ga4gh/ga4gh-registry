@@ -69,15 +69,30 @@ servers:
     - url: https://registry.ga4gh.org
       description: Production API
 paths:
+    /service-info: 
+        get:
+            tags:
+                - Service Info
+            summary: Get service info
+            description: Get information about this service
+            responses:
+                200:
+                    description: successfully retrieved service info
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Service'
+                5xx:
+                    $ref: '#/components/responses/5xxServerError'
     /standards:
         get:
             tags:
-                - standards
+                - Standards
             summary: List standards
             description: Get entire list of GA4GH standards. This endpoint shows only high-level info about each standard. For detailed information about a particular standard, see `Get standard by Id`
             responses:
                 200:
-                    description: successful retrieval
+                    description: successfully retrieved list of standards
                     content:
                         application/json:
                             schema:
@@ -86,30 +101,13 @@ paths:
                                     $ref: '#/components/schemas/StandardSummary'
                 5xx:
                     $ref: '#/components/responses/5xxServerError'
-    /standards/{standardId}:
-        get:
-            tags:
-                - standards
-            summary: Get standard by Id
-            description: Show detailed information about a single standard, including versions and work stream
-            parameters:
-                - $ref: '#/components/parameters/StandardId'
-            responses:
-                200:
-                    description: successful retrieval
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/StandardFull'
-                404:
-                    $ref: '#/components/responses/404NotFoundError'
-                5xx:
-                    $ref: '#/components/responses/5xxServerError'
         post:
             tags:
-                - standards
+                - Standards
             summary: Create standard
-            description: Creates a new standard with the information specified in `requestBody`
+            description: Create a new standard with the information specified in `requestBody`
+            security:
+                - BearerAuth: []
             requestBody:
                 description: new standard to create
                 required: true
@@ -124,32 +122,85 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/StandardFull'
-    /service-info: 
+                400:
+                    $ref: '#/components/responses/400BadRequestError'
+                5xx:
+                    $ref: '#/components/responses/5xxServerError'
+    /standards/{standardId}:
         get:
             tags:
-                - service info
-            summary: Get service info
-            description: Get all details about this service
+                - Standards
+            summary: Get standard by id
+            description: Show detailed information about a single standard, including versions and work stream
+            parameters:
+                - $ref: '#/components/parameters/StandardId'
             responses:
                 200:
-                    description: successful retrieval
+                    description: successfully retrieved standard
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/Service'
+                                $ref: '#/components/schemas/StandardFull'
+                404:
+                    $ref: '#/components/responses/404NotFoundError'
+                5xx:
+                    $ref: '#/components/responses/5xxServerError'
+        put:
+            tags:
+                - Standards
+            summary: Update standard by id
+            description: Overwrites the standard at the specified id, with the information specified in `requestBody`
+            security:
+                - BearerAuth: []
+            parameters:
+                - $ref: '#/components/parameters/StandardId'
+            requestBody:
+                description: new properties for existing standard object
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/StandardFull'
+            responses:
+                200:
+                    description: successfully updated the standard
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/StandardFull'
+                400:
+                    $ref: '#/components/responses/400BadRequestError'
+                404:
+                    $ref: '#/components/responses/404NotFoundError'
+                5xx:
+                    $ref: '#/components/responses/5xxServerError'
+        delete:
+            tags:
+                - Standards
+            summary: Delete standard by id
+            description: Deletes the standard at the specified id
+            security:
+                - BearerAuth: []
+            parameters:
+                - $ref: '#/components/parameters/StandardId'
+            responses:
+                200:
+                    description: successfully deleted the standard
+                404:
+                    $ref: '#/components/responses/404NotFoundError'
                 5xx:
                     $ref: '#/components/responses/5xxServerError'
     /services:
         get:
             tags:
-                - services
-            summary: Get list of services
-            description: List all known web services matching search criteria
+                - Services
+            summary: List services
+            description: Gets list of all registered web services matching filtering criteria. Services may be filtered using the `type` parameter, which will cause the registry to return services of a particular type and/or version
             parameters:
                 - $ref: '#/components/parameters/Type'
             responses:
                 200:
-                    description: successful retrieval
+                    description: successfully retrieved list of services
                     content:
                         application/json:
                             schema:
@@ -160,17 +211,42 @@ paths:
                     $ref: '#/components/responses/400BadRequestError'
                 5xx:
                     $ref: '#/components/responses/5xxServerError'
+        post:
+            tags:
+                - Services
+            summary: Create service
+            description: Creates a new service with the information specified in `requestBody`
+            security:
+                - BearerAuth: []
+            requestBody:
+                description: new service to create
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/Service'
+            responses:
+                200:
+                    description: successfully created new service
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Service'
+                400:
+                    $ref: '#/components/responses/400BadRequestError'
+                5xx:
+                    $ref: '#/components/responses/5xxServerError'
     /services/{serviceId}:
         get:
             tags:
-                - services
-            summary: Get service by Id
-            description: Get all details about a single service
+                - Services
+            summary: Get service by id
+            description: Show detailed information about a single service
             parameters:
                 - $ref: '#/components/parameters/ServiceId'
             responses:
                 200:
-                    description: successful retrieval
+                    description: successfully retrieved service
                     content:
                         application/json:
                             schema:
@@ -179,10 +255,55 @@ paths:
                     $ref: '#/components/responses/404NotFoundError'
                 5xx:
                     $ref: '#/components/responses/5xxServerError'
+        put:
+            tags:
+                - Services
+            summary: Update service by id
+            description: Overwrites the service at the specified id, with the information specified in `requestBody`
+            security:
+                - BearerAuth: []
+            parameters:
+                - $ref: '#/components/parameters/ServiceId'
+            requestBody:
+                description: new properties for existing service object
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/Service'
+            responses:
+                200:
+                    description: successfully updated the service
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Service'
+                400:
+                    $ref: '#/components/responses/400BadRequestError'
+                404:
+                    $ref: '#/components/responses/404NotFoundError'
+                5xx:
+                    $ref: '#/components/responses/5xxServerError'
+        delete:
+            tags:
+                - Services
+            summary: Delete service by id
+            description: Deletes the service at the specified id
+            security:
+                - BearerAuth: []
+            parameters:
+                - $ref: '#/components/parameters/ServiceId'
+            responses:
+                200:
+                    description: successfully deleted the service
+                404:
+                    $ref: '#/components/responses/404NotFoundError'
+                5xx:
+                    $ref: '#/components/responses/5xxServerError'
     /services/types:
         get:
             tags:
-                - services
+                - Services
             summary: List service types
             description: Get list of all implemented service types in the registry
             responses:
@@ -196,43 +317,255 @@ paths:
                                     $ref: '#/components/schemas/ServiceType'
                 5xx:
                     $ref: '#/components/responses/5xxServerError'
-    /organizations:
+    /implementations:
         get:
             tags:
-                - organizations
-            summary: List organizations
-            description: Get list of organizations implementing GA4GH standards
+                - Implementations
+            summary: List implementations
+            description: Gets list all registered implementations (codebases, libraries, tools) matching filtering criteria. Services may be filtered using the `type` parameter, which will cause the registry to return implementations relating to particular GA4GH specifications and/or versions  
+            parameters:
+                - $ref: '#/components/parameters/Type'
             responses:
                 200:
-                    description: successful retrieval
+                    description: successfully retrieved list of implementations
                     content:
                         application/json:
                             schema:
                                 type: array
                                 items:
-                                    $ref: '#/components/schemas/Organization'
+                                    $ref: '#/components/schemas/Implementation'
+                400:
+                    $ref: '#/components/responses/400BadRequestError'
+                5xx:
+                    $ref: '#/components/responses/5xxServerError'
+        post:
+            tags:
+                - Implementations
+            summary: Create implementation
+            description: Creates a new implementation with the information specified in `requestBody`
+            security:
+                - BearerAuth: []
+            requestBody:
+                description: new implementation to create
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/Implementation'
+            responses:
+                200:
+                    description: successfully created new implementation
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Implementation'
+                400:
+                    $ref: '#/components/responses/400BadRequestError'
+                5xx:
+                    $ref: '#/components/responses/5xxServerError'
+    /implementations/{implementationId}:
+        get:
+            tags:
+                - Implementations
+            summary: Get implementation by id
+            description: Show detailed information about a single implementation
+            parameters:
+                - $ref: '#/components/parameters/ImplementationId'
+            responses:
+                200:
+                    description: successfully retrieved implementation
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Implementation'
+                404:
+                    $ref: '#/components/responses/404NotFoundError'
+                5xx:
+                    $ref: '#/components/responses/5xxServerError'
+        put:
+            tags:
+                - Implementations
+            summary: Update implementation by id
+            description: Overwrites the implementation at the specified id, with the information specified in `requestBody`
+            security:
+                - BearerAuth: []
+            parameters:
+                - $ref: '#/components/parameters/ImplementationId'
+            requestBody:
+                description: new properties for existing implementation object
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/Implementation'
+            responses:
+                200:
+                    description: successfully updated the service
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Implementation'
+                400:
+                    $ref: '#/components/responses/400BadRequestError'
+                404:
+                    $ref: '#/components/responses/404NotFoundError'
+                5xx:
+                    $ref: '#/components/responses/5xxServerError'
+        delete:
+            tags:
+                - Implementations
+            summary: Delete implementation by id
+            description: Deletes the implementation at the specified id
+            security:
+                - BearerAuth: []
+            parameters:
+                - $ref: '#/components/parameters/ImplementationId'
+            responses:
+                200:
+                    description: sucessfully deleted the implementation
+                404:
+                    $ref: '#/components/responses/404NotFoundError'
+                5xx:
+                    $ref: '#/components/responses/5xxServerError'
+    /organizations:
+        get:
+            tags:
+                - Organizations
+            summary: List organizations
+            description: Get list of organizations implementing GA4GH standards, for all services and implementations contained within the registry
+            responses:
+                200:
+                    description: successfully retrieved list of organizations
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    $ref: '#/components/schemas/OrganizationSummary'
+                5xx:
+                    $ref: '#/components/responses/5xxServerError'
+        post:
+            tags:
+                - Organizations
+            summary: Create organization
+            description: Creates a new implementing organization with the information specified in `requestBody`
+            security:
+                - BearerAuth: []
+            requestBody:
+                description: new organization to create
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/OrganizationFull'
+            responses:
+                200:
+                    description: successfully created new organization
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/OrganizationFull'
+                400:
+                    $ref: '#/components/responses/400BadRequestError'
                 5xx:
                     $ref: '#/components/responses/5xxServerError'
     /organizations/{organizationId}:
         get:
             tags:
-                - organizations
-            summary: Get organization by Id
+                - Organizations
+            summary: Get organization by id
             description: Get all details about a single organization implementing GA4GH standards
             parameters:
                 - $ref: '#/components/parameters/OrganizationId'
             responses:
                 200:
-                    description: successful retrieval
+                    description: successfully retrieved organization
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/Organization'
+                                $ref: '#/components/schemas/OrganizationFull'
                 404:
                     $ref: '#/components/responses/404NotFoundError'
                 5xx:
                     $ref: '#/components/responses/5xxServerError'                
+        put:
+            tags:
+                - Organizations
+            summary: Update organization by id
+            description: Overwrites the organization at the specified id, with the information specified in `requestBody`
+            security:
+                - BearerAuth: []
+            parameters:
+                - $ref: '#/components/parameters/OrganizationId'
+            requestBody:
+                description: new properties for existing organization object
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/OrganizationFull'
+            responses:
+                200:
+                    description: successfully updated the organization
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/OrganizationFull'
+                400:
+                    $ref: '#/components/responses/400BadRequestError'
+                404:
+                    $ref: '#/components/responses/404NotFoundError'
+                5xx:
+                    $ref: '#/components/responses/5xxServerError'
+        delete:
+            tags:
+                - Organizations
+            summary: Delete organization by id
+            description: Deletes the standard at the specified id
+            security:
+                - BearerAuth: []
+            parameters:
+                - $ref: '#/components/parameters/OrganizationId'
+            responses:
+                200:
+                    description: successfully deleted the organization
+                404:
+                    $ref: '#/components/responses/404NotFoundError'
+                5xx:
+                    $ref: '#/components/responses/5xxServerError'
+tags:
+    - name: Service Info
+      description: |
+        `/service-info` API endpoint(s) return information about this web
+        service, according to the
+        [GA4GH Service Info specification](https://github.com/ga4gh-discovery/ga4gh-service-info)
+    - name: Standards
+      description: |
+        `/standards` API endpoints are used to retrieve information about GA4GH
+        standards from the registry, or otherwise create, modify, or delete them.
+    - name: Services
+      description: |
+        `/services` API endpoints are used to retrieve information about web services
+        implementing GA4GH standards from the registry. These endpoints can also
+        create, modify, or delete registered web services
+    - name: Implementations
+      description: |
+        `/implementations` API endpoints are used to retrieve information about
+        implementations (codebases, libraries, tools, etc.) that implement GA4GH
+        standards from the registry. These endpoints can also
+        create, modify, or delete registered implementations
+    - name: Organizations
+      description: |
+        `/organizations` API endpoints are used to retrieve information about
+        organizations adopting GA4GH standards, and have registered implementations
+        and/or web services within the registry. These endpoints can also create,
+        modify, or delete implementing organizations from the registry
 components:
+    securitySchemes:
+        BearerAuth:
+            type: http
+            scheme: bearer
+            bearerFormat: JWT
     schemas:
         ApiError:
             type: object
@@ -375,19 +708,82 @@ components:
             required:
                 - id
                 - name
-        Service:
-            allOf:
-                - $ref: 'https://raw.githubusercontent.com/ga4gh-discovery/ga4gh-service-registry/develop/service-registry.yaml#/components/schemas/ExternalService'
         ServiceType:
             allOf:
                 - $ref: 'https://raw.githubusercontent.com/ga4gh-discovery/ga4gh-service-info/develop/service-info.yaml#/components/schemas/ServiceType'
-        Organization:
+        Implementation:
+            type: object
+            properties:
+                id:
+                    type: string
+                    description: unique identifier for the implementation/web service in reverse domain name notation
+                    example: org.ga4gh.myimplementation
+                name:
+                    type: string
+                    description: human readable name of the implementation/web service
+                    example: My project
+                type:
+                    $ref: '#/components/schemas/ServiceType'
+                description:
+                    type: string
+                    description: human readable description of the implementation/web service, providing information about how the tool might be used
+                    example: This implementation of the Beacon API specification ...
+                organization:
+                    $ref: '#/components/schemas/OrganizationSummary'
+                contactUrl:
+                    type: string
+                    format: uri
+                    description: url of the contact for the maintainer/provider of the implementation/web service
+                    example: mailto:support@example.com
+                documentationUrl:
+                    type: string
+                    format: uri
+                    description: url to the documentation of the implementation/web service (RFC 3986 format). This should help someone learn how to use the implementation/service
+                createdAt:
+                    type: string
+                    format: date-time
+                    description: timestamp describing when the implementation/web service was first made available (RFC 3339 format)
+                    example: '2019-06-04T12:58:19Z'
+                updatedAt:
+                    type: string
+                    format: date-time
+                    description: timestamp describing when the implementation/web service was last updated (RFC 3339 format)
+                    example: '2019-06-04T12:58:19Z'
+                version:
+                    type: string
+                    description: version of the implementation/web service
+                    example: 1.0.0
+            required:
+                - id
+                - name
+                - type
+                - organization
+                - version
+        Service:
+            allOf:
+                - $ref: '#/components/schemas/Implementation'
+                - type: object
+                  properties:
+                    environment:
+                        type: string
+                        description: environment the web service is running in. can be used to distinguish between production, development, and testing/staging environments.
+                        example: test
+                    url:
+                        type: string
+                        format: uri
+                        description: |
+                            Base URL of the service ([RFC 3986](https://tools.ietf.org/html/rfc3986) format).
+
+                            For REST API services, this is the URL to which all endpoints should be relative. In particular, services implementing GA4GH specifications defined in OAS format (as per the `type` field) should respond to requests constructed by appending relative paths from the specification to this base URL (e.g. `{url}/service-info`). See [API Server and Base URL](https://swagger.io/docs/specification/api-host-and-base-path/) for more information on specifying base URLs in OAS 3.
+                  required:
+                    - url
+        OrganizationSummary:
             type: object
             properties:
                 id:
                     type: string
                     description: unique identifier for this organization
-                    example: f3cfc0d2-e9bd-4b26-a856-0d2b2f47d1f4
+                    example: org.ga4gh
                 name:
                     type: string
                     description: organization full name
@@ -404,6 +800,16 @@ components:
                 - id
                 - name
                 - url
+        OrganizationFull:
+            allOf:
+                - $ref: '#/components/schemas/OrganizationSummary'
+                - type: object
+                  properties:
+                    implementations:
+                        type: array
+                        description: list of implementations and services developed/hosted by (or otherwise associated with) the organization
+                        items:
+                            $ref: '#/components/schemas/Service'
     parameters:
         StandardId:
             in: path
@@ -415,6 +821,11 @@ components:
             name: serviceId
             description: unique identifier for the web service
             example: org.ga4gh.registry
+        ImplementationId:
+            in: path
+            name: implementationId
+            description: unique identifier for the implementation (codebase, library, tool, etc.)
+            example: org.ga4gh.refget.implementation
         OrganizationId:
             in: path
             name: organizationId
@@ -428,6 +839,19 @@ components:
     responses:
         400BadRequestError:
             description: The service could not complete your request. One or more request parameters were likely malformed
+            content:
+                application/json:
+                    schema:
+                        allOf:
+                            - $ref: '#/components/schemas/ApiError'
+                            - type: object
+                              properties:
+                                status:
+                                    example: 400
+                                error:
+                                    example: Bad Request
+                                message:
+                                    example: could not instantiate ServiceType from 'type' string
         404NotFoundError:
             description: The requested resource could not be located
             content:
