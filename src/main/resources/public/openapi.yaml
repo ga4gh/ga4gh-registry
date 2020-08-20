@@ -2,6 +2,10 @@ openapi: 3.0.3
 info:
     title: GA4GH Planet API
     description: |
+        The production API base url is: https://registry.ga4gh.org/v1/
+        * ex: https://registry.ga4gh.org/v1/standards
+        * ex: https://registry.ga4gh.org/v1/services
+
         # Introduction
 
         The Planet API is an HTTP API served by the
@@ -36,7 +40,13 @@ info:
         Implementations and services can be accessed via the `/implementations` 
         and `/services` routes, respectively.
 
-        ## Register an implementation or web service 
+        ## Register an implementation or web service
+        
+        To register an implementation or web service in the Planet API registry,
+        please complete and submit the [registration form](https://docs.google.com/forms/d/1Bi7Ay5A1npH1ZTkhC1OAp5Us6vPzg2LjdsY1aTK0Xd4).
+
+        Once completed, someone from the GA4GH Technical Team will then register
+        your item, or contact you if more information is needed.
 
         # Errors
 
