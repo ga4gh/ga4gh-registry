@@ -1,0 +1,1 @@
+{"id":"standarda","name":"Standard A","abbreviation":"A","artifact":"standarda","summary":"a test standard","description":"longer description of a test standard","documentationUrl":"https://ga4gh.org/standards/standarda","category":"API","status":"Legacy","versions":[],"workStream":{"id":"org.ga4gh.workstream.cloud","name":"Cloud"}}

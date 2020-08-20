@@ -2,10 +2,6 @@ package org.ga4gh.registry.model;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
-import org.ga4gh.registry.model.ReleaseStatus;
-import org.ga4gh.registry.model.Standard;
-import org.ga4gh.registry.model.StandardVersion;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;

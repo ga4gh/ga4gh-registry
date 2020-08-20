@@ -4,6 +4,8 @@ import java.util.Date;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -11,9 +13,13 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
+import com.vladmihalcea.hibernate.type.basic.PostgreSQLEnumType;
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
 
 @Entity
 @Table(name = "implementation")
+@TypeDef(name = "implementation_category_enum", typeClass = PostgreSQLEnumType.class)
 public class Implementation implements RegistryModel {
 
     private static final String tableName = "implementation";
@@ -28,13 +34,13 @@ public class Implementation implements RegistryModel {
     @JoinColumn(name = "standard_version_id")
     private StandardVersion standardVersion;
 
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE,
-                          CascadeType.DETACH, CascadeType.REFRESH})
-    @JoinColumn(name = "implementation_category_id")
-    private ImplementationCategory implementationCategory;
-
     @Column(name = "name")
     private String name;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "category", columnDefinition = "implementation_category")
+    @Type(type = "implementation_category_enum")
+    private ImplementationCategory category;
 
     @Column(name = "description")
     private String description;
@@ -113,20 +119,20 @@ public class Implementation implements RegistryModel {
         this.standardVersion = standardVersion;
     }
 
-    public ImplementationCategory getImplementationCategory() {
-        return implementationCategory;
-    }
-
-    public void setImplementationCategory(ImplementationCategory implementationCategory) {
-        this.implementationCategory = implementationCategory;
-    }
-
     public String getName() {
         return name;
     }
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public ImplementationCategory getCategory() {
+        return category;
+    }
+
+    public void setCategory(ImplementationCategory category) {
+        this.category = category;
     }
 
     public String getDescription() {

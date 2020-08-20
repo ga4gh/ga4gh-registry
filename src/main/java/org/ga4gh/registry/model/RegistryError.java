@@ -1,8 +1,10 @@
 package org.ga4gh.registry.model;
 
+import java.util.Date;
+
 public class RegistryError {
 
-    private String timestamp;
+    private Date timestamp;
     private int status;
     private String error;
     private String message;
@@ -15,11 +17,11 @@ public class RegistryError {
         setMessage(message);
     }
 
-    public void setTimestamp(String timestamp) {
+    public void setTimestamp(Date timestamp) {
         this.timestamp = timestamp;
     }
 
-    public String getTimestamp() {
+    public Date getTimestamp() {
         return timestamp;
     }
 
