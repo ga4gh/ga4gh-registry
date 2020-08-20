@@ -171,6 +171,7 @@ ALTER TABLE test_schema.work_stream OWNER TO test_user;
 COPY test_schema.implementation (id, standard_version_id, name, description, organization_id, contact_url, documentation_url, created_at, updated_at, environment, version, url, category) FROM stdin;
 org.ga4gh.htsgetreference	9da4ec68-19ca-4603-9d0c-ad62c8e56796	GA4GH htsget	ga4gh implementation of htsget	org.ga4gh	mailto:nobody@ga4gh.org	https://example.org/doc/ga4gh/htsget	\N	\N	production	1.0.0	https://example.org/api/ga4gh/htsget	deployment
 org.ga4gh.registry	20dc24de-86a5-4301-a9be-95211469dabd	GA4GH service registry	ga4gh implementation of service registry	org.ga4gh	mailto:nobody@ga4gh.org	https://example.org/doc/ga4gh/registry	2020-03-01 12:30:00-05	2020-07-22 09:26:00-04	\N	1.0.0	https://example.org/api/ga4gh/registry	deployment
+org.broadinstitute.gatk.htsget	9da4ec68-19ca-4603-9d0c-ad62c8e56796	htsget client in GATK	htsget client in GATK	org.broadinstitute	mailto:nobody@ga4gh.org	https://gatk.broadinstitute.org	\N	\N	\N	1.0.0	\N	implementation
 \.
 
 

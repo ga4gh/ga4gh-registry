@@ -1,1 +1,1 @@
-{"id":"org.broadinstitute","name":"Broad Institute","url":"https://www.broadinstitute.org","implementations":[]}
+{"id":"org.broadinstitute","name":"Broad Institute","url":"https://www.broadinstitute.org","implementations":[{"id":"org.broadinstitute.gatk.htsget","name":"htsget client in GATK","type":{"group":"org.ga4gh","artifact":"htsget","version":"1.2.0"},"version":"1.0.0","documentationUrl":"https://gatk.broadinstitute.org"}]}

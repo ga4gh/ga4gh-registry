@@ -3,7 +3,6 @@ package org.ga4gh.registry.controller;
 import org.ga4gh.registry.AppConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -22,6 +21,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import org.ga4gh.registry.testutils.HttpHeaderSets;
 import org.ga4gh.registry.testutils.ResourceLoader;
 import org.ga4gh.registry.testutils.annotations.RegistryTestProperties;
 
@@ -47,14 +47,6 @@ public class OrganizationsTest extends AbstractTestNGSpringContextTests {
     private static final String postDir = organizationsDir + "post/";
     private static final String putDir = organizationsDir + "put/";
 
-    private HttpHeaders httpHeadersOk() {
-        HttpHeaders headers = new HttpHeaders();
-        headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_UTF8_VALUE);
-        headers.add(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_UTF8_VALUE);
-        headers.add(HttpHeaders.AUTHORIZATION, "bearer mysecret");
-        return headers;
-    }
-
     @DataProvider(name = "showOrganizationCases")
     public Object[][] showOrganizationCases() {
         return new Object[][] {
@@ -68,21 +60,24 @@ public class OrganizationsTest extends AbstractTestNGSpringContextTests {
     @DataProvider(name = "postOrganizationCases")
     public Object[][] postOrganizationCases() {
         return new Object[][] {
-            {postDir + "00.json", httpHeadersOk(), status().isOk(), true }
+            {postDir + "00.json", HttpHeaderSets.ok(), status().isOk(), true },
+            {postDir + "00.json", HttpHeaderSets.noAuthToken(), status().isForbidden(), false },
+            {postDir + "00.json", HttpHeaderSets.authTokenMalformed(), status().isForbidden(), false },
+            {postDir + "00.json", HttpHeaderSets.authTokenInvalid(), status().isForbidden(), false }
         };
     }
 
     @DataProvider(name = "putOrganizationCases")
     public Object[][] putOrganizationCases() {
         return new Object[][] {
-            {"org.testa", putDir + "00.json", httpHeadersOk(), status().isOk(), true }
+            {"org.testa", putDir + "00.json", HttpHeaderSets.ok(), status().isOk(), true }
         };
     }
 
     @DataProvider(name = "deleteOrganizationCases")
     public Object[][] deleteOrganizationCases() {
         return new Object[][] {
-            {"org.testa", httpHeadersOk(), status().isOk()}
+            {"org.testa", HttpHeaderSets.ok(), status().isOk()}
         };
     }
 
