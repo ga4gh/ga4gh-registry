@@ -21,7 +21,7 @@ public class RegistryErrorSerializer extends VariableDepthSerializer<RegistryErr
     public void serialize(RegistryError value, JsonGenerator gen, SerializerProvider serializers)
             throws IOException {
         gen.writeStartObject();
-        writeStringIfExists(gen, "timestamp", value.getTimestamp());
+        writeObjectIfExists(gen, "timestamp", value.getTimestamp());
         gen.writeNumberField("status", value.getStatus());
         writeStringIfExists(gen, "error", value.getError());
         writeStringIfExists(gen, "message", value.getMessage());

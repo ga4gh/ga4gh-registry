@@ -13,6 +13,7 @@ public class ShowRequestHandler<T extends RegistryModel> extends RequestHandler<
 
     public ResponseEntity<String> createResponseEntity() {
         validateObjectByIdExists(getIdOnPath());
+        validateRequest();
         return ResponseEntity.ok().body(serializeObject(getObjectById(getIdOnPath())));
     }
 }

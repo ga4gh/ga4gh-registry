@@ -3,7 +3,6 @@ package org.ga4gh.registry.util.hibernate;
 import org.ga4gh.registry.model.Implementation;
 import org.ga4gh.registry.model.RegistryModel;
 import org.ga4gh.registry.model.Standard;
-import org.ga4gh.registry.util.hibernate.HibernateQueryBuilder;
 import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.Assert;
@@ -53,7 +52,7 @@ public class HibernateQueryBuilderTest extends AbstractTestNGSpringContextTests 
                 Standard.class,
                 new String[0],
                 new String[0][0],
-                "select distinct a from org.ga4gh.registry.model.Standard a "
+                "select distinct a from org.ga4gh.registry.model.Standard a  ORDER BY a.id "
             )},
             {new TestCase(
                 Standard.class,
@@ -61,6 +60,7 @@ public class HibernateQueryBuilderTest extends AbstractTestNGSpringContextTests 
                 new String[0][0],
                 "select distinct a from org.ga4gh.registry.model.Standard a "
                 + "LEFT JOIN FETCH a.releaseStatus "
+                + " ORDER BY a.id "
             )},
             {new TestCase(
                 Implementation.class,
@@ -77,6 +77,7 @@ public class HibernateQueryBuilderTest extends AbstractTestNGSpringContextTests 
                 + "LEFT JOIN FETCH a.implementationCategory "
                 + "LEFT JOIN FETCH a.organization "
                 + "WHERE a.implementationCategory.category='APIService'"
+                + " ORDER BY a.id "
             )}
         };
     }

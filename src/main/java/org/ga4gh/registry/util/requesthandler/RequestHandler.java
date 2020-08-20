@@ -92,6 +92,10 @@ public class RequestHandler<T extends RegistryModel> implements RequestHandlerI<
         return serialized;
     }
 
+    public void validateRequest() throws ResourceNotFoundException {
+        
+    }
+
     public T preProcessRequestBody(T requestBody) throws ResourceNotFoundException {
         return requestBody;
     }

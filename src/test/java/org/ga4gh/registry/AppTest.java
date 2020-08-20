@@ -11,29 +11,5 @@ import org.springframework.test.context.web.WebAppConfiguration;
 @WebAppConfiguration
 @ContextConfiguration(classes = {AppConfig.class})
 public class AppTest {
-
-    /*
-    private MockMvc mockMvc;
-    private MockMvc mockMvc2;
-
-    @BeforeClass
-    public void setup() {
-        mockMvc = MockMvcBuilders.standaloneSetup(ServiceInfo.class).build();
-        mockMvc2 = MockMvcBuilders.standaloneSetup(Services.class).build();
-    }
-
-    @Test
-    public void helloGradle() throws Exception {
-        System.out.println("Testing service-info");
-        mockMvc.perform(get("/service-info"))
-               .andExpect(status().isOk());
-        System.out.println("Testing services");
-        mockMvc2.perform(get("/services"))
-               .andExpect(status().isOk());
-
-        String results = new ServiceInfo().getServiceInfo();
-        System.out.println("My service info results: ");
-        System.out.println(results);
-    }
-    */
+    
 }

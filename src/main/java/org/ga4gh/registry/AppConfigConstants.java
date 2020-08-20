@@ -7,6 +7,7 @@ public class AppConfigConstants {
      * ****************************** */
     public static final String STANDARD_ID = "standardId";
     public static final String ORGANIZATION_ID = "organizationId";
+    public static final String IMPLEMENTATION_ID = "implementationId";
     public static final String SERVICE_ID = "serviceId";
 
     /* ******************************
@@ -25,12 +26,21 @@ public class AppConfigConstants {
     // STANDARD
     public static final String INDEX_STANDARD_HANDLER = "indexStandardHandler";
     public static final String SHOW_STANDARD_HANDLER = "showStandardHandler";
+    public static final String POST_STANDARD_HANDLER = "postStandardHandler";
+    public static final String PUT_STANDARD_HANDLER = "putStandardHandler";
+    public static final String DELETE_STANDARD_HANDLER = "deleteStandardHandler";
     // ORGANIZATION
     public static final String INDEX_ORGANIZATION_HANDLER = "indexOrganizationHandler";
     public static final String SHOW_ORGANIZATION_HANDLER = "showOrganizationHandler";
     public static final String POST_ORGANIZATION_HANDLER = "postOrganizationHandler";
     public static final String PUT_ORGANIZATION_HANDLER = "putOrganizationHandler";
     public static final String DELETE_ORGANIZATION_HANDLER = "deleteOrganizationHandler";
+    // IMPLEMENTATION
+    public static final String INDEX_IMPLEMENTATION_HANDLER = "indexImplementationHandler";
+    public static final String SHOW_IMPLEMENTATION_HANDLER = "showImplementationHandler";
+    public static final String POST_IMPLEMENTATION_HANDLER = "postImplementationHandler";
+    public static final String PUT_IMPLEMENTATION_HANDLER = "putImplementationHandler";
+    public static final String DELETE_IMPLEMENTATION_HANDLER = "deleteImplementationHandler";
     // SERVICE
     public static final String INDEX_SERVICE_HANDLER = "indexServiceHandler";
     public static final String SHOW_SERVICE_HANDLER = "showServiceHandler";
@@ -48,12 +58,21 @@ public class AppConfigConstants {
     // STANDARD
     public static final String INDEX_STANDARD_HANDLER_FACTORY = "indexStandardHandlerFactory";
     public static final String SHOW_STANDARD_HANDLER_FACTORY = "showStandardHandlerFactory";
+    public static final String POST_STANDARD_HANDLER_FACTORY = "postStandardHandlerFactory";
+    public static final String PUT_STANDARD_HANDLER_FACTORY = "putStandardHandlerFactory";
+    public static final String DELETE_STANDARD_HANDLER_FACTORY = "deleteStandardHandlerFactory";
     // ORGANIZATION
     public static final String INDEX_ORGANIZATION_HANDLER_FACTORY = "indexOrganizationHandlerFactory";
     public static final String SHOW_ORGANIZATION_HANDLER_FACTORY = "showOrganizationHandlerFactory";
     public static final String POST_ORGANIZATION_HANDLER_FACTORY = "postOrganizationHandlerFactory";
     public static final String PUT_ORGANIZATION_HANDLER_FACTORY = "putOrganizationHandlerFactory";
     public static final String DELETE_ORGANIZATION_HANDLER_FACTORY = "deleteOrganizationHandlerFactory";
+    // IMPLEMENTATION
+    public static final String INDEX_IMPLEMENTATION_HANDLER_FACTORY = "indexImplementationHandlerFactory";
+    public static final String SHOW_IMPLEMENTATION_HANDLER_FACTORY = "showImplementationHandlerFactory";
+    public static final String POST_IMPLEMENTATION_HANDLER_FACTORY = "postImplementationHandlerFactory";
+    public static final String PUT_IMPLEMENTATION_HANDLER_FACTORY = "putImplementationHandlerFactory";
+    public static final String DELETE_IMPLEMENTATION_HANDLER_FACTORY = "deleteImplementationHandlerFactory";
     // SERVICE
     public static final String INDEX_SERVICE_HANDLER_FACTORY = "indexServiceHandlerFactory";
     public static final String SHOW_SERVICE_HANDLER_FACTORY = "showServiceHandlerFactory";
