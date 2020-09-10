@@ -34,6 +34,7 @@ public class ImplementationSerializer extends VariableDepthSerializer<Implementa
         writeObjectIfExists(gen, "createdAt", value.getCreatedAt());
         writeObjectIfExists(gen, "updatedAt", value.getUpdatedAt());
         writeStringIfSelected(gen, "environment", value.getEnvironment());
+        writeStringIfExists(gen, "curiePrefix", value.getCuriePrefix());
         gen.writeEndObject();
 
     }
