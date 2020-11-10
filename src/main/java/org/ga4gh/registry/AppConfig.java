@@ -8,6 +8,7 @@ import org.ga4gh.registry.model.Implementation;
 import org.ga4gh.registry.model.Organization;
 import org.ga4gh.registry.model.Standard;
 import org.ga4gh.registry.model.StandardVersion;
+import org.ga4gh.registry.model.URIResolution;
 import org.ga4gh.registry.util.auth.PlaceholderAuth;
 import org.ga4gh.registry.util.hibernate.HibernateConfig;
 import org.ga4gh.registry.util.hibernate.HibernateUtil;
@@ -19,6 +20,7 @@ import org.ga4gh.registry.util.requesthandler.index.IndexImplementationsHandler;
 import org.ga4gh.registry.util.requesthandler.index.IndexRequestHandler;
 import org.ga4gh.registry.util.requesthandler.index.IndexServiceTypesHandler;
 import org.ga4gh.registry.util.requesthandler.index.IndexServicesHandler;
+import org.ga4gh.registry.util.requesthandler.index.ResolveURIHandler;
 import org.ga4gh.registry.util.requesthandler.post.PostImplementationHandler;
 import org.ga4gh.registry.util.requesthandler.post.PostRequestHandler;
 import org.ga4gh.registry.util.requesthandler.post.PostServiceHandler;
@@ -303,6 +305,17 @@ public class AppConfig implements WebMvcConfigurer {
         return new ShowServiceInfoHandler(Implementation.class, serializerModule, AppConfigConstants.SERVICE_ID);
     }
 
+    /* RESOLVE REQUEST HANDLER BEANS */
+
+    @Bean(name = AppConfigConstants.RESOLVE_URI_HANDLER)
+    @Scope(AppConfigConstants.PROTOTYPE)
+    public ResolveURIHandler resolveURIHandler(
+        // SERIALIZER MODULE GOES HERE
+        @Qualifier(AppConfigConstants.IMPLEMENTATION_HIBERNATE_QUERIER) HibernateQuerier<Implementation> querier
+    ) {
+        return new ResolveURIHandler(Implementation.class, null, querier);
+    }
+
     /* ******************************
      * REQUEST HANDLER FACTORY BEANS
      * ****************************** */
@@ -447,6 +460,14 @@ public class AppConfig implements WebMvcConfigurer {
     @Qualifier(AppConfigConstants.SHOW_SERVICE_INFO_HANDLER_FACTORY)
     public RequestHandlerFactory<Implementation> showServiceInfoHandlerFactory() {
         return new RequestHandlerFactory<>(Implementation.class, AppConfigConstants.SHOW_SERVICE_INFO_HANDLER);
+    }
+
+    /* RESOLVE REQUEST HANDLER FACTORY BEANS */
+
+    @Bean
+    @Qualifier(AppConfigConstants.RESOLVE_URI_HANDLER_FACTORY)
+    public RequestHandlerFactory<URIResolution> resolveURIHandlerFactory() {
+        return new RequestHandlerFactory<>(URIResolution.class, AppConfigConstants.RESOLVE_URI_HANDLER);
     }
 
     /* ******************************
