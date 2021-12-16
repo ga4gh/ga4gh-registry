@@ -16,6 +16,7 @@ public class CustomErrorAttributes extends DefaultErrorAttributes {
     @Qualifier(AppConfigConstants.BASIC_DATE_SERIALIZER)
     private DateSerializer dateSerializer;
     
+    /*
     @Override
     public Map<String, Object> getErrorAttributes(
       WebRequest webRequest, boolean includeStackTrace) {
@@ -23,6 +24,7 @@ public class CustomErrorAttributes extends DefaultErrorAttributes {
         errorAttributes.put("timestamp", getDateSerializer().getFormatter().format(new Date()));
         return errorAttributes;
     }
+    */
 
     public void setDateSerializer(DateSerializer dateSerializer) {
         this.dateSerializer = dateSerializer;
