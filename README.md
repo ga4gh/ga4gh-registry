@@ -52,3 +52,8 @@ The coverage report directory will be available at `./build/reports/jacoco/test/
 ## Issues
 
 Feature requests, issues, and bugs may be reported via the [Github issue tracker](https://github.com/ga4gh/ga4gh-registry/issues), or by emailing one of the above maintainers directly.
+
+## Changelog
+
+### v0.5.1
+* Patched log4j dependencies to v2.16.0 to avoid [Log4j Vulnerability](https://www.cisa.gov/uscert/apache-log4j-vulnerability-guidance)

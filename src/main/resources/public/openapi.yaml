@@ -62,7 +62,7 @@ info:
             "path": "/v1/services/example1"
         }
         ```
-    version: 0.5.0
+    version: 0.5.1
     contact:
         name: GA4GH Tech Team
         url: https://ga4gh.org
