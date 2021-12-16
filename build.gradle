@@ -9,12 +9,18 @@
 plugins {
     // Apply the java plugin to add support for Java
     id 'java'
-    id 'org.springframework.boot' version '2.0.5.RELEASE'
+    id 'org.springframework.boot' version '2.5.0'
     id 'io.spring.dependency-management' version '1.0.7.RELEASE'
-    // Apply the application plugin to add support for building a CLI application.
-    id 'application'
     id 'jacoco'
-    id 'com.github.kt3k.coveralls' version '2.6.3'
+    // id 'com.github.kt3k.coveralls' version '2.6.3'
+}
+
+configurations.all {
+  resolutionStrategy.eachDependency { DependencyResolveDetails details ->
+    if (details.requested.group == 'org.apache.logging.log4j') {
+      details.useVersion '2.16.0'
+    }
+  }
 }
 
 repositories {
@@ -24,16 +30,38 @@ repositories {
 }
 
 dependencies {
-    // This dependency is used by the application.
     implementation 'com.google.guava:guava:28.1-jre'
-
-    // Use TestNG framework, also requires calling test.useTestNG() below
-    testImplementation 'org.testng:testng:7.0.0'
-
     implementation 'org.springframework.boot:spring-boot-dependencies:2.0.5.RELEASE'
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-aop'
+    implementation 'com.google.code.gson:gson'
+    implementation 'javassist:javassist:3.12.1.GA'
+    implementation 'org.hibernate:hibernate-core:5.4.11.Final'
+    implementation 'org.springframework:spring-orm:5.1.6.RELEASE'
+    implementation 'org.hibernate.javax.persistence:hibernate-jpa-2.1-api:1.0.0.Final'
+    implementation 'org.hibernate:hibernate-core:5.4.11.Final'
+    implementation 'org.postgresql:postgresql:42.2.10'
+    implementation 'javax.xml.bind:jaxb-api:2.2.8'
+    implementation 'com.fasterxml.jackson.core:jackson-core:2.10.2'
+    implementation 'com.fasterxml.jackson.core:jackson-annotations:2.10.2'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.10.2'
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-hibernate4:2.4.4'
+    implementation 'org.springdoc:springdoc-openapi-ui:1.2.33'
+    implementation 'com.vladmihalcea:hibernate-types-52:2.3.5'
+    // implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity4'
+    // compile 'org.springframework.boot:spring-boot-starter-security'
 
+    testImplementation 'org.testng:testng:7.0.0'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation("org.dbunit:dbunit:2.5.1")
+    testImplementation("com.github.springtestdbunit:spring-test-dbunit:1.2.1")
+    testImplementation("net.sourceforge.htmlunit:htmlunit:2.20")
+    testImplementation("org.easytesting:fest-assert:1.4")
+    testImplementation ("org.springframework.security:spring-security-test")
 
     components {
         withModule('org.springframework:spring-beans') {
@@ -44,40 +72,6 @@ dependencies {
             }
         }
     }
-
-    compile 'org.springframework.boot:spring-boot-starter-web'
-    compile 'org.springframework.boot:spring-boot-starter-thymeleaf'
-    compile 'org.springframework.boot:spring-boot-starter-data-jpa'
-    // compile 'org.springframework.boot:spring-boot-starter-security'
-    compile 'org.springframework.boot:spring-boot-starter-aop'
-    compile 'org.thymeleaf.extras:thymeleaf-extras-springsecurity4'
-    compile 'com.google.code.gson:gson'
-    compile 'javassist:javassist:3.12.1.GA'
-    compile 'org.hibernate:hibernate-core:5.4.11.Final'
-    compile 'org.springframework:spring-orm:5.1.6.RELEASE'
-    compile 'org.hibernate.javax.persistence:hibernate-jpa-2.1-api:1.0.0.Final'
-
-    compile 'org.hibernate:hibernate-core:5.4.11.Final'
-    compile 'org.postgresql:postgresql:42.2.10'
-    compile 'javax.xml.bind:jaxb-api:2.2.8'
-    compile 'com.fasterxml.jackson.core:jackson-core:2.10.2'
-    compile 'com.fasterxml.jackson.core:jackson-annotations:2.10.2'
-    compile 'com.fasterxml.jackson.core:jackson-databind:2.10.2'
-    compile 'com.fasterxml.jackson.datatype:jackson-datatype-hibernate4:2.4.4'
-    compile 'org.springdoc:springdoc-openapi-ui:1.2.33'
-    compile 'com.vladmihalcea:hibernate-types-52:2.3.5'
-
-    testCompile 'org.springframework.boot:spring-boot-starter-test'
-    testCompile("org.dbunit:dbunit:2.5.1")
-    testCompile("com.github.springtestdbunit:spring-test-dbunit:1.2.1")
-    testCompile("net.sourceforge.htmlunit:htmlunit:2.20")
-    testCompile("org.easytesting:fest-assert:1.4")
-    testCompile ("org.springframework.security:spring-security-test")
-}
-
-application {
-    // Define the main class for the application.
-    mainClassName = 'org.ga4gh.registry.App'
 }
 
 test {
