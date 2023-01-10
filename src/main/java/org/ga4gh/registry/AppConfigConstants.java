@@ -50,6 +50,8 @@ public class AppConfigConstants {
     public static final String INDEX_SERVICE_TYPES_HANDLER = "indexServiceTypesHandler";
     // SERVICE-INFO
     public static final String SHOW_SERVICE_INFO_HANDLER = "showServiceInfoHandler";
+    // RESOLVE
+    public static final String RESOLVE_URI_HANDLER = "resolveURIHandler";
 
     /* ******************************
      * REQUEST HANDLER FACTORY 
@@ -82,6 +84,8 @@ public class AppConfigConstants {
     public static final String INDEX_SERVICE_TYPES_HANDLER_FACTORY = "indexServiceTypesHandlerFactory";
     // SERVICE-INFO
     public static final String SHOW_SERVICE_INFO_HANDLER_FACTORY = "showServiceInfoHandlerFactory";
+    // RESOLVE
+    public static final String RESOLVE_URI_HANDLER_FACTORY = "resolveURIHandlerFactory";
 
     /* ******************************
      * SERIALIZERS

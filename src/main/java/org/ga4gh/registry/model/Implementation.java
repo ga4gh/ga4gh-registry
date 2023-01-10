@@ -73,6 +73,9 @@ public class Implementation implements RegistryModel {
     @Column(name = "url")
     private String url;
 
+    @Column(name = "curie_prefix")
+    private String curiePrefix;
+
     @Transient
     private ServiceType type;
 
@@ -205,6 +208,14 @@ public class Implementation implements RegistryModel {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public String getCuriePrefix() {
+        return curiePrefix;
+    }
+
+    public void setCuriePrefix(String curiePrefix) {
+        this.curiePrefix = curiePrefix;
     }
 
     public void setType(ServiceType type) {
