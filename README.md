@@ -47,7 +47,7 @@ The coverage report directory will be available at `./build/reports/jacoco/test/
 
 ## Maintainers
 
-* Jeremy Adams [jeremy.adams@ga4gh.org](mailto:jeremy.adams@ga4gh.org)
+* GA4GH Tech Team [ga4gh-tech-team@ga4gh.org](mailto:ga4gh-tech-team@ga4gh.org)
 
 ## Issues
 
