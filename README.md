@@ -45,6 +45,34 @@ To generate the test coverage report, execute the following (after the above tes
 
 The coverage report directory will be available at `./build/reports/jacoco/test/html`. A local server can be started in the directory to view the report.
 
+## Register an implementation
+
+To register an implementation, please enter the information for the implementation being registered in the form of the json object below then send it to the GA4GH tech team email found in the maintainers section.
+
+```
+  {
+    "id": "edu.caltech.rnaget",
+    "name": "Caltech RNAget Reference Implementation",
+    "type": {
+      "group": "org.ga4gh",
+      "artifact": "rnaget",
+      "version": "1.0.0"
+    },
+    "organization": {
+      "id": "edu.caltech",
+      "name": "California Institute of Technology",
+      "shortName": "Caltech",
+      "url": "https://www.caltech.edu/"
+    },
+    "version": "1.0.0",
+    "url": "https://felcat.caltech.edu/rnaget",
+    "description": "RNAget implementation serving compliance test dataset",
+    "contactUrl": "sau@caltech.edu",
+    "documentationUrl": "https://felcat.caltech.edu/rnaget",
+    "environment": "production"
+  }
+```
+
 ## Maintainers
 
 * GA4GH Tech Team [ga4gh-tech-team@ga4gh.org](mailto:ga4gh-tech-team@ga4gh.org)
