@@ -108,7 +108,7 @@ info:
   contact:
     name: GA4GH Tech Team
     url: 'https://ga4gh.org'
-    email: jeremy.adams@ga4gh.org
+    email: ga4gh-tech-team@ga4gh.org
   license:
     name: Apache 2.0
     url: 'https://www.apache.org/licenses/LICENSE-2.0.html'
