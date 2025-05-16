@@ -3,8 +3,11 @@ info:
     title: GA4GH Planet API
     description: |
         The production API base url is: https://registry.ga4gh.org/v1/
-        * ex: https://registry.ga4gh.org/v1/standards
-        * ex: https://registry.ga4gh.org/v1/services
+        * https://registry.ga4gh.org/v1/implementations
+        * https://registry.ga4gh.org/v1/organizations
+        * https://registry.ga4gh.org/v1/service-info
+        * https://registry.ga4gh.org/v1/services
+        * https://registry.ga4gh.org/v1/standards
 
         # Introduction
 
@@ -71,7 +74,7 @@ info:
         name: Apache 2.0
         url: https://www.apache.org/licenses/LICENSE-2.0.html
     x-logo:
-        url: https://www.ga4gh.org/wp-content/themes/ga4gh-theme/gfx/GA-logo-horizontal-tag-RGB.svg
+        url: https://www.ga4gh.org/wp-content/themes/ga4gh/dist/assets/svg/logos/logo-full-color.svg
         backgroundColor: '#FFFFFF'
         altText: Global Alliance for Genomics and Health
         href: https://ga4gh.org

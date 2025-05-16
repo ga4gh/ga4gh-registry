@@ -1,4 +1,4 @@
-<img src="https://www.ga4gh.org/wp-content/themes/ga4gh-theme/gfx/GA-logo-horizontal-tag-RGB.svg" alt="GA4GH Logo" style="width: 400px;"/>
+<img src="https://www.ga4gh.org/wp-content/themes/ga4gh/dist/assets/svg/logos/logo-full-color.svg" alt="GA4GH Logo" style="width: 400px;"/>
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg?style=flat-square)](https://opensource.org/licenses/Apache-2.0)
 [![Java 11+](https://img.shields.io/badge/java-11+-blue.svg?style=flat-square)](https://www.java.com)
@@ -17,6 +17,8 @@ The production API is available at `https://registry.ga4gh.org/v1/`. Example HTT
 * https://registry.ga4gh.org/v1/standards (view GA4GH standards)
 * https://registry.ga4gh.org/v1/services (get registered web services based on canonical GA4GH service types)
 * https://registry.ga4gh.org/v1/organizations (view organizations with registered services or implementations)
+* https://registry.ga4gh.org/v1/service-info (view the service info of the implementations)
+* https://registry.ga4gh.org/v1/implementations (view the implementations of the GA4GH standards)
 
 
 ## Starting the test server
