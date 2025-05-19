@@ -15,8 +15,8 @@ See the [GA4GH Planet OpenAPI Docs](https://ga4gh.github.io/ga4gh-registry/docs/
 The production API is available at `https://registry.ga4gh.org/v1/`. Example HTTPS requests include:
 
 * https://registry.ga4gh.org/v1/service-info (view the service info of the implementations)
-* https://registry.ga4gh.org/v1/services (get registered web services based on canonical GA4GH service types)
 * https://registry.ga4gh.org/v1/standards (view GA4GH standards)
+* https://registry.ga4gh.org/v1/services (get registered web services based on canonical GA4GH service types)
 * https://registry.ga4gh.org/v1/implementations (view the implementations of the GA4GH standards)
 * https://registry.ga4gh.org/v1/organizations (view organizations with registered services or implementations)
 
