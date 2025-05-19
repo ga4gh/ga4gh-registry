@@ -4,16 +4,15 @@ info:
   description: >
     The production API base url is: https://registry.ga4gh.org/v1/
 
-    * https://registry.ga4gh.org/v1/implementations
-
-    * https://registry.ga4gh.org/v1/organizations
-
     * https://registry.ga4gh.org/v1/service-info
 
     * https://registry.ga4gh.org/v1/services
 
     * https://registry.ga4gh.org/v1/standards
+    
+    * https://registry.ga4gh.org/v1/implementations
 
+    * https://registry.ga4gh.org/v1/organizations
 
     # Introduction
 
