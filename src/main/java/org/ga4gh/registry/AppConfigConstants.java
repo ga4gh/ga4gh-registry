@@ -9,6 +9,7 @@ public class AppConfigConstants {
     public static final String ORGANIZATION_ID = "organizationId";
     public static final String IMPLEMENTATION_ID = "implementationId";
     public static final String SERVICE_ID = "serviceId";
+    public static final String GEOLOCATION_ID = "geolocationId";
 
     /* ******************************
      * HIBERNATE QUERIER
@@ -18,6 +19,7 @@ public class AppConfigConstants {
     public static final String STANDARD_VERSION_HIBERNATE_QUERIER = "standardVersionHibernateQuerier";
     public static final String ORGANIZATION_HIBERNATE_QUERIER = "organizationHibernateQuerier";
     public static final String IMPLEMENTATION_HIBERNATE_QUERIER = "implementationHibernateQuerier";
+    public static final String GEOLOCATION_HIBERNATE_QUERIER = "geolocationHibernateQuerier";
 
     /* ******************************
      * REQUEST HANDLER 
@@ -35,6 +37,12 @@ public class AppConfigConstants {
     public static final String POST_ORGANIZATION_HANDLER = "postOrganizationHandler";
     public static final String PUT_ORGANIZATION_HANDLER = "putOrganizationHandler";
     public static final String DELETE_ORGANIZATION_HANDLER = "deleteOrganizationHandler";
+    // GEOLOCATION
+    public static final String INDEX_GEOLOCATION_HANDLER = "indexGeolocationHandler";
+    public static final String SHOW_GEOLOCATION_HANDLER = "showGeolocationHandler";
+    public static final String POST_GEOLOCATION_HANDLER = "postGeolocationHandler";
+    public static final String PUT_GEOLOCATION_HANDLER = "putGeolocationHandler";
+    public static final String DELETE_GEOLOCATION_HANDLER = "deleteGeolocationHandler";
     // IMPLEMENTATION
     public static final String INDEX_IMPLEMENTATION_HANDLER = "indexImplementationHandler";
     public static final String SHOW_IMPLEMENTATION_HANDLER = "showImplementationHandler";
@@ -67,6 +75,12 @@ public class AppConfigConstants {
     public static final String POST_ORGANIZATION_HANDLER_FACTORY = "postOrganizationHandlerFactory";
     public static final String PUT_ORGANIZATION_HANDLER_FACTORY = "putOrganizationHandlerFactory";
     public static final String DELETE_ORGANIZATION_HANDLER_FACTORY = "deleteOrganizationHandlerFactory";
+    // GEOLOCATION
+    public static final String INDEX_GEOLOCATION_HANDLER_FACTORY = "indexGeolocationHandlerFactory";
+    public static final String SHOW_GEOLOCATION_HANDLER_FACTORY = "showGeolocationHandlerFactory";
+    public static final String POST_GEOLOCATION_HANDLER_FACTORY = "postGeolocationHandlerFactory";
+    public static final String PUT_GEOLOCATION_HANDLER_FACTORY = "putGeolocationHandlerFactory";
+    public static final String DELETE_GEOLOCATION_HANDLER_FACTORY = "deleteGeolocationHandlerFactory";
     // IMPLEMENTATION
     public static final String INDEX_IMPLEMENTATION_HANDLER_FACTORY = "indexImplementationHandlerFactory";
     public static final String SHOW_IMPLEMENTATION_HANDLER_FACTORY = "showImplementationHandlerFactory";
