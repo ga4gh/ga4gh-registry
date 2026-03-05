@@ -20,8 +20,8 @@ import org.springframework.http.ResponseEntity;
 
 @EnableWebMvc
 @RestController
-@RequestMapping("/geolocation")
-public class Geolocation {
+@RequestMapping("/geolocations")
+public class Geolocations {
 
     @Autowired
     @Qualifier(AppConfigConstants.INDEX_GEOLOCATION_HANDLER_FACTORY)
