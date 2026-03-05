@@ -119,7 +119,7 @@ jobs:
       - name: Deploy CloudFormation stack (Production)
         run: |
           aws cloudformation deploy \
-            --template-file ./infra/cloudformation-template.yaml \
+            --template-file ./.infra/cloudformation-template.yaml \
             --stack-name ga4gh-registry-dynamic \
             --parameter-overrides \
               Environment=production \
