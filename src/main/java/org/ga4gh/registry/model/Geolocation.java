@@ -17,10 +17,6 @@ public class Geolocation implements RegistryModel {
     @NotNull
     private String id;
 
-    @Column(name = "name")
-    @NotNull
-    private String name;
-
     @Column(name = "latitude")
     private Double latitude;
 
@@ -30,19 +26,18 @@ public class Geolocation implements RegistryModel {
     @Column(name = "country")
     private String country;
 
-    @Column(name = "region")
-    private String region;
+    @Column(name = "city")
+    private String city;
 
     /* constructors */
 
     public Geolocation() {}
 
-    public Geolocation(String name, Double latitude, Double longitude, String country, String region) {
-        this.name = name;
+    public Geolocation(Double latitude, Double longitude, String country, String city) {
         this.latitude = latitude;
         this.longitude = longitude;
         this.country = country;
-        this.region = region;
+        this.city = city;
     }
 
     public String getTableName() {
@@ -59,13 +54,10 @@ public class Geolocation implements RegistryModel {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public void lazyLoad() {
+
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
 
     public Double getLatitude() {
         return latitude;
@@ -91,11 +83,11 @@ public class Geolocation implements RegistryModel {
         this.country = country;
     }
 
-    public String getRegion() {
-        return region;
+    public String getCity() {
+        return city;
     }
 
-    public void setRegion(String region) {
-        this.region = region;
+    public void setCity(String city) {
+        this.city = city;
     }
 }

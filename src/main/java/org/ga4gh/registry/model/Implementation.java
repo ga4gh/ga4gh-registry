@@ -52,6 +52,13 @@ public class Implementation implements RegistryModel {
     @JoinColumn(name = "organization_id")
     private Organization organization;
 
+    @ManyToOne(fetch = FetchType.EAGER,
+            // cascade = CascadeType.ALL)
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE,
+                    CascadeType.DETACH, CascadeType.REFRESH})
+    @JoinColumn(name = "geoid")
+    private Geolocation geolocation;
+
     @Column(name = "contact_url")
     private String contactUrl;
 
@@ -149,6 +156,14 @@ public class Implementation implements RegistryModel {
 
     public void setOrganization(Organization organization) {
         this.organization = organization;
+    }
+
+    public Geolocation getGeolocation() {
+        return geolocation;
+    }
+
+    public void setGeolocation(Geolocation geolocation) {
+        this.geolocation = geolocation;
     }
 
     public String getContactUrl() {

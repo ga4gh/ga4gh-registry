@@ -20,7 +20,7 @@ import org.springframework.http.ResponseEntity;
 
 @EnableWebMvc
 @RestController
-@RequestMapping("/geolocations")
+@RequestMapping("/geolocation")
 public class Geolocation {
 
     @Autowired
