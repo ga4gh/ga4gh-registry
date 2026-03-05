@@ -1,0 +1,182 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: Dynamic Resources for GA4GH Standards and Implementations Registry API
+
+Parameters:
+  StaticStackName:
+    Type: String
+    Default: ga4gh-registry-static
+  ParamDBName:
+    Type: String
+    Default: ga4gh_db
+  ParamUsername:
+    Type: String
+    Default: ga4gh_db_writer
+  ParamPort:
+    Type: String
+    Default: 80
+  RegistryApiImage:
+    Type: String
+    Default: ga4gh/ga4gh-registry:20200909-FASP
+  SubnetA:
+    Type: String
+    Default: subnet-0be7a1fb3a96191b4
+  SubnetB:
+    Type: String
+    Default: subnet-0c465ec61b98bffac
+  SubnetC:
+    Type: String
+    Default: subnet-07b0e79f4d9bbf9d0
+  RegistryLG:
+    Type: String
+    Default: registry-dynamic-lg
+  Region:
+    Type: String
+    Default: us-east-2
+  Prefix:
+    Type: String
+    Default: ecs
+  ExecutionRole:
+    Type: String
+    Default: arn:aws:iam::282236276875:role/ECSFargateExecutionRole-TT
+
+Resources:
+
+  TargetGroup:
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    Properties:
+      Name: ga4gh-registry-tg
+      TargetType: ip
+      Protocol: TCP
+      Port: !Ref ParamPort
+      VpcId: vpc-0d772394df78b1311
+      HealthCheckEnabled: true
+      UnhealthyThresholdCount: 10
+      HealthyThresholdCount: 10
+      HealthCheckPort: !Ref ParamPort
+      HealthCheckIntervalSeconds: 30
+      HealthCheckProtocol: TCP
+      IpAddressType: ipv4
+
+  NLB:
+    Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+    Properties:
+      Type: network
+      Scheme: internet-facing
+      IpAddressType: ipv4
+      SubnetMappings:
+        - AllocationId: eipalloc-003b73319e0de9e21
+          SubnetId: !Ref SubnetC
+
+  NLBListenerTCP:
+    Type: AWS::ElasticLoadBalancingV2::Listener
+    DependsOn:
+      - TargetGroup
+      - NLB
+    Properties:
+      DefaultActions:
+        - Type: forward
+          TargetGroupArn: !Ref TargetGroup
+      LoadBalancerArn: !Ref NLB
+      Port: !Ref ParamPort
+      Protocol: TCP
+
+  NLBListenerTLS:
+    Type: AWS::ElasticLoadBalancingV2::Listener
+    DependsOn:
+      - TargetGroup
+      - NLB
+    Properties:
+      DefaultActions:
+        - Type: forward
+          TargetGroupArn: !Ref TargetGroup
+      LoadBalancerArn: !Ref NLB
+      Certificates:
+        - CertificateArn:
+            Fn::ImportValue:
+              !Sub "${StaticStackName}-api-certificate"
+      Port: 443
+      Protocol: TLS
+
+  ECSCluster:
+    Type: AWS::ECS::Cluster
+    Properties:
+      ClusterName: ga4gh-registry-cluster
+
+  ECSService:
+    Type: AWS::ECS::Service
+    DependsOn: [
+      ECSCluster,
+      ECSTaskDefinition,
+      TargetGroup,
+      NLBListenerTCP,
+      NLBListenerTLS
+    ]
+    Properties:
+      Cluster: !Ref ECSCluster
+      LoadBalancers:
+        - TargetGroupArn:
+            !Ref TargetGroup
+          ContainerPort: !Ref ParamPort
+          ContainerName: ga4gh-registry-container
+      HealthCheckGracePeriodSeconds: 100
+      LaunchType: FARGATE
+      DesiredCount: 1
+      NetworkConfiguration:
+        AwsvpcConfiguration:
+          AssignPublicIp: ENABLED
+          SecurityGroups:
+            - Fn::ImportValue:
+                !Sub "${StaticStackName}-SGId"
+          Subnets:
+            - !Ref SubnetA
+            - !Ref SubnetB
+            - !Ref SubnetC
+      ServiceName: ga4gh-registry-service
+      TaskDefinition: !Ref ECSTaskDefinition
+
+  ECSTaskDefinition:
+    Type: AWS::ECS::TaskDefinition
+    Properties:
+      Cpu: 512
+      Memory: 1024
+      NetworkMode: awsvpc
+      ExecutionRoleArn: !Ref ExecutionRole
+      RequiresCompatibilities:
+        - FARGATE
+      ContainerDefinitions:
+        - Name: ga4gh-registry-container
+          Image: !Ref RegistryApiImage
+          LogConfiguration:
+            LogDriver: awslogs
+            Options:
+              awslogs-group: !Ref RegistryLG
+              awslogs-region: !Ref Region
+              awslogs-stream-prefix: !Ref Prefix
+          Environment:
+            - Name: SERVERCONTEXTPATH
+              Value: /v1
+            - Name: SERVERPORT
+              Value: !Ref ParamPort
+            - Name: DBHOST
+              Value:
+                Fn::ImportValue:
+                  !Sub "${StaticStackName}-db-host"
+            - Name: DBPORT
+              Value:
+                Fn::ImportValue:
+                  !Sub "${StaticStackName}-db-port"
+            - Name: DBNAME
+              Value: !Ref ParamDBName
+            - Name: DBSCHEMA
+              Value: ga4gh_schema
+            - Name: DBUSER
+              Value: !Ref ParamUsername
+            - Name: DBPASSWORD
+              Value: '{{resolve:secretsmanager:GA4GHRegistryDBPassword:SecretString}}'
+            - Name: USESSL
+              Value: 'false'
+            - Name: AUTHSECRET
+              Value: '{{resolve:secretsmanager:GA4GHRegistryApiSecret:SecretString}}'
+          PortMappings:
+            - ContainerPort: !Ref ParamPort
+              HostPort: !Ref ParamPort
