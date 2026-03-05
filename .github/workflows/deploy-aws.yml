@@ -37,9 +37,11 @@ jobs:
         run: ./gradlew build
 
       - name: Run tests
+        if: ${{ vars.SKIP_TESTS != 'true' }}
         run: ./gradlew test
 
       - name: Generate test coverage
+        if: ${{ vars.SKIP_TESTS != 'true' }}
         run: ./gradlew jacocoTestReport
 
       - name: Setting Up Docker Buildx
